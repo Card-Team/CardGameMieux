@@ -1,21 +1,20 @@
-using System.Collections;
 using System.Collections.Generic;
 using CardGameEngine;
 using CardGameEngine.Cards;
 using CardGameEngine.GameSystems;
 using UnityEngine;
 
-public class PartieTest : MonoBehaviour
+public class Partie : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Awake()
-    {
-        var partie = new Game(Application.streamingAssetsPath + "/EffectsScripts/", new ExternCallbacksNull(),
-            new[] {"pistolet", "chance"}, new[] {"mongolfiere", "extracteur"});
-        partie.StartGame();
+    public Game Game;
 
-        var p1FirstCard = partie.Player1.Hand[0];
-        FindObjectOfType<CardRenderer>().card = p1FirstCard;
+    // Start is called before the first frame update
+    void Start()
+    {
+        Game = new Game(Application.streamingAssetsPath + "/EffectsScripts/", new ExternCallbacks(),
+            null, null);
+        
+        Game.StartGame();
     }
 
     // Update is called once per frame
@@ -23,7 +22,7 @@ public class PartieTest : MonoBehaviour
     {
     }
 
-    private class ExternCallbacksNull : IExternCallbacks
+    private class ExternCallbacks : IExternCallbacks
     {
         public Card ExternCardAskForTarget(Player effectOwner, string targetName, List<Card> cardList)
         {
