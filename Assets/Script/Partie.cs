@@ -11,10 +11,10 @@ public class Partie : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Game = new Game(Application.streamingAssetsPath + "/EffectsScripts/", new ExternCallbacks(),
-            null, null);
-        
-        Game.StartGame();
+        // Game = new Game(Application.streamingAssetsPath + "/EffectsScripts/", new ExternCallbacks(),
+        //     null, null);
+        //
+        // Game.StartGame();
     }
 
     // Update is called once per frame
