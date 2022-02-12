@@ -71,6 +71,7 @@ namespace Script.Networking
                 Debug.Log("on prend le seed du serveur");
                 _randomSeed = packet.randomSeed;
             }
+
             Debug.Log("Set up recu");
             OtherPlayerConfiguration = packet;
         }
@@ -136,7 +137,8 @@ namespace Script.Networking
             //on va dire que le serveur est j1
             var j1Deck = _networkManager.IsServer ? MyConfiguration!.deck : OtherPlayerConfiguration!.deck;
             var j2Deck = _networkManager.IsClient ? OtherPlayerConfiguration!.deck : MyConfiguration!.deck;
-            Game = new Game(Application.streamingAssetsPath + "/EffectsScripts/", new NetworkedExternCallbacks(_randomSeed,this),
+            Game = new Game(Application.streamingAssetsPath + "/EffectsScripts/",
+                new NetworkedExternCallbacks(_randomSeed, this),
                 j1Deck, j2Deck);
             Game.StartGame();
         }
@@ -153,13 +155,13 @@ namespace Script.Networking
                 return;
             }
 
-            MyConfiguration = new SetUpGameCommand() { name = ownName, deck = ownDeck };
+            MyConfiguration = new SetUpGameCommand() {name = ownName, deck = ownDeck};
 
             if (_networkManager.IsServer)
             {
                 MyConfiguration.randomSeed = new Random().Next();
                 _randomSeed = MyConfiguration.randomSeed;
-                _networkManager.Send(new SetUpGameCommand() { name = ownName, deck = ownDeck, randomSeed = _randomSeed});
+                _networkManager.Send(new SetUpGameCommand() {name = ownName, deck = ownDeck, randomSeed = _randomSeed});
             }
         }
 
@@ -219,21 +221,19 @@ namespace Script.Networking
 
         public void WaitFor<T>(Action<T> action) where T : ExternalCommand
         {
-            _waitedExternalCommands[typeof(T)] = (e) => action((T)e);
+            _waitedExternalCommands[typeof(T)] = (e) => action((T) e);
         }
 
         public Card ResolveCard(int objCardId)
         {
-            return objCardId < 0 ? 
-                null :
-                Game.Player1.Cards.Concat(Game.Player2.Cards).First(c => c.Id == objCardId);
+            return objCardId < 0 ? null : Game.Player1.Cards.Concat(Game.Player2.Cards).First(c => c.Id == objCardId);
         }
 
         public Player ResolvePlayer(int playerId)
         {
             if (Game.Player1.Id == playerId)
                 return Game.Player1;
-            else if(Game.Player2.Id == playerId)
+            else if (Game.Player2.Id == playerId)
                 return Game.Player2;
             else
             {
@@ -241,13 +241,18 @@ namespace Script.Networking
             }
         }
 
-        public void WantLocal<T>([CanBeNull] ExternData externStruct = null)  where T : GameCommand
+        public void WantLocal<T>([CanBeNull] ExternData externStruct = null) where T : GameCommand
         {
             if (_commandProviderBehaviours.TryGetValue(typeof(T), out var provider))
             {
                 provider.infoStruct = externStruct;
                 provider.isNeeded = true;
             }
+        }
+
+        public void RegisterCommandProvider<T>(CommandProviderBehaviour cpb) where T : GameCommand
+        {
+            _commandProviderBehaviours[typeof(T)] = cpb;
         }
     }
 }

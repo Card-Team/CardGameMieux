@@ -82,7 +82,7 @@ namespace Script.Networking
             switch (_networkConfiguration.NetworkMode)
             {
                 case NetworkMode.Client:
-                    ClientManager.Server.Send(packet,ClientManager);
+                    ClientManager.Server.Send(packet, ClientManager);
                     break;
                 case NetworkMode.Server:
                     ServerManager.Client.Send(packet);
@@ -92,12 +92,12 @@ namespace Script.Networking
             }
         }
 
-        public void AddPacketHandler<T>(PacketReceivedHandler<T> onPacket) where T: Packet
+        public void AddPacketHandler<T>(PacketReceivedHandler<T> onPacket) where T : Packet
         {
             switch (_networkConfiguration.NetworkMode)
             {
                 case NetworkMode.Client:
-                    ClientManager.Server.RegisterPacketHandler(onPacket,ClientManager);
+                    ClientManager.Server.RegisterPacketHandler(onPacket, ClientManager);
                     break;
                 case NetworkMode.Server:
                     ServerManager.Client.RegisterStaticPacketHandler(onPacket);
