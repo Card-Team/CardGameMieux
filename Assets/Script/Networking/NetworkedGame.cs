@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using CardGameEngine;
@@ -163,7 +164,7 @@ namespace Script.Networking
         }
 
 
-        //todo explications
+        //explications
         // Déja ca fonctionne que en ipv6 je crois ?
         // pas sur mais pas le temps de test la, quqnd ca fonctionnait pas le port etait pas bon aussi
         // 
@@ -223,18 +224,24 @@ namespace Script.Networking
 
         public Card ResolveCard(int objCardId)
         {
-            //todo eliott transformer CardId en card
-            // si négatif tu renvoi null
-            throw new NotImplementedException();
+            return objCardId < 0 ? 
+                null :
+                Game.Player1.Cards.Concat(Game.Player2.Cards).First(c => c.Id == objCardId);
         }
 
         public Player ResolvePlayer(int playerId)
         {
-            //todo eliott transformer PlayerId en player
-            throw new NotImplementedException();
+            if (Game.Player1.Id == playerId)
+                return Game.Player1;
+            else if(Game.Player2.Id == playerId)
+                return Game.Player2;
+            else
+            {
+                throw new InvalidOperationException($"Playerid {playerId} does not exist");
+            }
         }
 
-        public void WantLocal<T>(ExternData? externStruct = null)  where T : GameCommand
+        public void WantLocal<T>([CanBeNull] ExternData externStruct = null)  where T : GameCommand
         {
             if (_commandProviderBehaviours.TryGetValue(typeof(T), out var provider))
             {
