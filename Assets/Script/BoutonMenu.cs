@@ -17,7 +17,6 @@ public class BoutonMenu : MonoBehaviour
     public void OuvrirCanvas(Canvas nouvelfenetre)
     {
         var actuel = GameObject.FindObjectOfType<Canvas>(); //recupere la fenetre active
-        Debug.Log(actuel);
         actuel.gameObject.SetActive(false);
         nouvelfenetre.gameObject.SetActive(true);
     }
