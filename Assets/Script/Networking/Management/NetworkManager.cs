@@ -6,6 +6,7 @@ using System.Text;
 using Network;
 using Network.Enums;
 using Network.Interfaces;
+using Network.Packets;
 using Script.Networking.Management;
 using UnityEngine;
 
@@ -36,13 +37,20 @@ namespace Script.Networking
 
         private bool networkinSetUp = false;
 
+        public bool IsConnected => _networkConfiguration.NetworkMode switch
+        {
+            NetworkMode.Client => ClientManager.ConnectionState,
+            NetworkMode.Server => ServerManager.ConnectionState,
+            _ => throw new ArgumentOutOfRangeException()
+        } == ConnectionState.CONNECTED;
 
-        public ClientManager ClientManager { get; private set; }
 
-        public ServerManager ServerManager { get; private set; }
+        private ClientManager ClientManager { get; set; }
+
+        private ServerManager ServerManager { get; set; }
 
 
-        public void SetupNetworking(PacketReceivedHandler<GameCommand> receiver, Action onOtherSideConnect)
+        public void SetupNetworking(Action onOtherSideConnect)
         {
             if (networkinSetUp)
             {
@@ -54,13 +62,13 @@ namespace Script.Networking
             {
                 case NetworkMode.Client:
                     Debug.Log($"Trying to connect to {_networkConfiguration.IPAddress} : {_networkConfiguration.Port}");
-                    ClientManager = new ClientManager(_networkConfiguration, receiver, onOtherSideConnect);
+                    ClientManager = new ClientManager(_networkConfiguration, onOtherSideConnect);
                     ClientManager.Connect();
                     IsServer = false;
                     break;
                 case NetworkMode.Server:
                     Debug.Log($"Listening on : {_networkConfiguration.Port}");
-                    ServerManager = new ServerManager(_networkConfiguration, receiver, onOtherSideConnect);
+                    ServerManager = new ServerManager(_networkConfiguration, onOtherSideConnect);
                     ServerManager.Host();
                     IsServer = true;
                     break;
@@ -69,15 +77,30 @@ namespace Script.Networking
             }
         }
 
-        public void Send(GameCommand gameCommand)
+        public void Send(RequestPacket packet)
         {
             switch (_networkConfiguration.NetworkMode)
             {
                 case NetworkMode.Client:
-                    ClientManager.Server.Send(gameCommand,ClientManager);
+                    ClientManager.Server.Send(packet,ClientManager);
                     break;
                 case NetworkMode.Server:
-                    ServerManager.Client.Send(gameCommand);
+                    ServerManager.Client.Send(packet);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public void AddPacketHandler<T>(PacketReceivedHandler<T> onPacket) where T: Packet
+        {
+            switch (_networkConfiguration.NetworkMode)
+            {
+                case NetworkMode.Client:
+                    ClientManager.Server.RegisterPacketHandler(onPacket,ClientManager);
+                    break;
+                case NetworkMode.Server:
+                    ServerManager.Client.RegisterStaticPacketHandler(onPacket);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -86,6 +109,7 @@ namespace Script.Networking
 
         private void OnDestroy()
         {
+            // on coupe la co 
             switch (_networkConfiguration.NetworkMode)
             {
                 case NetworkMode.Client:

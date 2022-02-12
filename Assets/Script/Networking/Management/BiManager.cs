@@ -11,7 +11,6 @@ namespace Script.Networking.Management
     public class BiManager
     {
         protected readonly NetworkConfiguration _networkConfiguration;
-        protected readonly PacketReceivedHandler<GameCommand> _gameCommandReiceiver;
         protected readonly Action _onOtherSideConnect;
 
         public ConnectionState ConnectionState
@@ -27,11 +26,9 @@ namespace Script.Networking.Management
         protected Connection Other;
         private ConnectionState _connectionState;
 
-        protected BiManager(NetworkConfiguration networkConfiguration,
-            PacketReceivedHandler<GameCommand> gameCommandReiceiver, Action onOtherSideConnect)
+        protected BiManager(NetworkConfiguration networkConfiguration, Action onOtherSideConnect)
         {
             _networkConfiguration = networkConfiguration;
-            _gameCommandReiceiver = gameCommandReiceiver;
             _onOtherSideConnect = onOtherSideConnect;
         }
         

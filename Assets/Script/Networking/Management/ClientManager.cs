@@ -21,9 +21,8 @@ namespace Script.Networking.Management
 
         public Connection Server => Other;
 
-        public ClientManager(NetworkConfiguration networkConfiguration,
-            PacketReceivedHandler<GameCommand> gameCommandReiceiver, Action onOtherSideConnect) : base(
-            networkConfiguration, gameCommandReiceiver, onOtherSideConnect)
+        public ClientManager(NetworkConfiguration networkConfiguration, Action onOtherSideConnect) : base(
+            networkConfiguration, onOtherSideConnect)
         {
         }
         //todo tout les callbacks sont sur un autre thread
@@ -70,7 +69,6 @@ namespace Script.Networking.Management
                 return;
             }
             _resumeToken = packet.ResumeToken;
-            Other.RegisterPacketHandler(_gameCommandReiceiver,this);
             _onOtherSideConnect();
             ConnectionState = ConnectionState.CONNECTED;
         }

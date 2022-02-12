@@ -1,21 +1,48 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using CardGameEngine;
+using CardGameEngine.Cards;
+using CardGameEngine.EventSystem.Events.GameStateEvents;
+using CardGameEngine.GameSystems;
+using JetBrains.Annotations;
 using Network;
 using Network.Packets;
 using Script.Debugging;
+using Script.Networking.Commands;
+using Script.Networking.Commands.Extern;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Script.Networking
 {
-    public class NetworkedGame : MonoBehaviour
+    public partial class NetworkedGame : MonoBehaviour
     {
-        private Game _game;
+        public Game Game { get; private set; }
 
         private NetworkManager _networkManager;
 
-        public readonly bool IsReadyToStart;
+        public NetworkGameState NetworkGameState { get; private set; }
+
+        public Action<Game> EventRegistration;
+
+        private ConcurrentDictionary<Type, CommandProviderBehaviour> _commandProviderBehaviours =
+            new ConcurrentDictionary<Type, CommandProviderBehaviour>();
+
+        private ConcurrentDictionary<Type, Action<ExternalCommand>> _waitedExternalCommands =
+            new ConcurrentDictionary<Type, Action<ExternalCommand>>();
+
+        private int _randomSeed;
+
+        [CanBeNull] public SetUpGameCommand MyConfiguration { get; private set; }
+        [CanBeNull] public SetUpGameCommand OtherPlayerConfiguration { get; private set; }
+
+        private ConcurrentQueue<GameCommand> _gameCommands = new ConcurrentQueue<GameCommand>();
+
+        private NetworkMode acceptFrom = NetworkMode.Server;
 
 
         private void Awake()
@@ -24,34 +51,118 @@ namespace Script.Networking
             _networkManager = GetComponent<NetworkManager>();
         }
 
-        private void OnEnable()
+        public void SetUpNetworkGame(string ownName, List<string> ownDeck)
         {
-            _networkManager.SetupNetworking(ReceiveRemoteAction, () =>
+            NetworkGameState = NetworkGameState.NOT_CONNECTED;
+            _networkManager.SetupNetworking(() =>
             {
                 Debug.Log("Connection established");
-                if (_networkManager.IsServer)
-                {
-                    Debug.Log("Sending packet");
-                    _networkManager.Send(new GameCommand(){data = "salaasdsdqsd"});
-                }
+                _networkManager.AddPacketHandler<SetUpGameCommand>(OnReceiveSetUp);
+                NetworkGameState = NetworkGameState.SETTING_UP;
+                BeginSetUp(ownName, ownDeck);
             });
         }
 
-        public void SetUpNetworkGame()
+        private void OnReceiveSetUp(SetUpGameCommand packet, Connection connection)
         {
-            if (_game != null)
+            if (_networkManager.IsClient)
+            {
+                Debug.Log("on prend le seed du serveur");
+                _randomSeed = packet.randomSeed;
+            }
+            Debug.Log("Set up recu");
+            OtherPlayerConfiguration = packet;
+        }
+
+        private void Update()
+        {
+            if (NetworkGameState == NetworkGameState.SETTING_UP) // donc il a pas la notre
+            {
+                if (OtherPlayerConfiguration != null && _networkManager.IsClient)
+                {
+                    //si on est le client qui vient de recevoir du serv, on lui balance
+                    _networkManager.Send(MyConfiguration);
+                }
+
+                if (OtherPlayerConfiguration != null && MyConfiguration != null)
+                {
+                    //on a les deux, est pret
+                    CreateGame();
+                    NetworkGameState = NetworkGameState.READY;
+                }
+            }
+
+            if (NetworkGameState == NetworkGameState.READY)
+            {
+                EventRegistration?.Invoke(Game);
+                Game.EventManager.SubscribeToEvent<EndTurnEvent>(e =>
+                {
+                    acceptFrom = acceptFrom switch
+                    {
+                        NetworkMode.Client => NetworkMode.Server,
+                        NetworkMode.Server => NetworkMode.Client,
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
+                    //on attend des paquets de l'autre si le tour a changé
+                }, postEvent: true);
+                NetworkGameState = NetworkGameState.PLAYING;
+                new Thread(() =>
+                {
+                    while (NetworkGameState == NetworkGameState.PLAYING)
+                    {
+                        // on va prendre les actions une par une
+                        if (_gameCommands.TryPeek(out var curCommand))
+                        {
+                            if (ProcessAction(curCommand))
+                            {
+                                //si on a process on enleve
+                                _gameCommands.TryDequeue(out curCommand);
+                            }
+                            else
+                            {
+                                //si on a pas ce qu'il faut pour process on attend
+                            }
+                        }
+
+                        Thread.Sleep(1000); //durée entre les paquets
+                    }
+                }).Start();
+            }
+        }
+
+        private void CreateGame()
+        {
+            //on va dire que le serveur est j1
+            var j1Deck = _networkManager.IsServer ? MyConfiguration!.deck : OtherPlayerConfiguration!.deck;
+            var j2Deck = _networkManager.IsClient ? OtherPlayerConfiguration!.deck : MyConfiguration!.deck;
+            Game = new Game(Application.streamingAssetsPath + "/EffectsScripts/", new NetworkedExternCallbacks(_randomSeed,this),
+                j1Deck, j2Deck);
+            Game.StartGame();
+        }
+
+        // protocole
+        // hote -> SetUpGame (son nom, son deck)
+        // client -> SetUpGame (son nom, son deck)
+        // 
+        private void BeginSetUp(string ownName, List<string> ownDeck)
+        {
+            if (NetworkGameState != NetworkGameState.SETTING_UP || MyConfiguration != null)
             {
                 Debug.LogError("Trying to setup game after creation");
                 return;
             }
-            
-            //todo
- 
-            
+
+            MyConfiguration = new SetUpGameCommand() { name = ownName, deck = ownDeck };
+
+            if (_networkManager.IsServer)
+            {
+                MyConfiguration.randomSeed = new Random().Next();
+                _randomSeed = MyConfiguration.randomSeed;
+                _networkManager.Send(new SetUpGameCommand() { name = ownName, deck = ownDeck, randomSeed = _randomSeed});
+            }
         }
 
-        
-        
+
         //todo explications
         // Déja ca fonctionne que en ipv6 je crois ?
         // pas sur mais pas le temps de test la, quqnd ca fonctionnait pas le port etait pas bon aussi
@@ -61,7 +172,7 @@ namespace Script.Networking
         // Le CLIENT, doit ajouter un listener avec PacketHandler et un objet
         // Le SERVEUR doit utiliser StaticPacketHandler
         // Quand le client envoit un paquet, il doit utiliser l'objet associé (pk ????)
-        
+
         // Les paquets héritent RequestPacket
         // et potentiellement un responsePacket, avec une annotation pour dire il correspond a quel request
         // les champs doivent etre des PROPRIETES
@@ -69,18 +180,67 @@ namespace Script.Networking
 
         private void ReceiveRemoteAction(GameCommand packet, Connection connection)
         {
-            Debug.Log($"J'ai recu un paket avec {packet.data}");
-            //todo process action
-            // mais checker que c'est une action de j2
+            Debug.Log($"J'ai recu un paket");
+            if ((acceptFrom == NetworkMode.Client && _networkManager.IsClient) ||
+                acceptFrom == NetworkMode.Server && _networkManager.IsServer)
+            {
+                Debug.LogError(
+                    "On a pas l'air d'etre synchronisé, un paquet de l'autre a été recu mais on en attendait pas");
+                return;
+            }
+            else
+            {
+                _gameCommands.Enqueue(packet);
+            }
         }
 
-       
 
         public void DoLocalAction(GameCommand command)
         {
-            //todo
+            Debug.Log($"Action locale qu'il faut dupliquer");
+            if ((acceptFrom == NetworkMode.Client && _networkManager.IsServer) ||
+                acceptFrom == NetworkMode.Server && _networkManager.IsClient)
+            {
+                Debug.LogError("On a pas l'air d'etre synchronisé, on attendait un paquet distant");
+                return;
+            }
+            else
+            {
+                _gameCommands.Enqueue(command);
+                _networkManager.Send(command);
+            }
         }
-        
-        
+
+        public bool IsLocalPlayer(Player player)
+        {
+            return Game.Player1 == player;
+        }
+
+        public void WaitFor<T>(Action<T> action) where T : ExternalCommand
+        {
+            _waitedExternalCommands[typeof(T)] = (e) => action((T)e);
+        }
+
+        public Card ResolveCard(int objCardId)
+        {
+            //todo eliott transformer CardId en card
+            // si négatif tu renvoi null
+            throw new NotImplementedException();
+        }
+
+        public Player ResolvePlayer(int playerId)
+        {
+            //todo eliott transformer PlayerId en player
+            throw new NotImplementedException();
+        }
+
+        public void WantLocal<T>(ExternData? externStruct = null)  where T : GameCommand
+        {
+            if (_commandProviderBehaviours.TryGetValue(typeof(T), out var provider))
+            {
+                provider.infoStruct = externStruct;
+                provider.isNeeded = true;
+            }
+        }
     }
 }

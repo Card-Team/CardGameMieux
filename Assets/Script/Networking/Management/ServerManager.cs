@@ -17,9 +17,8 @@ namespace Script.Networking.Management
 
         public Connection Client => Other;
 
-        public ServerManager(NetworkConfiguration networkConfiguration,
-            PacketReceivedHandler<GameCommand> gameCommandReiceiver, Action onOtherSideConnect) : base(
-            networkConfiguration, gameCommandReiceiver, onOtherSideConnect)
+        public ServerManager(NetworkConfiguration networkConfiguration, Action onOtherSideConnect) : base(
+            networkConfiguration, onOtherSideConnect)
         {
         }
 
@@ -55,7 +54,7 @@ namespace Script.Networking.Management
             Debug.Log("Received connection request");
             if (ConnectionState != ConnectionState.ESTABLISHMENT)
             {
-                Debug.LogError("Received request while not in establishment");
+                Debug.LogError("Received request while not in establishment");  
                 return;
             }
 
@@ -83,8 +82,6 @@ namespace Script.Networking.Management
             }
 
             if (ConnectionState != ConnectionState.CONNECTED) return;
-
-            Other.RegisterPacketHandler(_gameCommandReiceiver, this);
             _onOtherSideConnect();
         }
 
