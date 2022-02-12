@@ -25,8 +25,9 @@ namespace Script.Networking.Management
             networkConfiguration, onOtherSideConnect)
         {
         }
-        //todo tout les callbacks sont sur un autre thread
+        //tout les callbacks sont sur un autre thread
         // faut un lien pour pouvoir appeler les composants sur le thread principal
+        // normalement c'est bon ?
 
         public void Connect()
         {

@@ -68,7 +68,7 @@ namespace Script.Networking.Management
             public override long Position
             {
                 get => 0;
-                set => throw new NotImplementedException();
+                set => throw new InvalidOperationException();
             }
         }
 
