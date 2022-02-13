@@ -19,7 +19,7 @@ namespace Script.Networking
         {
             var network = FindObjectOfType<NetworkedGame>();
             network.EventRegistration = GameInit;
-            network.SetUpNetworkGame("TODO ON ATTEND BENJAMIN", new List<string>());
+            network.SetUpNetworkGame("Raoult", new List<string>() {"pistolet"});
         }
 
         private void GameInit(Game game)
