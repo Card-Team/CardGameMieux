@@ -20,7 +20,7 @@ namespace Script.Networking
             new NetworkConfiguration()
             {
                 NetworkMode =
-#if UNITY_EDITOR
+#if !UNITY_EDITOR
                     NetworkMode.Server,
 #else
                     NetworkMode.Client,
@@ -77,8 +77,13 @@ namespace Script.Networking
             }
         }
 
-        public void Send(RequestPacket packet)
+        public void Send(Packet packet)
         {
+            if (IsConnected == false)
+            {
+                Debug.LogError("Trying to send but connection dropped");
+                return;
+            }
             switch (_networkConfiguration.NetworkMode)
             {
                 case NetworkMode.Client:

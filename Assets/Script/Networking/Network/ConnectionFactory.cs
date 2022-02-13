@@ -352,10 +352,10 @@ namespace Network
         /// <param name="ipAddress">The IP address to connect to.</param>
         /// <param name="port">The port to connect to.</param>
         /// <returns>The created <see cref="ClientConnectionContainer"/>.</returns>
-        public static ClientConnectionContainer CreateClientConnectionContainer(string ipAddress, int port)
+        public static ClientConnectionContainer CreateClientConnectionContainer(string ipAddress, int port, bool init)
         {
             var clientConnectionContainer = new ClientConnectionContainer(ipAddress, port);
-            clientConnectionContainer.Initialize();
+            if(init) clientConnectionContainer.Initialize();
             return clientConnectionContainer;
         }
 

@@ -9,6 +9,7 @@ using CardGameEngine;
 using CardGameEngine.Cards;
 using CardGameEngine.EventSystem.Events.GameStateEvents;
 using CardGameEngine.GameSystems;
+using CardGameEngine.GameSystems.Effects;
 using JetBrains.Annotations;
 using Network;
 using Network.Packets;
@@ -59,6 +60,7 @@ namespace Script.Networking
             {
                 Debug.Log("Connection established");
                 _networkManager.AddPacketHandler<SetUpGameCommand>(OnReceiveSetUp);
+                _networkManager.AddPacketHandler<GameCommand>(ReceiveRemoteAction);
                 NetworkGameState = NetworkGameState.SETTING_UP;
                 BeginSetUp(ownName, ownDeck);
             });
@@ -96,7 +98,16 @@ namespace Script.Networking
 
             if (NetworkGameState == NetworkGameState.READY)
             {
-                EventRegistration?.Invoke(Game);
+                try
+                {
+                    EventRegistration?.Invoke(Game);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError("Exception dans EventRegistration/GameInit");
+                    Debug.LogException(e);
+                }
+
                 Game.EventManager.SubscribeToEvent<EndTurnEvent>(e =>
                 {
                     acceptFrom = acceptFrom switch
@@ -107,6 +118,8 @@ namespace Script.Networking
                     };
                     //on attend des paquets de l'autre si le tour a changé
                 }, postEvent: true);
+                // on commence
+                Game.StartGame();
                 NetworkGameState = NetworkGameState.PLAYING;
                 new Thread(() =>
                 {
@@ -137,10 +150,23 @@ namespace Script.Networking
             //on va dire que le serveur est j1
             var j1Deck = _networkManager.IsServer ? MyConfiguration!.deck : OtherPlayerConfiguration!.deck;
             var j2Deck = _networkManager.IsClient ? OtherPlayerConfiguration!.deck : MyConfiguration!.deck;
-            Game = new Game(Application.streamingAssetsPath + "/EffectsScripts/",
-                new NetworkedExternCallbacks(_randomSeed, this),
-                j1Deck, j2Deck);
-            Game.StartGame();
+            try
+            {
+                Game = new Game(Application.streamingAssetsPath + "/EffectsScripts/",
+                    new NetworkedExternCallbacks(_randomSeed, this), j1Deck, j2Deck);
+            }
+            catch (InvalidEffectException exception)
+            {
+                Debug.LogError($"Invalid effect exception : {exception.Message}");
+                if(exception.InnerException != null) 
+                    Debug.LogException(exception.InnerException);
+                if(Application.isEditor)
+                    Debug.Break();
+                else
+                {
+                    Application.Quit();
+                }
+            }
         }
 
         // protocole

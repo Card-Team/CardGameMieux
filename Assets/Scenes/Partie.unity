@@ -217,7 +217,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 829417928}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c55fb0f28d0f4788999b03f9a37bd156, type: 3}
   m_Name: 
@@ -334,7 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c80925edc3bf504f95536a90e5fdd6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CardRenderer: {fileID: 2530034160083761924, guid: f60c7b4a37f753a44b7b4859852ddb3f, type: 3}
+  cardRenderer: {fileID: 0}
 --- !u!4 &1225201082
 Transform:
   m_ObjectHideFlags: 0

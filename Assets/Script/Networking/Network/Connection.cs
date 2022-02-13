@@ -16,6 +16,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Debug = UnityEngine.Debug;
 
 namespace Network
 {
@@ -498,7 +499,7 @@ namespace Network
                 typeByte[p] = packetId;
             });
 
-            assembly.GetTypes().ToList().Where(c => c.GetCustomAttributes(typeof(PacketRequestAttribute)).Count() > 0).ToList().
+            assembly.GetTypes().ToList().Where(c => c.GetCustomAttributes(typeof(PacketRequestAttribute)).Any()).ToList().
                 ForEach(c =>
                 {
                     PacketRequestAttribute requestAttribute = ((PacketRequestAttribute)c.GetCustomAttribute(typeof(PacketRequestAttribute)));
@@ -714,7 +715,8 @@ namespace Network
 
                 //Insert the ID into the packet if it is an request packet.
                 if (packet.GetType().IsSubclassOf(typeof(RequestPacket)) && packetWithObject.Item2 != null)
-                    packet.ID = packetHandlerMap[requestResponseMap[packet.GetType()], packetWithObject.Item2];
+                    if(requestResponseMap.ContainsKey(packet.GetType()))
+                        packet.ID = packetHandlerMap[requestResponseMap[packet.GetType()], packetWithObject.Item2];
 
                 //Prepare some data in the packet.
                 packet.BeforeSend();

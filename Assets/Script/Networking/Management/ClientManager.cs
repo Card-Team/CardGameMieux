@@ -33,11 +33,13 @@ namespace Script.Networking.Management
         {
             _clientConnectionContainer = ConnectionFactory.CreateClientConnectionContainer(
                 _networkConfiguration.IPAddress.ToString()
-                , _networkConfiguration.Port);
+                , _networkConfiguration.Port, false);
             _clientConnectionContainer.AddKownType(Assembly.GetExecutingAssembly());
             _clientConnectionContainer.ConnectionEstablished += OnClientConnect;
             _clientConnectionContainer.ConnectionLost += OnConnectionLost;
             _clientConnectionContainer.AutoReconnect = true;
+            
+            _clientConnectionContainer.Initialize();
         }
 
         private void OnConnectionLost(Connection connection, ConnectionType connectionType, CloseReason closeReason)

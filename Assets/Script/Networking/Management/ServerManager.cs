@@ -26,11 +26,15 @@ namespace Script.Networking.Management
         {
             _serverConnectionContainer =
                 ConnectionFactory.CreateServerConnectionContainer(_networkConfiguration.IPAddress.ToString(),
-                    _networkConfiguration.Port);
+                    _networkConfiguration.Port, false);
             _serverConnectionContainer.AddKownType(Assembly.GetExecutingAssembly());
             _serverConnectionContainer.ConnectionEstablished += OnClientConnect;
             _serverConnectionContainer.ConnectionLost += OnClientLost;
             _serverConnectionContainer.AllowUDPConnections = false;
+
+#pragma warning disable CS4014
+            _serverConnectionContainer.Start();
+#pragma warning restore CS4014
         }
 
         private void OnClientLost(Connection connection, ConnectionType connectionType, CloseReason closeReason)
