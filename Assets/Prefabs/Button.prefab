@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: 
+  nouvelfenetre: {fileID: 0}
 --- !u!1 &9027745941608816104
 GameObject:
   m_ObjectHideFlags: 0

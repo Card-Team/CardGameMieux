@@ -1046,6 +1046,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   listFile: []
   buttonTemplate: {fileID: 758951771757158202, guid: 32a1747e48806684c8d0de866ebcf209, type: 3}
+  nouvelfenetre: {fileID: 345948408}
 --- !u!114 &251938771
 MonoBehaviour:
   m_ObjectHideFlags: 0
