@@ -12,7 +12,7 @@ public class NomButton : MonoBehaviour
     {
         Debug.Log(text);
         var actuel = GameObject.FindObjectOfType<Canvas>(); //recupere la fenetre active
-        actuel.gameObject.SetActive(false);
-        nouvelfenetre.gameObject.SetActive(true);
+        actuel.gameObject.SetActive(false);                 //la desactiver 
+        nouvelfenetre.gameObject.SetActive(true);           //et reactiver la nouvelle donné en parametre
     }
 }
