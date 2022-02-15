@@ -21,7 +21,7 @@ public class CardRenderer : MonoBehaviour
         description.GetComponent<TextMeshPro>().text = card.Description.Value;
         niveauText.GetComponent<TextMeshPro>().text = card.CurrentLevel.Value + "/" + card.MaxLevel;
         cout.GetComponent<TextMeshPro>().text = card.Cost.Value + "";
-        //illustration.GetComponent<SpriteRenderer>().sprite = card.
+        //illustration.GetComponent<SpriteRenderer>().sprite = card.ImageId.Value + ".png";
     }
 
     // Update is called once per frame
