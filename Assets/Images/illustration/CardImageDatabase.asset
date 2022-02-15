@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25f99afb0f9b4e9a9fce1c9482b01b7d, type: 3}
+  m_Name: CardImageDatabase
+  m_EditorClassIdentifier: 
+  images:
+  - id: 0
+    sprite: {fileID: 21300000, guid: 57a87609c7cd0794e87fefbca702f58d, type: 3}
+  - id: 569
+    sprite: {fileID: 21300000, guid: bab5cfe1068fdc14a83d7614261c95d6, type: 3}

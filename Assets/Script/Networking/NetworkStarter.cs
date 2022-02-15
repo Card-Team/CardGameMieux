@@ -13,6 +13,8 @@ namespace Script.Networking
     public class NetworkStarter : MonoBehaviour
     {
         public CardRenderer cardRenderer;
+        public PileRenderer piocheJ1;
+        public PileRenderer piocheJ2;
 
         // Start is called before the first frame update
         void Start()
@@ -24,11 +26,22 @@ namespace Script.Networking
 
         private void GameInit(Game game)
         {
-            //TODO 
+            // P1
             foreach (var player1Card in game.Player1.Cards)
             {
                 var card = Instantiate(cardRenderer);
                 card.card = player1Card;
+                card.retournee = true;
+                piocheJ1.cards.Add(card);
+            }
+
+            // P2
+            foreach (var player2Card in game.Player2.Cards)
+            {
+                var card = Instantiate(cardRenderer);
+                card.card = player2Card;
+                card.retournee = true;
+                piocheJ2.cards.Add(card);
             }
 
             // RegisterAllEvents(game.EventManager);
