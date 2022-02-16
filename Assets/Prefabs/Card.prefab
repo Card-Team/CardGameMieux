@@ -977,14 +977,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e332f6c95a281564082e2a10852e2d4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nom: {fileID: 2530034158259581154}
-  description: {fileID: 2530034159908504764}
-  niveauText: {fileID: 2530034159386238041}
-  cout: {fileID: 2530034158476887964}
+  nom: {fileID: 2530034158259581152}
+  description: {fileID: 2530034159908504762}
+  niveauText: {fileID: 2530034159386238039}
+  cout: {fileID: 2530034158476887962}
   illustration: {fileID: 2834636338925133721}
-  retournee: 0
+  retournee: 1
   imagesCartes: {fileID: 11400000, guid: 0ffff537bac060c42947aea121bbe542, type: 2}
-  dos: {fileID: 21300000, guid: e07698d8f61a42749b096c14ff05e624, type: 3}
 --- !u!1 &7289209137313592846
 GameObject:
   m_ObjectHideFlags: 0

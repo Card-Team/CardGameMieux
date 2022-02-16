@@ -18,7 +18,7 @@ namespace Script
             public Sprite sprite;
         }
 
-        private void Awake()
+        private void OnEnable()
         {
             foreach (var image in images)
             {

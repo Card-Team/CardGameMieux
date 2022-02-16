@@ -31,7 +31,6 @@ namespace Script.Networking
             {
                 var card = Instantiate(cardRenderer);
                 card.card = player1Card;
-                card.retournee = true;
                 piocheJ1.cards.Add(card);
             }
 
@@ -40,7 +39,6 @@ namespace Script.Networking
             {
                 var card = Instantiate(cardRenderer);
                 card.card = player2Card;
-                card.retournee = true;
                 piocheJ2.cards.Add(card);
             }
 
