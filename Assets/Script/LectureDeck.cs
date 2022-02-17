@@ -2,16 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 public class LectureDeck : MonoBehaviour
 {
-    public List<string> listFile = new List<string>();
     public NomButton buttonTemplate; //Game object avec forcement un composant Nombutton
     public Canvas nouvelfenetre;
-
     void OnEnable()
     {
         LireFichier();
@@ -22,25 +22,21 @@ public class LectureDeck : MonoBehaviour
         Directory.CreateDirectory(Application.persistentDataPath);
         DirectoryInfo di = new DirectoryInfo(Application.persistentDataPath);
         FileInfo[] files = di.GetFiles("*.txt");
-        foreach (FileInfo file in files)
-        {
-            listFile.Add(file.Name);
-            //Debug.Log(file.Name);
-        }
         //supprimer les buttons
-
-        foreach (Transform child in transform) {
-            Destroy(child.gameObject);
+        foreach (Transform child in transform)
+        {
+            //Debug.Log("delete: "+child.name);
+            GameObject.DestroyImmediate(child.gameObject);
         }
-
+        Debug.Log(string.Join(" ; ",files.Select(f=>f.Name)));
         //ajouter les boutons 
-        for (int i = 0; i < listFile.Count; i++)
+        foreach (var file in files)
         {
             NomButton button = Instantiate(buttonTemplate, this.transform, false); //creer et un copie un bouton
-            button.text = listFile[i]; //donne aux champs texte le nom du bouton
+            button.text = file.Name; //donne aux champs texte le nom du bouton
             button.nouvelfenetre = nouvelfenetre;
             button.gameObject.SetActive(true);
-            button.GetComponentInChildren<TextMeshProUGUI>().SetText(listFile[i]);
+            button.GetComponentInChildren<TextMeshProUGUI>().SetText(file.Name);
         }
     }
 }
