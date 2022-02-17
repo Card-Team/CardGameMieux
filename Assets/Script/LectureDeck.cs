@@ -23,12 +23,11 @@ public class LectureDeck : MonoBehaviour
         DirectoryInfo di = new DirectoryInfo(Application.persistentDataPath);
         FileInfo[] files = di.GetFiles("*.txt");
         //supprimer les buttons
-        foreach (Transform child in transform)
-        {
-            //Debug.Log("delete: "+child.name);
-            GameObject.DestroyImmediate(child.gameObject);
+        foreach ( GameObject child in transform) {
+            DestroyImmediate(child);
         }
-        Debug.Log(string.Join(" ; ",files.Select(f=>f.Name)));
+        //affiche tout les fichier texte present : 
+        //Debug.Log(string.Join(" ; ",files.Select(f=>f.Name)));
         //ajouter les boutons 
         foreach (var file in files)
         {
