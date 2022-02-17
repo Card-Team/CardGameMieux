@@ -979,8 +979,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nom: {fileID: 2530034158259581152}
   description: {fileID: 2530034159908504762}
-  niveauText: {fileID: 2530034159386238039}
-  cout: {fileID: 2530034158476887962}
+  niveau: {fileID: 2530034158163482316}
+  cout: {fileID: 2530034158964120406}
   illustration: {fileID: 2834636338925133721}
   retournee: 1
   imagesCartes: {fileID: 11400000, guid: 0ffff537bac060c42947aea121bbe542, type: 2}

@@ -29,7 +29,7 @@ namespace Script.Networking
             // P1
             foreach (var player1Card in game.Player1.Cards)
             {
-                var card = Instantiate(cardRenderer);
+                var card = Instantiate(cardRenderer, piocheJ1.transform, false);
                 card.card = player1Card;
                 piocheJ1.cards.Add(card);
             }
@@ -37,7 +37,7 @@ namespace Script.Networking
             // P2
             foreach (var player2Card in game.Player2.Cards)
             {
-                var card = Instantiate(cardRenderer);
+                var card = Instantiate(cardRenderer, piocheJ2.transform, false);
                 card.card = player2Card;
                 piocheJ2.cards.Add(card);
             }
