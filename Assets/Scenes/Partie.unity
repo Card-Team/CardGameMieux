@@ -166,6 +166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55bb985f19ced0e40b9c9cdfd241d9f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: 1
+  pileType: 1
   cards: []
 --- !u!1 &235228054
 GameObject:
@@ -191,7 +193,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 235228054}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.77513987, y: -0.77940536, z: -15.871611}
+  m_LocalPosition: {x: -0.77513987, y: -0.77940536, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 24210738}
@@ -199,7 +201,7 @@ Transform:
   - {fileID: 1676696878}
   - {fileID: 1245867477}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &267481895
 GameObject:
@@ -244,6 +246,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55bb985f19ced0e40b9c9cdfd241d9f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: 0
+  pileType: 1
   cards: []
 --- !u!1 &309483231
 GameObject:
@@ -288,6 +292,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55bb985f19ced0e40b9c9cdfd241d9f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: 0
+  pileType: 0
   cards: []
 --- !u!1 &811749531
 GameObject:
@@ -459,50 +465,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &821601279
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 821601280}
-  - component: {fileID: 821601281}
-  m_Layer: 0
-  m_Name: Pile
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &821601280
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 821601279}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.77513987, y: -0.77940536, z: -15.871611}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &821601281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 821601279}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55bb985f19ced0e40b9c9cdfd241d9f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cards: []
 --- !u!1 &829417928
 GameObject:
   m_ObjectHideFlags: 0
@@ -542,7 +504,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 829417928}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.06708364, y: 0.18404998, z: -0.09202499}
+  m_LocalPosition: {x: 0.06708364, y: 0.18404998, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -679,7 +641,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1220338683}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.77513987, y: -0.77940536, z: -15.871611}
+  m_LocalPosition: {x: -0.77513987, y: -0.77940536, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 267481896}
@@ -687,7 +649,7 @@ Transform:
   - {fileID: 1751414340}
   - {fileID: 811749532}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1225201080
 GameObject:
@@ -719,8 +681,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardRenderer: {fileID: 2530034160083761924, guid: f60c7b4a37f753a44b7b4859852ddb3f, type: 3}
-  piocheJ1: {fileID: 267481897}
-  piocheJ2: {fileID: 24210739}
 --- !u!4 &1225201082
 Transform:
   m_ObjectHideFlags: 0
@@ -729,7 +689,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1225201080}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.77513987, y: -0.77940536, z: -15.871611}
+  m_LocalPosition: {x: -0.77513987, y: -0.77940536, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -948,6 +908,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55bb985f19ced0e40b9c9cdfd241d9f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: 1
+  pileType: 0
   cards: []
 --- !u!1 &1676696877
 GameObject:
@@ -992,6 +954,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55bb985f19ced0e40b9c9cdfd241d9f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: 1
+  pileType: 2
   cards: []
 --- !u!1 &1751414339
 GameObject:
@@ -1036,4 +1000,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55bb985f19ced0e40b9c9cdfd241d9f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: 0
+  pileType: 2
   cards: []
