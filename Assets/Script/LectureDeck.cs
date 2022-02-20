@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class LectureDeck : MonoBehaviour
 {
@@ -23,8 +24,9 @@ public class LectureDeck : MonoBehaviour
         DirectoryInfo di = new DirectoryInfo(Application.persistentDataPath);
         FileInfo[] files = di.GetFiles("*.txt");
         //supprimer les buttons
-        foreach ( GameObject child in transform) {
-            DestroyImmediate(child);
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
         }
         //affiche tout les fichier texte present : 
         //Debug.Log(string.Join(" ; ",files.Select(f=>f.Name)));

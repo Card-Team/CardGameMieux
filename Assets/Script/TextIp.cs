@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Sockets;
 using TMPro;
@@ -12,6 +13,11 @@ public class TextIp : MonoBehaviour
     public void Start()
     {
         SaveIP();
+    }
+
+    public void Update()
+    {
+        SwitchTabIp();
     }
 
     private void SaveIP()
@@ -30,5 +36,18 @@ public class TextIp : MonoBehaviour
         GUIUtility.systemCopyBuffer = _localIP;
     }
 
-
+    public void SwitchTabIp()
+    {
+        /*
+        TMP_InputField ip1;
+        TMP_InputField ip2;
+        TMP_InputField ip3;
+        TMP_InputField ip4;
+        //appuyer sur tab ou fleche droite pour passer a un autre InputField
+        
+        if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.LeftAlt))
+        {
+            Debug.Log("appuyer a droite ou tab");
+        }*/
+    }
 }
