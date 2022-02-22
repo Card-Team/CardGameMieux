@@ -25,7 +25,7 @@ public class Parametres : MonoBehaviour
         int currentResolutionIndex = 0;
         for (int i = 0; i < resolutions.Length; i++)
         {
-            if (!(Camera.main.aspect >= 1.7) && !(Camera.main.aspect >= 1.3))
+            if (!(Camera.main.aspect >= 1.7) )
             {
                 continue;       //remonte sur le for
             }
@@ -71,6 +71,6 @@ public class Parametres : MonoBehaviour
     public void Reinitialisation()
     {
         PlayerPrefs.DeleteAll();
-        Application.LoadLevel(0);
+        
     }
 }

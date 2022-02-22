@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -35,6 +36,10 @@ public class LectureDeck : MonoBehaviour
         {
             NomButton button = Instantiate(buttonTemplate, this.transform, false); //creer et un copie un bouton
             button.text = file.Name; //donne aux champs texte le nom du bouton
+            if (button.text == PlayerPrefs.GetString("NomDeck"))
+            {
+                button.GetComponent<UnityEngine.UI.Image>().color =  new Color(160f/255f, 160f/255f, 160f/255f);
+            }
             button.nouvelfenetre = nouvelfenetre;
             button.gameObject.SetActive(true);
             button.GetComponentInChildren<TextMeshProUGUI>().SetText(file.Name);
