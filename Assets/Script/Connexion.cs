@@ -8,7 +8,7 @@ public class Connexion : MonoBehaviour
 {
     [SerializeField]
     public const string Ip = "Ip";
-    public const string Port="Port";
+    public const string PortC="PortConnexion";
     public TMP_InputField ip1;
     public TMP_InputField ip2;
     public TMP_InputField ip3;
@@ -17,7 +17,7 @@ public class Connexion : MonoBehaviour
     // Start is called before the first frame update
     public void Start()
     {
-        if(PlayerPrefs.HasKey(Ip) && PlayerPrefs.HasKey(Port) && (!Ip.Equals("....")) && (!Port.Equals(".")))
+        if(PlayerPrefs.HasKey(Ip) && PlayerPrefs.HasKey(PortC) && (!Ip.Equals("....")) && (!PortC.Equals(".")))
         {
             //Debug.Log("PlayerPrefs IP : "+PlayerPrefs.GetString("Ip")+"\nPlayerPrefs Port : "+PlayerPrefs.GetString("Port"));
             //mettre l'IP depuis le PlayerPrefs enregistré
@@ -42,9 +42,10 @@ public class Connexion : MonoBehaviour
         Debug.Log("Ip : " + ip1.text + "." + ip2.text + "." + ip3.text + "." + ip4.text+"\nPort : "+port.text);
     }
 
-    public void EnregistreIP()
+    public void Rejoindre()
     {
         PlayerPrefs.SetString(Ip,ip1.text + "." + ip2.text + "." + ip3.text + "." + ip4.text);                //playerPrefs IP
-        PlayerPrefs.SetString(Port,port.text);                //playerPrefs port
+        PlayerPrefs.SetString(PortC,port.text);                //playerPrefs port
     }
+    
 }

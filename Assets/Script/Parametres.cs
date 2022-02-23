@@ -10,7 +10,7 @@ public class Parametres : MonoBehaviour
 {
     public AudioMixer audiomMixer;
     public TMP_Text volume;
-    
+
     public TMP_Dropdown ResolutionScreen;
     private Resolution[] resolutions;
 
@@ -25,9 +25,9 @@ public class Parametres : MonoBehaviour
         int currentResolutionIndex = 0;
         for (int i = 0; i < resolutions.Length; i++)
         {
-            if (!(Camera.main.aspect >= 1.7) )
+            if (!((float) resolutions[i].width / resolutions[i].height >= 1.7))
             {
-                continue;       //remonte sur le for
+                continue; //remonte sur le for
             }
 
             string option = resolutions[i].width + " x " + resolutions[i].height;
@@ -63,6 +63,7 @@ public class Parametres : MonoBehaviour
     {
         panelReinitialisation.SetActive(true);
     }
+
     public void retourReinitialisation()
     {
         panelReinitialisation.SetActive(false);
@@ -71,6 +72,5 @@ public class Parametres : MonoBehaviour
     public void Reinitialisation()
     {
         PlayerPrefs.DeleteAll();
-        
     }
 }
