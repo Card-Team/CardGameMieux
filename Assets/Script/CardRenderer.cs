@@ -1,3 +1,4 @@
+using System;
 using CardGameEngine.Cards;
 using TMPro;
 using UnityEngine;
@@ -12,10 +13,13 @@ namespace Script
         public SpriteRenderer niveau;
         public SpriteRenderer cout;
         public SpriteRenderer illustration;
+        public SpriteRenderer fond;
 
-        public bool retournee = true;
+        public bool faceCachee;
 
         [SerializeField] private CardImageDatabase imagesCartes;
+
+        public float Width => fond.bounds.size.x;
 
         // Start is called before the first frame update
         void Start()
@@ -26,14 +30,17 @@ namespace Script
             cout.GetComponentInChildren<TextMeshPro>().text = Card.Cost.Value.ToString();
             illustration.sprite = imagesCartes[Card.ImageId.Value];
 
-            if (retournee)
-            {
-                nom.gameObject.SetActive(false);
-                description.gameObject.SetActive(false);
-                niveau.gameObject.SetActive(false);
-                cout.gameObject.SetActive(false);
-                illustration.gameObject.SetActive(false);
-            }
+            Flip();
+        }
+
+        public void Flip()
+        {
+            faceCachee = !faceCachee;
+            nom.gameObject.SetActive(!faceCachee);
+            description.gameObject.SetActive(!faceCachee);
+            niveau.gameObject.SetActive(!faceCachee);
+            cout.gameObject.SetActive(!faceCachee);
+            illustration.gameObject.SetActive(!faceCachee);
         }
 
         // Update is called once per frame

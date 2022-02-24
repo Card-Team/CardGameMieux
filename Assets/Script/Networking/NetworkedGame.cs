@@ -53,10 +53,10 @@ namespace Script.Networking
             _networkManager = GetComponent<NetworkManager>();
         }
 
-        public void SetUpNetworkGame(string ownName, List<string> ownDeck)
+        public void SetUpNetworkGame(NetworkConfiguration networkConfiguration, string ownName, List<string> ownDeck)
         {
             NetworkGameState = NetworkGameState.NOT_CONNECTED;
-            _networkManager.SetupNetworking(() =>
+            _networkManager.SetupNetworking(networkConfiguration, () =>
             {
                 Debug.Log("Connection established");
                 _networkManager.AddPacketHandler<SetUpGameCommand>(OnReceiveSetUp);
@@ -158,9 +158,9 @@ namespace Script.Networking
             catch (InvalidEffectException exception)
             {
                 Debug.LogError($"Invalid effect exception : {exception.Message}");
-                if(exception.InnerException != null) 
+                if (exception.InnerException != null)
                     Debug.LogException(exception.InnerException);
-                if(Application.isEditor)
+                if (Application.isEditor)
                     Debug.Break();
                 else
                 {

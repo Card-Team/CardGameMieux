@@ -65,14 +65,15 @@ public class PileRenderer : MonoBehaviour
     {
         var cardTransform = cardRenderer.transform;
         cardTransform.parent = transform;
-        cards.Remove(cardRenderer);
+        cards.Add(cardRenderer);
 
         _unityGame.AddToQueue(() => MoveCardAnimation(cardRenderer), owner);
     }
 
     private IEnumerator MoveCardAnimation(CardRenderer cardRenderer)
     {
-        var destination = GetNewCardDestination();
+        var destination = GetNewCardDestination(cardRenderer);
+        Debug.Log(destination);
         var start = (Vector2) cardRenderer.transform.localPosition;
         var pourcentage = 0.0f;
 
@@ -87,12 +88,12 @@ public class PileRenderer : MonoBehaviour
         OnCardArrived(cardRenderer);
     }
 
-    protected Vector2 GetNewCardDestination()
+    protected virtual Vector2 GetNewCardDestination(CardRenderer cardRenderer)
     {
         return Vector2.zero;
     }
 
-    protected void OnCardArrived(CardRenderer cardRenderer)
+    protected virtual void OnCardArrived(CardRenderer cardRenderer)
     {
     }
 

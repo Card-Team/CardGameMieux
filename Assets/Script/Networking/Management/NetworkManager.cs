@@ -7,6 +7,7 @@ using Network;
 using Network.Enums;
 using Network.Interfaces;
 using Network.Packets;
+using ParrelSync;
 using Script.Networking.Management;
 using UnityEngine;
 
@@ -16,18 +17,7 @@ namespace Script.Networking
     {
         #region parametres reseaux
 
-        private NetworkConfiguration _networkConfiguration =
-            new NetworkConfiguration()
-            {
-                NetworkMode =
-#if !UNITY_EDITOR
-                    NetworkMode.Server,
-#else
-                    NetworkMode.Client,
-#endif
-                IPAddress = IPAddress.IPv6Loopback,
-                Port = 1246
-            };
+        private NetworkConfiguration _networkConfiguration;
 
         #endregion
 
@@ -50,8 +40,10 @@ namespace Script.Networking
         private ServerManager ServerManager { get; set; }
 
 
-        public void SetupNetworking(Action onOtherSideConnect)
+        public void SetupNetworking(NetworkConfiguration otherSideConnect, Action onOtherSideConnect)
         {
+            _networkConfiguration = otherSideConnect;
+
             if (networkinSetUp)
             {
                 Debug.LogWarning("Trying to setup networking twice");
@@ -84,6 +76,7 @@ namespace Script.Networking
                 Debug.LogError("Trying to send but connection dropped");
                 return;
             }
+
             switch (_networkConfiguration.NetworkMode)
             {
                 case NetworkMode.Client:

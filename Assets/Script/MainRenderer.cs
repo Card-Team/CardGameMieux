@@ -1,18 +1,23 @@
+using Script.Networking;
 using UnityEngine;
 
 namespace Script
 {
     public class MainRenderer : PileRenderer
     {
-        private Vector2 GetNewCardDestination()
+        protected override Vector2 GetNewCardDestination(CardRenderer cardRenderer)
         {
-            //TODO Coordonnées locales, décaler à droite un peu
-            return Vector2.zero;
+            var x = this.cards.Count * (cardRenderer.Width / 2);
+
+            return new Vector2(x, 0);
         }
 
-        protected void OnCardArrived(CardRenderer cardRenderer)
+        protected override void OnCardArrived(CardRenderer cardRenderer)
         {
-            //TODO décale toute la pile à gauche
+            if (owner == UnityGame.LocalPlayer)
+            {
+                cardRenderer.Flip();
+            }
         }
     }
 }
