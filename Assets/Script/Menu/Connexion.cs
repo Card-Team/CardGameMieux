@@ -18,6 +18,7 @@ public class Connexion : MonoBehaviour
     public GameObject panelConnexion;
     public TMP_Text textErreur;
     public Loading loading;
+    public Image erreurConnexion;
     public void Start()
     {
         if(PlayerPrefs.HasKey(Ip) && PlayerPrefs.HasKey(PortC) && (!Ip.Equals("....")) && (!PortC.Equals(".")))
@@ -42,9 +43,13 @@ public class Connexion : MonoBehaviour
 
     IEnumerator OnCoroutine()
     {
+        //SI LA CONNEXION NE MARCHE PAS !
         yield return new WaitForSeconds(3f);
         textErreur.SetText("Connexion Impossible");
         loading.Avancer = false;
+        yield return new WaitForSeconds(0.5f);
+        loading.gameObject.SetActive(false);
+        erreurConnexion.gameObject.SetActive(true);
     }
 
     public void AfficheIP()
@@ -59,15 +64,17 @@ public class Connexion : MonoBehaviour
     }
     public void AppuieConnexion()
     {
-        //ouvrir une autre scene
-        /*
-        loading.Avancer = true;
         panelConnexion.SetActive(true);
-        StartCoroutine(OnCoroutine());*/
+        loading.gameObject.SetActive(true);
+        textErreur.SetText("");
+        erreurConnexion.gameObject.SetActive(false);
+        loading.Avancer = true;
+        StartCoroutine(OnCoroutine());
     }
     
     public void RetourConnexion()
     {
+        StopAllCoroutines();
         panelConnexion.SetActive(false);
     }
 }
