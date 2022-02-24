@@ -1,5 +1,6 @@
 using Script.Networking.Commands;
 using Script.Networking.Commands.Extern;
+using UnityEngine;
 
 namespace Script.Networking
 {
@@ -24,6 +25,7 @@ namespace Script.Networking
             // normalement que endturn et playcard quoi
             if (curCommand is PlayCardCommand playCardCommand)
             {
+                Debug.Log("play card");
                 Game.PlayCard(ResolvePlayer(playCardCommand.PlayerId), ResolveCard(playCardCommand.CardId),
                     playCardCommand.Upgrade);
                 return true;

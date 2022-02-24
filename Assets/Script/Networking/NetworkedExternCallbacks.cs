@@ -122,7 +122,8 @@ namespace Script.Networking
             // dans CETTE FONCTION il faut boucler comme en haut mais pour attendre le paquet PlayCardCommand
             // ensuite c'est dans CETTE FONCTIOn qu'il est appliqué 
             // ensuite on finit la fonction
-            
+            //todo
+            return false;
             var boolBag = new ConcurrentBag<bool>();
             if (_networkedGame.IsLocalPlayer(player))
             {

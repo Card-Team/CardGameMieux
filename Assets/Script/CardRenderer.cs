@@ -1,5 +1,6 @@
 using System;
 using CardGameEngine.Cards;
+using Script.Networking;
 using TMPro;
 using UnityEngine;
 
@@ -19,7 +20,32 @@ namespace Script
 
         [SerializeField] private CardImageDatabase imagesCartes;
 
+        private Animator _animator;
+
         public float Width => fond.bounds.size.x;
+
+        private bool _hover = false;
+        private static readonly int HoverProp = Animator.StringToHash("Hovered");
+        [NonSerialized] public bool preconditionJouable;
+        [NonSerialized] public bool assezDePA;
+
+        public bool Hover
+        {
+            get => _hover;
+            set
+            {
+                if (_hover != value)
+                {
+                    _animator.SetBool(HoverProp,value);
+                }
+                _hover = value;
+            }
+        }
+
+        private void Awake()
+        {
+            _animator = GetComponent<Animator>();
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -46,6 +72,12 @@ namespace Script
         // Update is called once per frame
         void Update()
         {
+        }
+
+        public void RefreshPrecondition()
+        {
+            this.preconditionJouable = Card.CanBePlayed(UnityGame.LocalGamePlayer);
+            this.assezDePA = Card.Cost.Value <= UnityGame.LocalGamePlayer.ActionPoints.Value;
         }
     }
 }

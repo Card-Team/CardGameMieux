@@ -876,9 +876,22 @@ namespace Network
             {
                 if (packet.GetType().IsSubclassOf(typeof(ResponsePacket)) && packetHandlerMap[packet.ID] != null)
                     packetHandlerMap[packet.ID].DynamicInvoke(packet, this);
-                else if (packetHandlerMap[packet.GetType()] != null)
-                    packetHandlerMap[packet.GetType()].DynamicInvoke(packet, this);
-                else PacketWithoutHandlerReceived(packet);
+                else
+                {
+                    var curClass = packet.GetType();
+                    while (curClass != null)
+                    {
+                        if (packetHandlerMap[curClass] != null)
+                        {
+                            packetHandlerMap[curClass].DynamicInvoke(packet, this);
+                            break;
+                        }
+
+                        curClass = curClass?.BaseType;
+                    }
+                    if(curClass == null)
+                        PacketWithoutHandlerReceived(packet);
+                }
             }
             catch (Exception exception)
             {

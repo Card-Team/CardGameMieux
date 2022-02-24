@@ -45,6 +45,7 @@ namespace Script.Networking
         private ConcurrentQueue<GameCommand> _gameCommands = new ConcurrentQueue<GameCommand>();
 
         private NetworkMode acceptFrom = NetworkMode.Server;
+        private MainRenderer _localMainRenderer;
 
 
         private void Awake()
@@ -95,8 +96,7 @@ namespace Script.Networking
                     NetworkGameState = NetworkGameState.READY;
                 }
             }
-
-            if (NetworkGameState == NetworkGameState.READY)
+            else if (NetworkGameState == NetworkGameState.READY)
             {
                 try
                 {
@@ -119,30 +119,42 @@ namespace Script.Networking
                     //on attend des paquets de l'autre si le tour a changé
                 }, postEvent: true);
                 // on commence
+                _localMainRenderer = FindObjectsOfType<MainRenderer>()
+                    .First(r => r.owner == UnityGame.LocalPlayer);
                 Game.StartGame();
+                _localMainRenderer.UpdatePlayable();
                 NetworkGameState = NetworkGameState.PLAYING;
-                new Thread(() =>
-                {
-                    while (NetworkGameState == NetworkGameState.PLAYING)
-                    {
-                        // on va prendre les actions une par une
-                        if (_gameCommands.TryPeek(out var curCommand))
-                        {
-                            if (ProcessAction(curCommand))
-                            {
-                                //si on a process on enleve
-                                _gameCommands.TryDequeue(out curCommand);
-                            }
-                            else
-                            {
-                                //si on a pas ce qu'il faut pour process on attend
-                            }
-                        }
-
-                        Thread.Sleep(1000); //durée entre les paquets
-                    }
-                }).Start();
             }
+            else if (NetworkGameState == NetworkGameState.PLAYING)
+            {
+                if (_gameCommands.TryPeek(out var curCommand))
+                {
+                    Debug.Log("on process le packet");
+                    try
+                    {
+                        if (ProcessAction(curCommand))
+                        {
+                            //si on a process on enleve
+                            _gameCommands.TryDequeue(out curCommand);
+                        }
+                        else
+                        {
+                            //si on a pas ce qu'il faut pour process on attend
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError($"Erreure lors du processing du paquet {curCommand}");
+                        Debug.LogError(e);
+                        _gameCommands.TryDequeue(out _);
+#if UNITY_EDITOR
+                        Debug.Break();
+#endif
+                    }
+                }
+
+            }
+            
         }
 
         private void CreateGame()
@@ -167,6 +179,7 @@ namespace Script.Networking
                     Application.Quit();
                 }
             }
+            
         }
 
         // protocole
@@ -181,13 +194,14 @@ namespace Script.Networking
                 return;
             }
 
-            MyConfiguration = new SetUpGameCommand() {name = ownName, deck = ownDeck};
+            MyConfiguration = new SetUpGameCommand() { name = ownName, deck = ownDeck };
 
             if (_networkManager.IsServer)
             {
                 MyConfiguration.randomSeed = new Random().Next();
                 _randomSeed = MyConfiguration.randomSeed;
-                _networkManager.Send(new SetUpGameCommand() {name = ownName, deck = ownDeck, randomSeed = _randomSeed});
+                _networkManager.Send(
+                    new SetUpGameCommand() { name = ownName, deck = ownDeck, randomSeed = _randomSeed });
             }
         }
 
@@ -247,7 +261,7 @@ namespace Script.Networking
 
         public void WaitFor<T>(Action<T> action) where T : ExternalCommand
         {
-            _waitedExternalCommands[typeof(T)] = (e) => action((T) e);
+            _waitedExternalCommands[typeof(T)] = (e) => action((T)e);
         }
 
         public Card ResolveCard(int objCardId)

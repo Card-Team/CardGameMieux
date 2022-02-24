@@ -4,22 +4,25 @@ using System.Collections.Generic;
 using CardGameEngine;
 using CardGameEngine.Cards;
 using CardGameEngine.Cards.CardPiles;
+using CardGameEngine.EventSystem;
 using CardGameEngine.EventSystem.Events.CardEvents;
 using Script;
 using Script.Networking;
 using UnityEngine;
 
-public class PileRenderer : MonoBehaviour
+public class PileRenderer : MonoBehaviour, IEventSubscriber
 {
     public Owner owner;
     public PileType pileType;
+
+    public bool cartesCachées = true;
 
     public List<CardRenderer> cards = new List<CardRenderer>();
     private CardPile _cardPile;
     private UnityGame _unityGame;
 
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Awake()
     {
         _unityGame = FindObjectOfType<UnityGame>();
     }
@@ -49,12 +52,13 @@ public class PileRenderer : MonoBehaviour
         _unityGame.PileRenderers.Add(_cardPile, this);
 
         RefreshPile();
-        game.EventManager.SubscribeToEvent<CardMovePileEvent>(OnCardMovePile, false, true);
     }
 
     private void OnCardMovePile(CardMovePileEvent evt)
     {
+        Debug.Log("CardMovePile aaaaaaa");
         if (evt.SourcePile != _cardPile) return;
+        Debug.Log("CardMovePile a moi");
 
         var cardRenderer = _unityGame.CardRenderers[evt.Card];
         cards.Remove(cardRenderer);
@@ -65,14 +69,14 @@ public class PileRenderer : MonoBehaviour
     {
         var cardTransform = cardRenderer.transform;
         cardTransform.parent = transform;
+        var destination = GetNewCardDestination(cardRenderer);
         cards.Add(cardRenderer);
 
-        _unityGame.AddToQueue(() => MoveCardAnimation(cardRenderer), owner);
+        _unityGame.AddToQueue(() => MoveCardAnimation(cardRenderer,destination), owner);
     }
 
-    private IEnumerator MoveCardAnimation(CardRenderer cardRenderer)
+    private IEnumerator MoveCardAnimation(CardRenderer cardRenderer, Vector2 destination)
     {
-        var destination = GetNewCardDestination(cardRenderer);
         Debug.Log(destination);
         var start = (Vector2) cardRenderer.transform.localPosition;
         var pourcentage = 0.0f;
@@ -95,6 +99,13 @@ public class PileRenderer : MonoBehaviour
 
     protected virtual void OnCardArrived(CardRenderer cardRenderer)
     {
+        if (cartesCachées != cardRenderer.faceCachee)
+        {
+            cardRenderer.Flip();
+        }
+        var oldPos = cardRenderer.transform.position;
+        oldPos.z = transform.position.z + cards.IndexOf(cardRenderer);
+        cardRenderer.transform.position = oldPos;
     }
 
     private void RefreshPile()
@@ -106,9 +117,18 @@ public class PileRenderer : MonoBehaviour
             unityCardTransform.parent = transform;
             unityCardTransform.localPosition = Vector3.zero;
             unityCard.gameObject.SetActive(true);
-
+            if (cartesCachées != unityCard.faceCachee)
+            {
+                unityCard.Flip();
+            }
             cards.Add(unityCard);
         }
+    }
+
+    public void Subscribe(EventManager eventManager)
+    {
+        
+        eventManager.SubscribeToEvent<CardMovePileEvent>(OnCardMovePile, false, true);
     }
 }
 
