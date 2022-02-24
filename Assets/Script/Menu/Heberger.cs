@@ -21,7 +21,7 @@ public class Heberger : MonoBehaviour
             Debug.Log("Port jamais rentrer ou Vide");
         }
     }
-    IEnumerator onCoroutine(int i)
+    IEnumerator OnCoroutine(int i)
     {
         while (i>0)
         {
@@ -46,10 +46,10 @@ public class Heberger : MonoBehaviour
     public void AppuieHerberger()
     {
         panelHeberger.SetActive(true);
-        StartCoroutine(onCoroutine(60));
+        StartCoroutine(OnCoroutine(60));
     }
     
-    public void retourHerberger()
+    public void RetourHerberger()
     {
         panelHeberger.SetActive(false);
     }

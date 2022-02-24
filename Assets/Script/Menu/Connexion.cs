@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Connexion : MonoBehaviour
 {
@@ -14,7 +15,9 @@ public class Connexion : MonoBehaviour
     public TMP_InputField ip3;
     public TMP_InputField ip4;
     public TMP_InputField port;
-    // Start is called before the first frame update
+    public GameObject panelConnexion;
+    public TMP_Text textErreur;
+    public Loading loading;
     public void Start()
     {
         if(PlayerPrefs.HasKey(Ip) && PlayerPrefs.HasKey(PortC) && (!Ip.Equals("....")) && (!PortC.Equals(".")))
@@ -37,6 +40,13 @@ public class Connexion : MonoBehaviour
         }
     }
 
+    IEnumerator OnCoroutine()
+    {
+        yield return new WaitForSeconds(3f);
+        textErreur.SetText("Connexion Impossible");
+        loading.Avancer = false;
+    }
+
     public void AfficheIP()
     {
         Debug.Log("Ip : " + ip1.text + "." + ip2.text + "." + ip3.text + "." + ip4.text+"\nPort : "+port.text);
@@ -47,5 +57,17 @@ public class Connexion : MonoBehaviour
         PlayerPrefs.SetString(Ip,ip1.text + "." + ip2.text + "." + ip3.text + "." + ip4.text);                //playerPrefs IP
         PlayerPrefs.SetString(PortC,port.text);                //playerPrefs port
     }
+    public void AppuieConnexion()
+    {
+        //ouvrir une autre scene
+        /*
+        loading.Avancer = true;
+        panelConnexion.SetActive(true);
+        StartCoroutine(OnCoroutine());*/
+    }
     
+    public void RetourConnexion()
+    {
+        panelConnexion.SetActive(false);
+    }
 }
