@@ -54,7 +54,7 @@ public class Parametres : MonoBehaviour
 
     public void SetResolution(int resolutionIndex)
     {
-        Debug.Log(resolutionIndex);
+        //Debug.Log(resolutionIndex);
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
@@ -64,7 +64,7 @@ public class Parametres : MonoBehaviour
         panelReinitialisation.SetActive(true);
     }
 
-    public void retourReinitialisation()
+    public void RetourReinitialisation()
     {
         panelReinitialisation.SetActive(false);
     }

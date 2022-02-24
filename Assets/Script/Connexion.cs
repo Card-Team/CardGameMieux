@@ -29,7 +29,7 @@ public class Connexion : MonoBehaviour
                 tabIp[i].text = name[i];
             }
             //mettre le port depuis le PlayerPrefs enregistré
-            port.text=(PlayerPrefs.GetString("Port"));
+            port.text=(PlayerPrefs.GetString("PortConnexion"));
         }
         else
         {

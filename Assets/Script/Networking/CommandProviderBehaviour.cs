@@ -6,7 +6,7 @@ namespace Script.Networking
     public abstract class CommandProviderBehaviour : MonoBehaviour
     {
         public volatile bool isNeeded;
-        public ExternData? infoStruct;
+        public ExternData infoStruct;
 
         private void Update()
         {
