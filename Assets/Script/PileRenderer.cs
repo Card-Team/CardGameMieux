@@ -46,6 +46,8 @@ public class PileRenderer : MonoBehaviour
             _ => throw new ArgumentOutOfRangeException()
         };
 
+        _unityGame.PileRenderers.Add(_cardPile, this);
+
         RefreshPile();
         game.EventManager.SubscribeToEvent<CardMovePileEvent>(OnCardMovePile, false, true);
     }
@@ -53,8 +55,45 @@ public class PileRenderer : MonoBehaviour
     private void OnCardMovePile(CardMovePileEvent evt)
     {
         if (evt.SourcePile != _cardPile) return;
-        
-        //TODO bouger
+
+        var cardRenderer = _unityGame.CardRenderers[evt.Card];
+        cards.Remove(cardRenderer);
+        _unityGame.PileRenderers[evt.DestPile].GrabCard(cardRenderer);
+    }
+
+    private void GrabCard(CardRenderer cardRenderer)
+    {
+        var cardTransform = cardRenderer.transform;
+        cardTransform.parent = transform;
+        cards.Remove(cardRenderer);
+
+        _unityGame.AddToQueue(() => MoveCardAnimation(cardRenderer), owner);
+    }
+
+    private IEnumerator MoveCardAnimation(CardRenderer cardRenderer)
+    {
+        var destination = GetNewCardDestination();
+        var start = (Vector2) cardRenderer.transform.localPosition;
+        var pourcentage = 0.0f;
+
+        while ((Vector2) cardRenderer.transform.localPosition != destination)
+        {
+            var newPos = Vector2.Lerp(start, destination, pourcentage);
+            cardRenderer.transform.localPosition = newPos;
+            pourcentage += 0.02f;
+            yield return new WaitForEndOfFrame();
+        }
+
+        OnCardArrived(cardRenderer);
+    }
+
+    protected Vector2 GetNewCardDestination()
+    {
+        return Vector2.zero;
+    }
+
+    protected void OnCardArrived(CardRenderer cardRenderer)
+    {
     }
 
     private void RefreshPile()
@@ -66,7 +105,7 @@ public class PileRenderer : MonoBehaviour
             unityCardTransform.parent = transform;
             unityCardTransform.localPosition = Vector3.zero;
             unityCard.gameObject.SetActive(true);
-            
+
             cards.Add(unityCard);
         }
     }
