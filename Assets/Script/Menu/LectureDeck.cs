@@ -9,11 +9,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
 
 public class LectureDeck : MonoBehaviour
 {
     public NomButton buttonTemplate; //Game object avec forcement un composant Nombutton
     public Canvas nouvelfenetre;
+    public TMP_Text deckVide;
+    public Button allezAuDeck;
     void OnEnable()
     {
         LireFichier();
@@ -24,6 +27,13 @@ public class LectureDeck : MonoBehaviour
         Directory.CreateDirectory(Application.persistentDataPath);
         DirectoryInfo di = new DirectoryInfo(Application.persistentDataPath);
         FileInfo[] files = di.GetFiles("*.txt");
+        deckVide.gameObject.SetActive(false);
+        allezAuDeck.gameObject.SetActive(false);
+        if (files.Length == 0)
+        {
+            deckVide.gameObject.SetActive(true);
+            allezAuDeck.gameObject.SetActive(true);
+        }
         //supprimer les buttons
         foreach (Transform child in transform)
         {
@@ -38,6 +48,7 @@ public class LectureDeck : MonoBehaviour
             button.text = file.Name; //donne aux champs texte le nom du bouton
             if (button.text == PlayerPrefs.GetString("NomDeck"))
             {
+                button.transform.SetSiblingIndex(0);        //le mettre a la premiere position
                 button.GetComponent<UnityEngine.UI.Image>().color =  new Color(160f/255f, 160f/255f, 160f/255f);
             }
             button.nouvelfenetre = nouvelfenetre;
