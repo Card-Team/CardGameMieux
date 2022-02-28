@@ -29,7 +29,7 @@ Transform:
   m_LocalScale: {x: 0.4239, y: 0.4239, z: 0.4239}
   m_Children: []
   m_Father: {fileID: 7622708259564659846}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6141916473660608243
 SpriteRenderer:
@@ -111,7 +111,7 @@ Transform:
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 7622708259564659846}
-  m_RootOrder: 0
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2530034159944711632
 MonoBehaviour:
@@ -127,10 +127,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   niveauActuel: 2
   niveauMax: 5
-  cercleVide: {fileID: 4425216166683535314, guid: d2a90bed3eb59ad4ca529a0d02a5babe,
-    type: 3}
-  cerclePlein: {fileID: 7326972019238404304, guid: 5f12cb8e77b6f144cb8b3c9c632c90d5,
-    type: 3}
+  cercleVide: {fileID: 4425216166683535314, guid: d2a90bed3eb59ad4ca529a0d02a5babe, type: 3}
+  cerclePlein: {fileID: 7326972019238404304, guid: 5f12cb8e77b6f144cb8b3c9c632c90d5, type: 3}
 --- !u!1 &2530034158259581154
 GameObject:
   m_ObjectHideFlags: 0
@@ -161,7 +159,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7622708259564659846}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -501,7 +499,7 @@ Transform:
   m_Children:
   - {fileID: 2530034158476887965}
   m_Father: {fileID: 7622708259564659846}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2530034158964120406
 SpriteRenderer:
@@ -584,7 +582,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7622708259564659846}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -770,20 +768,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e332f6c95a281564082e2a10852e2d4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layerJouable:
-    serializedVersion: 2
-    m_Bits: 0
-  layerPasJouable:
-    serializedVersion: 2
-    m_Bits: 0
   nom: {fileID: 2530034158259581152}
   description: {fileID: 2530034159908504762}
-  niveau: {fileID: 0}
+  niveau: {fileID: 2530034159944711632}
   cout: {fileID: 2530034158964120406}
   illustration: {fileID: 2834636338925133721}
   fond: {fileID: 6141916473660608243}
   faceCachee: 0
-  retournee: 0
   imagesCartes: {fileID: 11400000, guid: 0ffff537bac060c42947aea121bbe542, type: 2}
 --- !u!95 &2524075900189256386
 Animator:
@@ -895,7 +886,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7622708259564659846}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2834636338925133721
 SpriteRenderer:

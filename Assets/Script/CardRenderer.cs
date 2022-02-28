@@ -11,7 +11,7 @@ namespace Script
         public Card Card;
         public TextMeshPro nom;
         public TextMeshPro description;
-        public SpriteRenderer niveau;
+        public AffichageNiveau niveau;
         public SpriteRenderer cout;
         public SpriteRenderer illustration;
         public SpriteRenderer fond;
@@ -52,7 +52,8 @@ namespace Script
         {
             nom.text = Card.Name.Value;
             description.text = Card.Description.Value;
-            niveau.GetComponentInChildren<TextMeshPro>().text = Card.CurrentLevel.Value + "/" + Card.MaxLevel;
+            niveau.niveauActuel = Card.CurrentLevel.Value;
+            niveau.niveauMax = Card.MaxLevel;
             cout.GetComponentInChildren<TextMeshPro>().text = Card.Cost.Value.ToString();
             illustration.sprite = imagesCartes[Card.ImageId.Value];
             
