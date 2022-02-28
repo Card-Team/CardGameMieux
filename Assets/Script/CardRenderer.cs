@@ -17,7 +17,7 @@ namespace Script
         public SpriteRenderer fond;
 
         public bool faceCachee;
-
+        
         [SerializeField] private CardImageDatabase imagesCartes;
 
         private Animator _animator;
@@ -55,7 +55,7 @@ namespace Script
             niveau.GetComponentInChildren<TextMeshPro>().text = Card.CurrentLevel.Value + "/" + Card.MaxLevel;
             cout.GetComponentInChildren<TextMeshPro>().text = Card.Cost.Value.ToString();
             illustration.sprite = imagesCartes[Card.ImageId.Value];
-
+            
             Flip();
         }
 
@@ -68,10 +68,13 @@ namespace Script
             cout.gameObject.SetActive(!faceCachee);
             illustration.gameObject.SetActive(!faceCachee);
         }
+        
+        //void 
 
         // Update is called once per frame
         void Update()
         {
+            
         }
 
         public void RefreshPrecondition()
