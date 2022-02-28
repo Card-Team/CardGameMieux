@@ -1,51 +1,53 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class AffichageNiveau : MonoBehaviour
+namespace Script
 {
-    // Start is called before the first frame update
-
-    public int niveauActuel;
-    public int niveauMax; 
-    public SpriteRenderer cercleVide;
-    public SpriteRenderer cerclePlein;
-
-    void Start()
+    public class AffichageNiveau : MonoBehaviour
     {
-        RefreshCercle();
-    }
+        // Start is called before the first frame update
 
-    public void RefreshCercle()
-    {
-        
-        for (var i = this.transform.childCount - 1; i >= 0; i--)
+        public int niveauActuel;
+        public int niveauMax;
+
+        public Color couleureNormal;
+        public Color couleureMax;
+
+        public SpriteRenderer cercleVide;
+        public SpriteRenderer cerclePlein;
+
+        void Start()
         {
-            var objectA = this.transform.GetChild(i);
-            objectA.transform.parent = null;
+            RefreshCercle();
         }
 
-        for (int i = 0; i < niveauMax; i++)
+        public void RefreshCercle()
         {
-            SpriteRenderer cercle;
-            if (i < niveauActuel)
-            {
-                cercle = Instantiate(cerclePlein, this.transform);
-            }
-            else
-            {
-                cercle = Instantiate(cercleVide, this.transform);
-
-            }
-
-            cercle.sortingOrder = 1;
-            cercle.transform.position = new Vector3(this.transform.position.x + cercle.bounds.size.x/2 - (cercle.bounds.size.x * niveauMax)/2 + cercle.bounds.size.x*i, 
-                this.transform.position.y);
-        } 
-    }
-        // Update is called once per frame
-    void Update()
-    {
         
+            for (var i = this.transform.childCount - 1; i >= 0; i--)
+            {
+                var objectA = this.transform.GetChild(i);
+                DestroyImmediate(objectA.gameObject);
+            }
+
+            float decalage = cercleVide.bounds.size.x + 0.01f;
+            for (int i = 0; i < niveauMax; i++)
+            {
+                SpriteRenderer cercle;
+                cercle = Instantiate(i < niveauActuel ? cerclePlein : cercleVide, this.transform);
+
+                cercle.sortingOrder = 1;
+                if (i < niveauActuel)
+                {
+                    cercle.color = niveauActuel == niveauMax ? couleureMax : couleureNormal;
+                }
+                
+                cercle.transform.localPosition = new Vector3(decalage*i - (decalage * (niveauMax - 1))/2,0f);
+            } 
+        }
+        // Update is called once per frame
+        void Update()
+        {
+        
+        }
     }
 }

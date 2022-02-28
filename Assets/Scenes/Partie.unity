@@ -1217,7 +1217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   owner: 1
   pileType: 2
-  "cartesCach\xE9es": 1
+  "cartesCach\xE9es": 0
   cards: []
 --- !u!1 &1751414339
 GameObject:
@@ -1264,5 +1264,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   owner: 0
   pileType: 2
-  "cartesCach\xE9es": 1
+  "cartesCach\xE9es": 0
   cards: []

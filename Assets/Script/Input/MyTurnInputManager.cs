@@ -27,7 +27,7 @@ namespace Script.Input
             {
                 if (_hoveredCard != null)
                 {
-                    if (_hoveredCard.preconditionJouable && _hoveredCard.assezDePA)
+                    if (_hoveredCard.PreconditionJouable && _hoveredCard.AssezDePa)
                     {
                         _game.DoLocalAction(
                             new PlayCardCommand((int)UnityGame.LocalPlayer, _hoveredCard.Card.Id, false));
@@ -50,7 +50,7 @@ namespace Script.Input
             {
                 if (_hoveredCard != null)
                 {
-                    if (_hoveredCard.Card.CurrentLevel.Value < _hoveredCard.Card.MaxLevel && _hoveredCard.assezDePA)
+                    if (_hoveredCard.Card.CurrentLevel.Value < _hoveredCard.Card.MaxLevel && _hoveredCard.AssezDePa)
                     {
                         _game.DoLocalAction(
                             new PlayCardCommand((int)UnityGame.LocalPlayer, _hoveredCard.Card.Id, true));

@@ -127,6 +127,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   niveauActuel: 2
   niveauMax: 5
+  couleureNormal: {r: 1, g: 1, b: 1, a: 1}
+  couleureMax: {r: 0, g: 0.07280898, b: 1, a: 1}
   cercleVide: {fileID: 4425216166683535314, guid: d2a90bed3eb59ad4ca529a0d02a5babe, type: 3}
   cerclePlein: {fileID: 7326972019238404304, guid: 5f12cb8e77b6f144cb8b3c9c632c90d5, type: 3}
 --- !u!1 &2530034158259581154
@@ -776,6 +778,10 @@ MonoBehaviour:
   fond: {fileID: 6141916473660608243}
   faceCachee: 0
   imagesCartes: {fileID: 11400000, guid: 0ffff537bac060c42947aea121bbe542, type: 2}
+  couleurJouable: {r: 1, g: 1, b: 1, a: 1}
+  couleurPasJouable: {r: 1, g: 0.5424528, b: 0.5424528, a: 1}
+  paColorQuandAssez: {r: 0.11792451, g: 1, b: 0.21010081, a: 1}
+  paColorQuandPasAssez: {r: 1, g: 0.07075471, b: 0.07075471, a: 1}
 --- !u!95 &2524075900189256386
 Animator:
   serializedVersion: 3

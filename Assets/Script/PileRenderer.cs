@@ -54,13 +54,14 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
         RefreshPile();
     }
 
-    private void OnCardMovePile(CardMovePileEvent evt)
+    protected virtual void OnCardMovePile(CardMovePileEvent evt)
     {
         Debug.Log("CardMovePile aaaaaaa");
         if (evt.SourcePile != _cardPile) return;
         Debug.Log("CardMovePile a moi");
-
+        
         var cardRenderer = _unityGame.CardRenderers[evt.Card];
+        cardRenderer.fond.color = Color.white; //todo peut etre a enlever quand l'effet sera bougé sur un autre gameobject que le fond
         cards.Remove(cardRenderer);
         _unityGame.PileRenderers[evt.DestPile].GrabCard(cardRenderer);
     }
