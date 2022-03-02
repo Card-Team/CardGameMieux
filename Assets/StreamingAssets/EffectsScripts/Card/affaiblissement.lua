@@ -5,7 +5,7 @@ max_level = 1
 image_id = 523
 
 ---@type string
-name = "affaiblissement"
+name = "Affaiblissement"
 ---@type number
 pa_cost = 3
 

@@ -165,7 +165,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 2.4499996}
+  m_AnchoredPosition: {x: 0.01, y: 2.35}
   m_SizeDelta: {x: 3.85, y: 0.72}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &2530034158259581153
@@ -588,7 +588,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -1.9594004}
+  m_AnchoredPosition: {x: 0, y: -2.08}
   m_SizeDelta: {x: 3.6799, y: 1.4752}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &2530034159908504763
@@ -776,6 +776,7 @@ MonoBehaviour:
   cout: {fileID: 2530034158964120406}
   illustration: {fileID: 2834636338925133721}
   fond: {fileID: 6141916473660608243}
+  scriptToDisplay: 
   faceCachee: 0
   imagesCartes: {fileID: 11400000, guid: 0ffff537bac060c42947aea121bbe542, type: 2}
   couleurJouable: {r: 1, g: 1, b: 1, a: 1}
@@ -888,7 +889,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7289209137313592846}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5199996, z: 0}
+  m_LocalPosition: {x: 0, y: 0.34, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7622708259564659846}

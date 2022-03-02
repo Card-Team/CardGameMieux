@@ -36,6 +36,8 @@ namespace Script
         private Animator _animator;
 
         public float Width => fond.bounds.size.x;
+        public float Height => fond.bounds.size.y;
+        
 
         private bool _hover = false;
         private static readonly int HoverProp = Animator.StringToHash("Hovered");
@@ -66,6 +68,11 @@ namespace Script
         private void Awake()
         {
             _animator = GetComponent<Animator>();
+        }
+
+        // Start is called before the first frame update
+        void Start()
+        {
             if (DisplayMode)
             {
                 Game game = new Game(Application.streamingAssetsPath + "/EffectsScripts",
@@ -76,13 +83,7 @@ namespace Script
                 Subscribe(game.EventManager);
                 // game.StartGame();
             }
-        }
-
-        // Start is called before the first frame update
-        void Start()
-        {
             SetData();
-
             Flip();
         }
 

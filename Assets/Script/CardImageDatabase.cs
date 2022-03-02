@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Script
@@ -26,6 +27,15 @@ namespace Script
             }
         }
 
-        public Sprite this[int imageIdValue] => _dict[imageIdValue];
+        public Sprite this[int imageIdValue]
+        {
+            get
+            {
+                if (_dict.ContainsKey(imageIdValue))
+                    return _dict[imageIdValue];
+                else
+                    return _dict.First().Value;
+            }
+        }
     }
 }
