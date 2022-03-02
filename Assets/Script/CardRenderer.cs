@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using CardGameEngine;
 using CardGameEngine.Cards;
 using CardGameEngine.Cards.CardPiles;
 using CardGameEngine.EventSystem;
@@ -20,6 +22,10 @@ namespace Script
         public TextMeshPro cout;
         public SpriteRenderer illustration;
         public SpriteRenderer fond;
+
+        public string scriptToDisplay;
+
+        private bool DisplayMode => scriptToDisplay != string.Empty;
 
         
 
@@ -60,6 +66,16 @@ namespace Script
         private void Awake()
         {
             _animator = GetComponent<Animator>();
+            if (DisplayMode)
+            {
+                Game game = new Game(Application.streamingAssetsPath + "/EffectsScripts",
+                    new DumbCallbacks(),
+                    new List<string>{scriptToDisplay},
+                    new List<string>());
+                this.Card = game.Player1.Deck[0];
+                Subscribe(game.EventManager);
+                // game.StartGame();
+            }
         }
 
         // Start is called before the first frame update
@@ -90,6 +106,7 @@ namespace Script
 
         public void Flip()
         {
+            if(DisplayMode) return;
             faceCachee = !faceCachee;
             nom.gameObject.SetActive(!faceCachee);
             description.gameObject.SetActive(!faceCachee);
@@ -115,6 +132,7 @@ namespace Script
 
         public void RefreshPrecondition()
         {
+            if(DisplayMode) return;
             this.PreconditionJouable = Card.CanBePlayed(UnityGame.LocalGamePlayer);
             this.AssezDePa = Card.Cost.Value <= UnityGame.LocalGamePlayer.ActionPoints.Value;
 
