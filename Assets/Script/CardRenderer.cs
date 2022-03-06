@@ -29,7 +29,7 @@ namespace Script
 
         
 
-        public bool faceCachee;
+        [NonSerialized] public bool faceCachee = false;
 
         [SerializeField] private CardImageDatabase imagesCartes;
 
@@ -59,6 +59,7 @@ namespace Script
                 if (_hover != value)
                 {
                     _animator.SetBool(HoverProp, value);
+                    transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, value ? -5 : 0);
                 }
 
                 _hover = value;
@@ -84,7 +85,6 @@ namespace Script
                 // game.StartGame();
             }
             SetData();
-            Flip();
         }
 
         private void SetData()
@@ -112,7 +112,7 @@ namespace Script
             nom.gameObject.SetActive(!faceCachee);
             description.gameObject.SetActive(!faceCachee);
             niveau.gameObject.SetActive(!faceCachee);
-            cout.gameObject.SetActive(!faceCachee);
+            cout.transform.parent.gameObject.SetActive(!faceCachee);
             illustration.gameObject.SetActive(!faceCachee);
             if (faceCachee)
             {
@@ -142,7 +142,17 @@ namespace Script
             this.cout.color = AssezDePa ? paColorQuandAssez : paColorQuandPasAssez;
         }
 
-        public void Subscribe(EventManager eventManager)
+        public void Subscribe(SyncEventWrapper eventManager)
+        {
+            eventManager.SubscribeToEvent<CardEvent>(e =>
+            {
+                Debug.Log($"CardEvent : {e.GetType()}");
+                if (!Equals(e.Card, Card)) return;
+                SetData();
+            }, postEvent: true);
+        }
+        
+        private void Subscribe(EventManager eventManager)
         {
             eventManager.SubscribeToEvent<CardEvent>(e =>
             {

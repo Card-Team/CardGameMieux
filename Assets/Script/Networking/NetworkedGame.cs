@@ -46,6 +46,7 @@ namespace Script.Networking
 
         private NetworkMode acceptFrom = NetworkMode.Server;
         private MainRenderer _localMainRenderer;
+        private Thread _gameProcessThread;
 
 
         private void Awake()
@@ -121,40 +122,38 @@ namespace Script.Networking
                 // on commence
                 _localMainRenderer = FindObjectsOfType<MainRenderer>()
                     .First(r => r.owner == UnityGame.LocalPlayer);
-                Game.StartGame();
-                _localMainRenderer.UpdatePlayable();
                 NetworkGameState = NetworkGameState.PLAYING;
-            }
-            else if (NetworkGameState == NetworkGameState.PLAYING)
-            {
-                if (_gameCommands.TryPeek(out var curCommand))
+                _gameProcessThread = new Thread(() =>
                 {
-                    Debug.Log("on process le packet");
-                    try
+                    Game.StartGame();
+                    while (NetworkGameState == NetworkGameState.PLAYING)
                     {
-                        if (ProcessAction(curCommand))
+                        if (_gameCommands.TryPeek(out var curCommand))
                         {
-                            //si on a process on enleve
-                            _gameCommands.TryDequeue(out curCommand);
-                        }
-                        else
-                        {
-                            //si on a pas ce qu'il faut pour process on attend
+                            Debug.Log("on process le packet");
+                            try
+                            {
+                                if (ProcessAction(curCommand))
+                                {
+                                    //si on a process on enleve
+                                    _gameCommands.TryDequeue(out curCommand);
+                                }
+                                else
+                                {
+                                    //si on a pas ce qu'il faut pour process on attend
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.LogError($"Erreure lors du processing du paquet {curCommand}");
+                                Debug.LogError(e);
+                                _gameCommands.TryDequeue(out _);
+                            }
                         }
                     }
-                    catch (Exception e)
-                    {
-                        Debug.LogError($"Erreure lors du processing du paquet {curCommand}");
-                        Debug.LogError(e);
-                        _gameCommands.TryDequeue(out _);
-#if UNITY_EDITOR
-                        Debug.Break();
-#endif
-                    }
-                }
-
+                });
+                _gameProcessThread.Start();
             }
-            
         }
 
         private void CreateGame()
@@ -179,7 +178,6 @@ namespace Script.Networking
                     Application.Quit();
                 }
             }
-            
         }
 
         // protocole
@@ -233,7 +231,23 @@ namespace Script.Networking
             }
             else
             {
-                _gameCommands.Enqueue(packet);
+                PreQueue(packet);
+            }
+        }
+
+        private void PreQueue(GameCommand command)
+        {
+            if (command is ExternalCommand externalCommand)
+            {
+                //on verifie les attendeurs
+                if (_waitedExternalCommands.TryGetValue(command.GetType(), out var value))
+                {
+                    value(externalCommand);
+                }
+            }
+            else
+            {
+                _gameCommands.Enqueue(command);
             }
         }
 
@@ -249,14 +263,14 @@ namespace Script.Networking
             }
             else
             {
-                _gameCommands.Enqueue(command);
+                PreQueue(command);
                 _networkManager.Send(command);
             }
         }
 
         public bool IsLocalPlayer(Player player)
         {
-            return Game.Player1 == player;
+            return Equals(UnityGame.LocalGamePlayer, player);
         }
 
         public void WaitFor<T>(Action<T> action) where T : ExternalCommand
@@ -293,6 +307,12 @@ namespace Script.Networking
         public void RegisterCommandProvider<T>(CommandProviderBehaviour cpb) where T : GameCommand
         {
             _commandProviderBehaviours[typeof(T)] = cpb;
+        }
+
+        private void OnDisable()
+        {
+            NetworkGameState = NetworkGameState.NOT_CONNECTED;
+            _gameProcessThread?.Abort();
         }
     }
 }

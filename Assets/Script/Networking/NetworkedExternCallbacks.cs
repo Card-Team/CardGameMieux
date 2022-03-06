@@ -28,9 +28,11 @@ namespace Script.Networking
 
         public Card ExternCardAskForTarget(Player effectOwner, string targetName, List<Card> cardList)
         {
+            Debug.Log("Network Ask Target");
             var cardBag = new ConcurrentBag<Card>();
             if (_networkedGame.IsLocalPlayer(effectOwner))
             {
+                Debug.Log("Want local");
                 _networkedGame.WantLocal<ChooseCardTargetCommand>(new ChooseCardTargetData() {TargetName = targetName,CardList =  cardList});
             }
 
@@ -197,7 +199,7 @@ namespace Script.Networking
         public int GetExternalRandomNumber(int a, int b)
         {
             // on utilise le seed préchargé
-            // je mettrai l'algo stylé plus tard
+            // je mettrai l'algo stylé plus tard (ou jamais)
             return _random.Next(a, b);
         }
     }

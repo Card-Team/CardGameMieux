@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CardGameEngine.EventSystem;
-using CardGameEngine.EventSystem.Events.CardEvents;
 using CardGameEngine.EventSystem.Events.GameStateEvents;
 using Script.Networking;
 using Script.Networking.Commands;
@@ -18,13 +17,17 @@ namespace Script.Input
         private PlayerActions _playerActions;
 
         private PlayerActions.IMainActions _myTurnInputManager;
-        private void Awake()
+        private PlayerActions.ITargetingActions _targetingActions;
+
+        private void Start()
         {
             _myTurnInputManager = GetComponent<PlayerActions.IMainActions>();
+            _targetingActions = GetComponent<PlayerActions.ITargetingActions>();
             _playerActions = new PlayerActions();
             _playerActions.Main.SetCallbacks(_myTurnInputManager);
+            _playerActions.Targeting.SetCallbacks(_targetingActions);
             _playerActions.Main.Disable();
-            //todo _playerActions.Target.Disable();
+            _playerActions.Targeting.Disable();
         }
 
         private void OnEnable()
@@ -37,22 +40,27 @@ namespace Script.Input
             _playerActions.Disable();
         }
 
-        public void Subscribe(EventManager eventManager)
+        public void Subscribe(SyncEventWrapper eventManager)
         {
-            eventManager.SubscribeToEvent<StartTurnEvent>(OnStartTurn,false,true);
-            eventManager.SubscribeToEvent<EndTurnEvent>(OnEndTurn,false,true);
-            eventManager.SubscribeToEvent<TargetingEvent>(OnTarget,false,false);
-            eventManager.SubscribeToEvent<TargetingEvent>(OnAfterTarget,false,true);
+            eventManager.SubscribeToEvent<StartTurnEvent>(OnStartTurn, false, true);
+            eventManager.SubscribeToEvent<EndTurnEvent>(OnEndTurn, false, true);
         }
 
-        private void OnAfterTarget(TargetingEvent evt)
+        private bool _wasMainEnabled = false;
+
+        public void OnAfterTarget()
         {
-            //todo _playerActions.Target.Disable();
+            Debug.Log("Targeting ended");
+            _playerActions.Targeting.Disable();
+            if (_wasMainEnabled) _playerActions.Main.Enable();
         }
 
-        private void OnTarget(TargetingEvent evt)
+        public void OnTarget()
         {
-            //todo _playerActions.Target.Enable();
+            Debug.Log("Targeting started");
+            _playerActions.Targeting.Enable();
+            _wasMainEnabled = _playerActions.Main.enabled;
+            _playerActions.Main.Disable();
         }
 
         private void OnEndTurn(EndTurnEvent evt)

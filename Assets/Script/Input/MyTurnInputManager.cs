@@ -7,32 +7,30 @@ using UnityEngine.InputSystem;
 
 namespace Script.Input
 {
-    public class MyTurnInputManager : MonoBehaviour,PlayerActions.IMainActions
+    public class MyTurnInputManager : PointableCardInputManager, PlayerActions.IMainActions
     {
-        private InputManager _inputManager;
         private MainRenderer _mainRenderer;
-        private CardRenderer _hoveredCard;
         private NetworkedGame _game;
-        
         private void Start()
         {
             _game = FindObjectOfType<NetworkedGame>();
             _mainRenderer = FindObjectsOfType<MainRenderer>().First(r => r.owner == UnityGame.LocalPlayer);
-            _inputManager = FindObjectOfType<InputManager>();
         }
 
         public void OnCardPlay(InputAction.CallbackContext context)
         {
             if (context.performed)
             {
-                if (_hoveredCard != null)
+                if (HoveredCard != null)
                 {
-                    if (_hoveredCard.PreconditionJouable && _hoveredCard.AssezDePa)
+                    if (HoveredCard.PreconditionJouable && HoveredCard.AssezDePa)
                     {
+                        HoveredCard.Hover = false;
+                        var carte = HoveredCard;
+                        HoveredCard = null;
                         _game.DoLocalAction(
-                            new PlayCardCommand((int)UnityGame.LocalPlayer, _hoveredCard.Card.Id, false));
-                        _hoveredCard.Hover = false;
-                        _hoveredCard = null;
+                            new PlayCardCommand((int)UnityGame.LocalPlayer, carte.Card.Id, false));
+                        
                     }
                     else
                     {
@@ -48,49 +46,20 @@ namespace Script.Input
             //upgrade de carte
             if (context.performed)
             {
-                if (_hoveredCard != null)
+                if (HoveredCard != null)
                 {
-                    if (_hoveredCard.Card.CurrentLevel.Value < _hoveredCard.Card.MaxLevel && _hoveredCard.AssezDePa)
+                    if (HoveredCard.Card.CurrentLevel.Value < HoveredCard.Card.MaxLevel && HoveredCard.AssezDePa)
                     {
+                        HoveredCard.Hover = false;
+                        var card = HoveredCard;
+                        HoveredCard = null;
                         _game.DoLocalAction(
-                            new PlayCardCommand((int)UnityGame.LocalPlayer, _hoveredCard.Card.Id, true));
-                        _hoveredCard.Hover = false;
-                        _hoveredCard = null;
+                            new PlayCardCommand((int)UnityGame.LocalPlayer, card.Card.Id, true));
+                        
                     }
                     else
                     {
                         Debug.Log("on tente d'upgrade une carte max");
-                    }
-                }
-            }
-        }
-
-        public void OnPointCard(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                var pos = context.ReadValue<Vector2>();
-                var worldPos = Camera.main.ScreenToWorldPoint(pos);
-
-                var resultats = new List<Collider2D>();
-                var count = Physics2D.OverlapPoint(worldPos, _inputManager.cardFilter, resultats);
-                var newHover = resultats.Count > 0
-                    ? resultats
-                        .Select(c => c.GetComponent<CardRenderer>())
-                        .FirstOrDefault(c => _mainRenderer.cards.Contains(c))
-                    : null;
-                if (newHover != _hoveredCard)
-                {
-                    if (_hoveredCard != null)
-                    {
-                        _hoveredCard.Hover = false;
-                        _hoveredCard = null;
-                    }
-
-                    if (newHover != null)
-                    {
-                        newHover.Hover = true;
-                        _hoveredCard = newHover;
                     }
                 }
             }
@@ -102,6 +71,11 @@ namespace Script.Input
             {
                 _game.DoLocalAction(new EndTurnCommand());
             }
+        }
+
+        public override bool IsPointable(CardRenderer r)
+        {
+            return _mainRenderer.cards.Contains(r);
         }
     }
 }

@@ -110,6 +110,54 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Targeting"",
+            ""id"": ""50a84517-bfb1-4976-81a2-deaea10a903b"",
+            ""actions"": [
+                {
+                    ""name"": ""Pick Card"",
+                    ""type"": ""Button"",
+                    ""id"": ""98605931-6878-4a6a-9ca0-99d501543e7c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Point Card"",
+                    ""type"": ""Value"",
+                    ""id"": ""e6c2a93c-f1d7-4f92-8a2e-d79788da5267"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""35f81c79-de8b-40f0-84ac-bd417affb7f1"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Pick Card"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5c3ac4f0-6301-4a1b-a57a-efcc1c250af8"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Point Card"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -137,6 +185,10 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
         m_Main_CardUpgrade = m_Main.FindAction("Card Upgrade", throwIfNotFound: true);
         m_Main_PointCard = m_Main.FindAction("Point Card", throwIfNotFound: true);
         m_Main_EndTurn = m_Main.FindAction("End Turn", throwIfNotFound: true);
+        // Targeting
+        m_Targeting = asset.FindActionMap("Targeting", throwIfNotFound: true);
+        m_Targeting_PickCard = m_Targeting.FindAction("Pick Card", throwIfNotFound: true);
+        m_Targeting_PointCard = m_Targeting.FindAction("Point Card", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -249,6 +301,47 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
         }
     }
     public MainActions @Main => new MainActions(this);
+
+    // Targeting
+    private readonly InputActionMap m_Targeting;
+    private ITargetingActions m_TargetingActionsCallbackInterface;
+    private readonly InputAction m_Targeting_PickCard;
+    private readonly InputAction m_Targeting_PointCard;
+    public struct TargetingActions
+    {
+        private @PlayerActions m_Wrapper;
+        public TargetingActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @PickCard => m_Wrapper.m_Targeting_PickCard;
+        public InputAction @PointCard => m_Wrapper.m_Targeting_PointCard;
+        public InputActionMap Get() { return m_Wrapper.m_Targeting; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(TargetingActions set) { return set.Get(); }
+        public void SetCallbacks(ITargetingActions instance)
+        {
+            if (m_Wrapper.m_TargetingActionsCallbackInterface != null)
+            {
+                @PickCard.started -= m_Wrapper.m_TargetingActionsCallbackInterface.OnPickCard;
+                @PickCard.performed -= m_Wrapper.m_TargetingActionsCallbackInterface.OnPickCard;
+                @PickCard.canceled -= m_Wrapper.m_TargetingActionsCallbackInterface.OnPickCard;
+                @PointCard.started -= m_Wrapper.m_TargetingActionsCallbackInterface.OnPointCard;
+                @PointCard.performed -= m_Wrapper.m_TargetingActionsCallbackInterface.OnPointCard;
+                @PointCard.canceled -= m_Wrapper.m_TargetingActionsCallbackInterface.OnPointCard;
+            }
+            m_Wrapper.m_TargetingActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @PickCard.started += instance.OnPickCard;
+                @PickCard.performed += instance.OnPickCard;
+                @PickCard.canceled += instance.OnPickCard;
+                @PointCard.started += instance.OnPointCard;
+                @PointCard.performed += instance.OnPointCard;
+                @PointCard.canceled += instance.OnPointCard;
+            }
+        }
+    }
+    public TargetingActions @Targeting => new TargetingActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -264,5 +357,10 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
         void OnCardUpgrade(InputAction.CallbackContext context);
         void OnPointCard(InputAction.CallbackContext context);
         void OnEndTurn(InputAction.CallbackContext context);
+    }
+    public interface ITargetingActions
+    {
+        void OnPickCard(InputAction.CallbackContext context);
+        void OnPointCard(InputAction.CallbackContext context);
     }
 }

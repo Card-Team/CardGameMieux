@@ -63,7 +63,7 @@ namespace Script.Networking
            
 
             network.EventRegistration = GameInit;
-            network.SetUpNetworkGame(_nc, "Raoult", new List<string>() {"pistolet"});
+            network.SetUpNetworkGame(_nc, "Raoult", new List<string>() {"pistolet","carteblanche"});
         }
 
         private void GameInit(Game game)
@@ -86,11 +86,14 @@ namespace Script.Networking
                 pileRenderer.GrabPile(game);
             }
 
+            var evtMan = FindObjectOfType<SyncEventsManager>();
+            evtMan.EventManager = game.EventManager;
+
             foreach (var eventSubscriber in FindObjectsOfType<MonoBehaviour>())
             {
                 if (eventSubscriber is IEventSubscriber evt)
                 {
-                    evt.Subscribe(game.EventManager);
+                    evt.Subscribe(evtMan.SyncEventWrapper);
                 }
             }
 

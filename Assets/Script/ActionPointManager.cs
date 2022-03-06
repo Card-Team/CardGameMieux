@@ -30,7 +30,7 @@ public class ActionPointManager : MonoBehaviour, IEventSubscriber
         _texte.text = $"PA : {_curPoints}/{_maxPoints}";
     }
 
-    public void Subscribe(EventManager eventManager)
+    public void Subscribe(SyncEventWrapper eventManager)
     {
         
         eventManager.SubscribeToEvent<ActionPointsEditEvent>(OnPAChange, false, true);

@@ -126,7 +126,7 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
         }
     }
 
-    public void Subscribe(EventManager eventManager)
+    public void Subscribe(SyncEventWrapper eventManager)
     {
         
         eventManager.SubscribeToEvent<CardMovePileEvent>(OnCardMovePile, false, true);

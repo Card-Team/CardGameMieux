@@ -17,7 +17,7 @@ public class TourArrow : MonoBehaviour, IEventSubscriber
     {
     }
 
-    public void Subscribe(EventManager eventManager)
+    public void Subscribe(SyncEventWrapper eventManager)
     {
         eventManager.SubscribeToEvent<StartTurnEvent>(OnStartTurn, false, true);
     }

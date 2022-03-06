@@ -1,6 +1,7 @@
 using CardGameEngine.EventSystem;
+using Script.Networking;
 
 public interface IEventSubscriber
 {
-    void Subscribe(EventManager eventManager);
+    void Subscribe(SyncEventWrapper eventManager);
 }
