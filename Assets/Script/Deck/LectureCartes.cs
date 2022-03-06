@@ -12,11 +12,13 @@ using UnityEngine.UI;
 public class LectureCartes : MonoBehaviour
 {
     public Transform GameObjectCartes;
-    public TextMeshPro textTemplate;
+    public TextMeshProUGUI textTemplate;
     TextMeshPro text;
     public CardRenderer cardTemplate;
     List<CardRenderer> cartes = new List<CardRenderer>();
     private float tailleListe;
+    public ContactFilter2D _contactFilter2D;
+
     public void Start()
     {
         NomCartes();
@@ -40,15 +42,7 @@ public class LectureCartes : MonoBehaviour
             String fileSansPath = file.Replace(Application.streamingAssetsPath + "/EffectsScripts/Card", "");
             String fileSansPath1 = fileSansPath.Replace(@"\", "");
             String fileSansPath2 = fileSansPath1.Replace(".lua", "");
-            Debug.Log(fileSansPath2);
-            // Text
-            /*
-            text = Instantiate(textTemplate, null);
-            text.text = fileSansPath2; // NE MARCHE PAS POUR RENOMé le composant text
-            text.SetText(fileSansPath2);
-            text.fontSize = 5;
-            text.transform.position = new Vector3(posX, posY, 0);
-            */
+            //Debug.Log(fileSansPath2);
             //carte
             var cardRenderer = Instantiate(cardTemplate, GameObjectCartes); //Creer un nouveau cardRenderer avec instantiate
             cartes.Add(cardRenderer);
@@ -68,14 +62,45 @@ public class LectureCartes : MonoBehaviour
         }
     }
 
-    void Update()
-    {//changer la postion du GameobjectCartes
-        Vector3 pos = GameObjectCartes.transform.position;
-        float scrool = Input.GetAxis("Mouse ScrollWheel");
-        //Debug.Log("Molette Bas");
+    private CardRenderer selectionCarte;
+    void Update(){
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //Connaitre la position de la souris par rapport a la camera
+        Debug.Log("x : " +mousePos.x + "et y: "+mousePos.y);
+        if (mousePos.x > -9 && mousePos.y < 5.2)
+        {
+            //changer la postion du GameobjectCartes : faire desendre les cartes
+            Vector3 pos = GameObjectCartes.transform.position;
+            float scrool = Input.GetAxis("Mouse ScrollWheel");
+            //Debug.Log("Molette Bas");
         
-        pos.y -= scrool * Time.deltaTime * 2000;
-        if (pos.y < 0 || pos.y > tailleListe-10 ) {return;}
-        GameObjectCartes.transform.position = pos;
+            pos.y -= scrool * Time.deltaTime * 2000;
+            if (pos.y < 0 || pos.y > tailleListe-1 ) {return;}
+            GameObjectCartes.transform.position = pos;
+        }
+        
+        //recupere les objets ou on est dessus dans une liste
+        List<Collider2D> proche = new List<Collider2D>();
+        //nombre d'element sous la souris
+        var count = Physics2D.OverlapPoint(mousePos,_contactFilter2D,proche);
+        //si le nombre d'element est plus grand que 0
+        if (count > 0)
+        {
+            //boite de colision de la carte en dessous
+            var first = proche.First().GetComponent<CardRenderer>();
+            if (first != selectionCarte && selectionCarte!= null)
+            {
+                selectionCarte.transform.localScale = Vector3.one;
+            }
+            first.transform.localScale = new Vector3(1.2f,1.2f,1);
+            selectionCarte = first;
+        }
+        else
+        {
+            if (selectionCarte != null)
+            {
+                selectionCarte.transform.localScale = Vector3.one;
+            }
+        }
     }
 }

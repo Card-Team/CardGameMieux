@@ -45,7 +45,8 @@ public class LectureDeck : MonoBehaviour
         foreach (var file in files)
         {
             NomButton button = Instantiate(buttonTemplate, this.transform, false); //creer et un copie un bouton
-            button.text = file.Name; //donne aux champs texte le nom du bouton
+            String file2 = file.Name.Replace(".txt", "");
+            button.name = file2; //donne aux champs texte le nom du bouton
             if (button.text == PlayerPrefs.GetString("NomDeck"))
             {
                 button.transform.SetSiblingIndex(0);        //le mettre a la premiere position
@@ -53,7 +54,7 @@ public class LectureDeck : MonoBehaviour
             }
             button.nouvelfenetre = nouvelfenetre;
             button.gameObject.SetActive(true);
-            button.GetComponentInChildren<TextMeshProUGUI>().SetText(file.Name);
+            button.GetComponentInChildren<TextMeshProUGUI>().SetText(file2);
         }
     }
 }
