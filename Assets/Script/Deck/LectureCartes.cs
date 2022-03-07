@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using CardGameEngine.Cards;
 using Script;
 using TMPro;
@@ -19,9 +20,13 @@ public class LectureCartes : MonoBehaviour
     private float tailleListe;
     public ContactFilter2D _contactFilter2D;
 
+    public Button enregistrer;
+    public TMP_InputField nomDeck;
+
     public void Start()
     {
         NomCartes();
+        enregistrer.onClick.AddListener(ClickEnregistrer);
     }
 
     public void NomCartes()
@@ -35,7 +40,7 @@ public class LectureCartes : MonoBehaviour
 
         int tour = 0;
         float posY = 0;
-        float posX = 0;
+        float posX = -0.5f;
         foreach (var file in files)
         {
             //faire un tri pour le nom des fichier avec le Path en affaiblissement
@@ -51,8 +56,8 @@ public class LectureCartes : MonoBehaviour
             tour += 1;
             if (tour % 5 == 0)
             {
-                posX = 0;
-                tailleListe += cardRenderer.Height * 1 / GameObjectCartes.transform.localScale.y + 1.5f ;
+                posX = -0.5f;
+                tailleListe += cardRenderer.Height * 1 / GameObjectCartes.transform.localScale.y + 1.5f;
                 posY -= cardRenderer.Height * 1 / GameObjectCartes.transform.localScale.y + 1.5f; //Corriger pour l'échelle du Game Object Parent en y
             }
             else
@@ -63,43 +68,81 @@ public class LectureCartes : MonoBehaviour
     }
 
     private CardRenderer selectionCarte;
-    void Update(){
+    List<string> listeCarteSelectionner = new List<string>();
+
+    void Update()
+    {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         //Connaitre la position de la souris par rapport a la camera
-        Debug.Log("x : " +mousePos.x + "et y: "+mousePos.y);
+        //Debug.Log("x : " +mousePos.x + "et y: "+mousePos.y);
         if (mousePos.x > -9 && mousePos.y < 5.2)
         {
             //changer la postion du GameobjectCartes : faire desendre les cartes
             Vector3 pos = GameObjectCartes.transform.position;
             float scrool = Input.GetAxis("Mouse ScrollWheel");
             //Debug.Log("Molette Bas");
-        
+
             pos.y -= scrool * Time.deltaTime * 2000;
-            if (pos.y < 0 || pos.y > tailleListe-1 ) {return;}
+            if (pos.y < 0 || pos.y > tailleListe - 1)
+            {
+                return;
+            }
+
             GameObjectCartes.transform.position = pos;
         }
-        
-        //recupere les objets ou on est dessus dans une liste
+
+        //recupere les objets ou on est dessus avec la souris dans une liste
         List<Collider2D> proche = new List<Collider2D>();
         //nombre d'element sous la souris
-        var count = Physics2D.OverlapPoint(mousePos,_contactFilter2D,proche);
+        var count = Physics2D.OverlapPoint(mousePos, _contactFilter2D, proche);
         //si le nombre d'element est plus grand que 0
         if (count > 0)
         {
             //boite de colision de la carte en dessous
             var first = proche.First().GetComponent<CardRenderer>();
-            if (first != selectionCarte && selectionCarte!= null)
+            //Debug.Log(first.name);
+            if (first != selectionCarte && selectionCarte != null)
             {
                 selectionCarte.transform.localScale = Vector3.one;
             }
-            first.transform.localScale = new Vector3(1.2f,1.2f,1);
+
+            first.transform.localScale = new Vector3(1.2f, 1.2f, 1);
             selectionCarte = first;
+            //clique souris
+            if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count < 12)
+            {
+                var firstClique = proche.First().GetComponent<CardRenderer>();
+                listeCarteSelectionner.Add(firstClique.name);
+                Debug.Log(listeCarteSelectionner[1]);
+            }
         }
         else
         {
             if (selectionCarte != null)
             {
                 selectionCarte.transform.localScale = Vector3.one;
+            }
+        }
+    }
+
+    public void ClickEnregistrer()
+    {
+        if (listeCarteSelectionner.Count == 12)
+        {
+            if (File.Exists(nomDeck + ".txt"))
+            {
+                //interface de validation pour suppression du fichier deja existant
+                File.Delete(nomDeck + ".txt");
+                Debug.Log("fichier deja existant");
+            }
+
+            //creation de fichier
+            using (FileStream fileStr = File.Create(nomDeck + ".txt"))
+            {
+                // Ajouter du texte au fichier  
+                Byte[] textfile = new UTF8Encoding(true).GetBytes("TESTTTT");
+                fileStr.Write(textfile, 0, textfile.Length);
+                Debug.Log("creer le fichier");
             }
         }
     }
