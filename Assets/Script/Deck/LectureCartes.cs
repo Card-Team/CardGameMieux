@@ -26,7 +26,6 @@ public class LectureCartes : MonoBehaviour
     public void Start()
     {
         NomCartes();
-        enregistrer.onClick.AddListener(ClickEnregistrer);
     }
 
     public void NomCartes()
@@ -49,7 +48,8 @@ public class LectureCartes : MonoBehaviour
             String fileSansPath2 = fileSansPath1.Replace(".lua", "");
             //Debug.Log(fileSansPath2);
             //carte
-            var cardRenderer = Instantiate(cardTemplate, GameObjectCartes); //Creer un nouveau cardRenderer avec instantiate
+            var cardRenderer =
+                Instantiate(cardTemplate, GameObjectCartes); //Creer un nouveau cardRenderer avec instantiate
             cartes.Add(cardRenderer);
             cardRenderer.scriptToDisplay = fileSansPath2; //champs pour afficher ce script la
             cardRenderer.transform.localPosition = new Vector3(posX, posY, 0);
@@ -58,17 +58,19 @@ public class LectureCartes : MonoBehaviour
             {
                 posX = -0.5f;
                 tailleListe += cardRenderer.Height * 1 / GameObjectCartes.transform.localScale.y + 1.5f;
-                posY -= cardRenderer.Height * 1 / GameObjectCartes.transform.localScale.y + 1.5f; //Corriger pour l'échelle du Game Object Parent en y
+                posY -= cardRenderer.Height * 1 / GameObjectCartes.transform.localScale.y +
+                        1.5f; //Corriger pour l'échelle du Game Object Parent en y
             }
             else
             {
-                posX += cardRenderer.Width * 1 / GameObjectCartes.transform.localScale.x + 1.2f; //Corriger pour l'échelle du Game Object Parent en X
+                posX += cardRenderer.Width * 1 / GameObjectCartes.transform.localScale.x +
+                        1.2f; //Corriger pour l'échelle du Game Object Parent en X
             }
         }
     }
 
     private CardRenderer selectionCarte;
-    List<string> listeCarteSelectionner = new List<string>();
+    public List<string> listeCarteSelectionner = new List<string>();
 
     void Update()
     {
@@ -113,7 +115,7 @@ public class LectureCartes : MonoBehaviour
             {
                 var firstClique = proche.First().GetComponent<CardRenderer>();
                 listeCarteSelectionner.Add(firstClique.name);
-                Debug.Log(listeCarteSelectionner[1]);
+                Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);
             }
         }
         else
@@ -121,28 +123,6 @@ public class LectureCartes : MonoBehaviour
             if (selectionCarte != null)
             {
                 selectionCarte.transform.localScale = Vector3.one;
-            }
-        }
-    }
-
-    public void ClickEnregistrer()
-    {
-        if (listeCarteSelectionner.Count == 12)
-        {
-            if (File.Exists(nomDeck + ".txt"))
-            {
-                //interface de validation pour suppression du fichier deja existant
-                File.Delete(nomDeck + ".txt");
-                Debug.Log("fichier deja existant");
-            }
-
-            //creation de fichier
-            using (FileStream fileStr = File.Create(nomDeck + ".txt"))
-            {
-                // Ajouter du texte au fichier  
-                Byte[] textfile = new UTF8Encoding(true).GetBytes("TESTTTT");
-                fileStr.Write(textfile, 0, textfile.Length);
-                Debug.Log("creer le fichier");
             }
         }
     }
