@@ -50,5 +50,13 @@ EffectOwner = --[[---@type Player]] {}
 ---@type TargetTypes
 TargetTypes = --[[---@type TargetTypes]]{}
 
----@type Event[]
-EventStack = {}
+---@type List<Event>
+EventStack = --[[---@type List<Event>]] {}
+
+---@return Type<Event>
+function Event.GetType()
+end
+
+---@return string
+function Event.ToString()
+end

@@ -1,15 +1,15 @@
 ﻿---@type number
-max_level = 1
+max_level = 2
 ---@type number
-image_id = 523
+image_id = 530
 
 ---@type string
-name = "Annulation"
+name = "Conspiration"
 ---@type number
 pa_cost = 3
 
 ---@type string
-description = "Annulle la derniere carte jouée"
+description = "Annule l'amélioration d'une carte qui vient d'etre joué "
 
 ---@type Target[]
 targets = {
@@ -17,7 +17,7 @@ targets = {
 
 --- fonction qui renvoie un booléen si la carte peut être jouée ou non
 function precondition()
-	return EventStack.Count > 2
+	return EventStack[EventStack.Count -1] 
 end
 
 function do_effect()
@@ -27,10 +27,10 @@ function do_effect()
 		local cur = EventStack.Count - i
 		local ev = EventStack[cur]
 		if ev.GetType() == T_CardEffectPlayEvent then
-			--cancel l'effet 
-			local ev = --[[---@type CardEffectPlayEvent ]] ev
-			print("Event " .. i .. " is " .. ev.ToString())
+			local ev = --[[---@type CardEffectPlayEvent]] print("Event " .. i .. " is " .. ev.ToString())
 			ev.Cancelled = true
+		
 		end
 	end
 end
+

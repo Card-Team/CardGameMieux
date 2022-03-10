@@ -28,26 +28,18 @@ namespace Script.Networking
 
         public Card ExternCardAskForTarget(Player effectOwner, string targetName, List<Card> cardList)
         {
+            Debug.Log($"AskForTarget for player {effectOwner.Id}");
             Debug.Log("Network Ask Target");
-            var cardBag = new ConcurrentBag<Card>();
-            if (_networkedGame.IsLocalPlayer(effectOwner))
+            if (UnityGame.IsLocalPlayer(effectOwner))
             {
                 Debug.Log("Want local");
                 _networkedGame.WantLocal<ChooseCardTargetCommand>(new ChooseCardTargetData() {TargetName = targetName,CardList =  cardList});
             }
 
-            _networkedGame.WaitFor<ChooseCardTargetCommand>(c =>
-            {
-                var card = _networkedGame.ResolveCard(c.CardId);
-                cardBag.Add(card);
-            });
+            var cardCommand = _networkedGame.WaitForExternalCommand<ChooseCardTargetCommand>();
 
-            Card card;
-            while (!cardBag.TryTake(out card))
-            {
-                Thread.Sleep(1000);
-            }
-            
+            Card card = _networkedGame.ResolveCard(cardCommand.CardId);
+
             Debug.Log("Received card");
 
             return card;
@@ -55,23 +47,14 @@ namespace Script.Networking
 
         public Player ExternPlayerAskForTarget(Player effectOwner, string targetName)
         {
-            var playerBag = new ConcurrentBag<Player>();
-            if (_networkedGame.IsLocalPlayer(effectOwner))
+            if (UnityGame.IsLocalPlayer(effectOwner))
             {
                 _networkedGame.WantLocal<ChooseCardTargetCommand>(new ChoosePlayerTargetData() {TargetName = targetName});
             }
 
-            _networkedGame.WaitFor<ChoosePlayerTargetCommand>(c =>
-            {
-                var player = _networkedGame.ResolvePlayer(c.PlayerId);
-                playerBag.Add(player);
-            });
+            var command= _networkedGame.WaitForExternalCommand<ChoosePlayerTargetCommand>();
 
-            Player player;
-            while (!playerBag.TryTake(out player))
-            {
-                Thread.Sleep(1000);
-            }
+            var player = _networkedGame.ResolvePlayer(command.PlayerId);
             
             Debug.Log("Received player");
 
@@ -85,24 +68,15 @@ namespace Script.Networking
 
         public Card ExternChooseBetween(Player player, List<Card> cardList)
         {
-            var cardBag = new ConcurrentBag<Card>();
-            if (_networkedGame.IsLocalPlayer(player))
+            if (UnityGame.IsLocalPlayer(player))
             {
                 _networkedGame.WantLocal<ChooseBetweenCardsCommand>(new ChooseCardTargetData() {CardList =  cardList});
             }
 
-            _networkedGame.WaitFor<ChooseBetweenCardsCommand>(c =>
-            {
-                var card = _networkedGame.ResolveCard(c.CardId);
-                cardBag.Add(card);
-            });
+            var command = _networkedGame.WaitForExternalCommand<ChooseBetweenCardsCommand>();
 
-            Card card;
-            while (!cardBag.TryTake(out card))
-            {
-                Thread.Sleep(1000);
-            }
-            
+            var card = _networkedGame.ResolveCard(command.CardId);
+
             Debug.Log("Received card");
 
             return card;
@@ -126,23 +100,14 @@ namespace Script.Networking
             // ensuite on finit la fonction
             //todo
             return false;
-            var boolBag = new ConcurrentBag<bool>();
-            if (_networkedGame.IsLocalPlayer(player))
+            if (UnityGame.IsLocalPlayer(player))
             {
                 _networkedGame.WantLocal<ChainOpportunityCommand>();
             }
 
-            _networkedGame.WaitFor<ChainOpportunityCommand>(c =>
-            {
-                var b = c.chain;
-                boolBag.Add(b);
-            });
+            var chainCommand = _networkedGame.WaitForExternalCommand<ChainOpportunityCommand>();
 
-            bool wantChain;
-            while (!boolBag.TryTake(out wantChain))
-            {
-                Thread.Sleep(1000);
-            }
+            var wantChain = chainCommand.chain;
             
             Debug.Log("Received chain answer");
 
@@ -155,26 +120,14 @@ namespace Script.Networking
             // soit jouer une carte soit fini tour
             // si la carte a un indice négatif on a rien fait
             
-            var chainTurnBag = new ConcurrentBag<Card>();
-            if (_networkedGame.IsLocalPlayer(player))
+            if (UnityGame.IsLocalPlayer(player))
             {
                 _networkedGame.WantLocal<ChainTurnCommand>();
             }
 
-            _networkedGame.WaitFor<ChainTurnCommand>(c =>
-            {
-                var b = c.CardID;
-                chainTurnBag.Add(_networkedGame.ResolveCard(b));
-            });
+            var command = _networkedGame.WaitForExternalCommand<ChainTurnCommand>();
 
-            Card played;
-            while (!chainTurnBag.TryTake(out played))
-            {
-                Thread.Sleep(1000);
-            }
-            
-            // ici soit on a joué une carte soit annulé
-
+            Card played = _networkedGame.ResolveCard(command.CardID);
             if (played == null)
             {
                 //on a annulé
@@ -193,7 +146,7 @@ namespace Script.Networking
 
         public void DebugPrint(string component, string source, string debugPrint)
         {
-            Debug.Log($"[ENG][{component}]${source}{debugPrint}");
+            Debug.Log($"[ENG][{component}]${source}: {debugPrint}");
         }
 
         public int GetExternalRandomNumber(int a, int b)

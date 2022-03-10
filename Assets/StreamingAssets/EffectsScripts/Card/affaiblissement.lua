@@ -5,7 +5,7 @@ max_level = 1
 image_id = 523
 
 ---@type string
-name = "Affaiblissement"
+name = "affaiblissement"
 ---@type number
 pa_cost = 3
 
@@ -44,6 +44,6 @@ function do_effect()
 	--prends le cout de CardPile est enleve le nombre de pints d'action a l'edversaire
 	local carte = --[[---@type Card]] AskForTarget(1)
 	coutCard = carte.Cost.Value                                         --cout de la carte
-	SubscribeTo(StartTurnEvent, baisserPointAction, false,
+	SubscribeTo(T_StartTurnEvent, baisserPointAction, false,
 				true)                      --s'abonne a l'evenement (debut de tour,la fonction execute une fois que l'evenement est la,es qu'on ecpute une evenement anulé,es que tu t'abone apres)
 end

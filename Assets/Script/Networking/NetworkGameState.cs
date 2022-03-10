@@ -5,6 +5,7 @@ namespace Script.Networking
         NOT_CONNECTED,
         SETTING_UP,
         READY,
+        STARTING,
         PLAYING
     }
 }

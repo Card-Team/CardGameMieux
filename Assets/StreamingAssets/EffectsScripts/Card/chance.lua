@@ -4,7 +4,7 @@ max_level = 1
 image_id = 709
 
 ---@type string
-name = "Chance"
+name = "chance"
 ---@type number
 pa_cost = 2
 

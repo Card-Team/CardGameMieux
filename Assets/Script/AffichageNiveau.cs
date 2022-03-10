@@ -34,14 +34,13 @@ namespace Script
             {
                 SpriteRenderer cercle;
                 cercle = Instantiate(i < niveauActuel ? cerclePlein : cercleVide, this.transform);
-
-                cercle.sortingOrder = 1;
+                
                 if (i < niveauActuel)
                 {
                     cercle.color = niveauActuel == niveauMax ? couleureMax : couleureNormal;
                 }
                 
-                cercle.transform.localPosition = new Vector3(decalage*i - (decalage * (niveauMax - 1))/2,0f);
+                cercle.transform.localPosition = new Vector3(decalage*i - (decalage * (niveauMax - 1))/2,0f,-1f);
             } 
         }
         // Update is called once per frame

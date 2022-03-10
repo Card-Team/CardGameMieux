@@ -4,6 +4,7 @@ using CardGameEngine;
 using CardGameEngine.Cards;
 using CardGameEngine.Cards.CardPiles;
 using CardGameEngine.EventSystem;
+using CardGameEngine.EventSystem.Events;
 using CardGameEngine.EventSystem.Events.CardEvents;
 using CardGameEngine.EventSystem.Events.CardEvents.PropertyChange;
 using Script.Networking;
@@ -27,7 +28,6 @@ namespace Script
 
         private bool DisplayMode => scriptToDisplay != string.Empty;
 
-        
 
         [NonSerialized] public bool faceCachee = false;
 
@@ -37,19 +37,20 @@ namespace Script
 
         public float Width => fond.bounds.size.x;
         public float Height => fond.bounds.size.y;
-        
+
 
         private bool _hover = false;
         private static readonly int HoverProp = Animator.StringToHash("Hovered");
-        
+
         [NonSerialized] public bool PreconditionJouable;
         [NonSerialized] public bool AssezDePa;
-        
+
         [SerializeField] private Color couleurJouable;
         [SerializeField] private Color couleurPasJouable;
-        
+
         [SerializeField] private Color paColorQuandAssez;
         [SerializeField] private Color paColorQuandPasAssez;
+        private UnityGame _game;
 
         public bool Hover
         {
@@ -59,7 +60,8 @@ namespace Script
                 if (_hover != value)
                 {
                     _animator.SetBool(HoverProp, value);
-                    transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, value ? -5 : 0);
+                    transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y,
+                        value ? -5 : 0);
                 }
 
                 _hover = value;
@@ -69,6 +71,7 @@ namespace Script
         private void Awake()
         {
             _animator = GetComponent<Animator>();
+            _game = FindObjectOfType<UnityGame>();
         }
 
         // Start is called before the first frame update
@@ -78,12 +81,13 @@ namespace Script
             {
                 Game game = new Game(Application.streamingAssetsPath + "/EffectsScripts",
                     new DumbCallbacks(),
-                    new List<string>{scriptToDisplay},
+                    new List<string> { scriptToDisplay },
                     new List<string>());
                 this.Card = game.Player1.Deck[0];
                 Subscribe(game.EventManager);
                 // game.StartGame();
             }
+
             SetData();
         }
 
@@ -103,25 +107,18 @@ namespace Script
             niveau.niveauMax = Card.MaxLevel;
             niveau.RefreshCercle();
         }
-        
+
 
         public void Flip()
         {
-            if(DisplayMode) return;
+            if (DisplayMode) return;
             faceCachee = !faceCachee;
             nom.gameObject.SetActive(!faceCachee);
             description.gameObject.SetActive(!faceCachee);
             niveau.gameObject.SetActive(!faceCachee);
             cout.transform.parent.gameObject.SetActive(!faceCachee);
             illustration.gameObject.SetActive(!faceCachee);
-            if (faceCachee)
-            {
-                fond.color = couleurJouable;
-            }
-            else
-            {
-                RefreshPrecondition();
-            }
+            RefreshPrecondition();
         }
 
         //void 
@@ -133,9 +130,25 @@ namespace Script
 
         public void RefreshPrecondition()
         {
-            if(DisplayMode) return;
-            this.PreconditionJouable = Card.CanBePlayed(UnityGame.LocalGamePlayer);
-            this.AssezDePa = Card.Cost.Value <= UnityGame.LocalGamePlayer.ActionPoints.Value;
+            if (DisplayMode) return;
+            var cardHolder = _game.RunOnGameThread(g =>
+            {
+                if (g.Player1.Hand.Contains(Card))
+                    return g.Player1;
+                else if (g.Player2.Hand.Contains(Card))
+                    return g.Player2;
+                else return null;
+            });
+            if (UnityGame.IsLocalPlayer(cardHolder))
+            {
+                this.PreconditionJouable = _game.RunOnGameThread(g => Card.CanBePlayed(cardHolder));
+                this.AssezDePa = Card.Cost.Value <= UnityGame.LocalGamePlayer.ActionPoints.Value;
+            }
+            else
+            {
+                this.PreconditionJouable = true;
+                this.AssezDePa = true;
+            }
 
             fond.color = this.PreconditionJouable || faceCachee ? couleurJouable : couleurPasJouable;
 
@@ -149,9 +162,11 @@ namespace Script
                 Debug.Log($"CardEvent : {e.GetType()}");
                 if (!Equals(e.Card, Card)) return;
                 SetData();
+                RefreshPrecondition();
             }, postEvent: true);
+            eventManager.SubscribeToEvent<ActionPointsEditEvent>(e => { RefreshPrecondition(); }, false, true);
         }
-        
+
         private void Subscribe(EventManager eventManager)
         {
             eventManager.SubscribeToEvent<CardEvent>(e =>

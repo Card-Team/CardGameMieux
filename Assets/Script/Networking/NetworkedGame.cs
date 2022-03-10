@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using CardGameEngine;
 using CardGameEngine.Cards;
 using CardGameEngine.EventSystem.Events.GameStateEvents;
@@ -16,6 +17,7 @@ using Network.Packets;
 using Script.Debugging;
 using Script.Networking.Commands;
 using Script.Networking.Commands.Extern;
+using UnityEditor;
 using UnityEngine;
 using Random = System.Random;
 
@@ -34,15 +36,14 @@ namespace Script.Networking
         private ConcurrentDictionary<Type, CommandProviderBehaviour> _commandProviderBehaviours =
             new ConcurrentDictionary<Type, CommandProviderBehaviour>();
 
-        private ConcurrentDictionary<Type, Action<ExternalCommand>> _waitedExternalCommands =
-            new ConcurrentDictionary<Type, Action<ExternalCommand>>();
+        private ConcurrentDictionary<Type, TaskCompletionSource<ExternalCommand>> _waitedExternalCommands =
+            new ConcurrentDictionary<Type, TaskCompletionSource<ExternalCommand>>();
 
         private int _randomSeed;
 
         [CanBeNull] public SetUpGameCommand MyConfiguration { get; private set; }
         [CanBeNull] public SetUpGameCommand OtherPlayerConfiguration { get; private set; }
 
-        private ConcurrentQueue<GameCommand> _gameCommands = new ConcurrentQueue<GameCommand>();
 
         private NetworkMode acceptFrom = NetworkMode.Server;
         private MainRenderer _localMainRenderer;
@@ -99,60 +100,127 @@ namespace Script.Networking
             }
             else if (NetworkGameState == NetworkGameState.READY)
             {
+                StartGame();
+            }
+        }
+
+        private void StartGame()
+        {
+            Game.EventManager.SubscribeToEvent<EndTurnEvent>(e =>
+            {
+                acceptFrom = acceptFrom switch
+                {
+                    NetworkMode.Client => NetworkMode.Server,
+                    NetworkMode.Server => NetworkMode.Client,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+                //on attend des paquets de l'autre si le tour a changé
+            }, postEvent: true);
+            // on commence
+            _localMainRenderer = FindObjectsOfType<MainRenderer>()
+                .First(r => r.owner == UnityGame.LocalPlayer);
+            NetworkGameState = NetworkGameState.PLAYING;
+            _gameProcessThread = new Thread(() =>
+            {
+                while (NetworkGameState == NetworkGameState.PLAYING || 
+                       NetworkGameState == NetworkGameState.READY || 
+                       NetworkGameState == NetworkGameState.STARTING)
+                {
+                    if (NetworkGameState == NetworkGameState.STARTING)
+                    {
+                        Game.StartGame();
+                        NetworkGameState = NetworkGameState.PLAYING;
+                    }
+                    lock (this)
+                    {
+                        // Debug.Log($"On lock pour les commandes {Thread.CurrentThread.Name}");
+                        if(NetworkGameState == NetworkGameState.PLAYING )
+                            ProcessGameCommands();
+                        ProcessGameThreadActions();
+                        // Debug.Log($"On a process les commandes et les actions{Thread.CurrentThread.Name}");
+                        // Debug.Log($"On va pulse {Thread.CurrentThread.Name}");
+                        Monitor.PulseAll(this);
+                        // Debug.Log($"On a pulse, dodo {Thread.CurrentThread.Name}");
+                        try
+                        {
+                            Monitor.Wait(this);
+                        }
+                        catch (ThreadInterruptedException)
+                        {
+                            _interrupted = true;
+                            Debug.Log("Thread interrompu, on arette");
+                            return;
+                        }
+                        // Debug.Log($"Le reveil {Thread.CurrentThread.Name}");
+                    }
+                    // Debug.Log($"Sorti du verrou {Thread.CurrentThread.Name}");
+                }
+            });
+            _gameProcessThread.Name = "GameThread";
+            _gameProcessThread.Start();
+            
+            try
+            {
+                EventRegistration?.Invoke(Game);
+                lock (this)
+                {
+                    NetworkGameState = NetworkGameState.STARTING;
+                    Monitor.PulseAll(this);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Exception dans EventRegistration/GameInit");
+                Debug.LogException(e);
+            }
+        }
+
+        private ConcurrentQueue<GameCommand> _gameCommands = new ConcurrentQueue<GameCommand>();
+
+        private void ProcessGameCommands()
+        {
+            foreach (var curCommand in _gameCommands)
+            {
+                Debug.Log("on process le packet");
                 try
                 {
-                    EventRegistration?.Invoke(Game);
+                    if (ProcessAction(curCommand))
+                    {
+                        //si on a process on enleve
+                        _gameCommands.TryDequeue(out _);
+                    }
+                    else
+                    {
+                        //si on a pas ce qu'il faut pour process on attend
+                    }
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError("Exception dans EventRegistration/GameInit");
-                    Debug.LogException(e);
+                    Debug.LogError($"Erreure lors du processing du paquet {curCommand}");
+                    Debug.LogError(e);
+                    _gameCommands.TryDequeue(out _);
                 }
+            }
+        }
 
-                Game.EventManager.SubscribeToEvent<EndTurnEvent>(e =>
+        public readonly ConcurrentQueue<(TaskCompletionSource<bool> actionTask, Action action)> GameThreadQueue =
+            new ConcurrentQueue<(TaskCompletionSource<bool> actionTask, Action action)>();
+
+        private void ProcessGameThreadActions()
+        {
+            while (GameThreadQueue.TryDequeue(out var elem))
+            {
+                var (task, action) = elem;
+                try
                 {
-                    acceptFrom = acceptFrom switch
-                    {
-                        NetworkMode.Client => NetworkMode.Server,
-                        NetworkMode.Server => NetworkMode.Client,
-                        _ => throw new ArgumentOutOfRangeException()
-                    };
-                    //on attend des paquets de l'autre si le tour a changé
-                }, postEvent: true);
-                // on commence
-                _localMainRenderer = FindObjectsOfType<MainRenderer>()
-                    .First(r => r.owner == UnityGame.LocalPlayer);
-                NetworkGameState = NetworkGameState.PLAYING;
-                _gameProcessThread = new Thread(() =>
+                    action();
+                    task.SetResult(true);
+                }
+                catch (Exception e)
                 {
-                    Game.StartGame();
-                    while (NetworkGameState == NetworkGameState.PLAYING)
-                    {
-                        if (_gameCommands.TryPeek(out var curCommand))
-                        {
-                            Debug.Log("on process le packet");
-                            try
-                            {
-                                if (ProcessAction(curCommand))
-                                {
-                                    //si on a process on enleve
-                                    _gameCommands.TryDequeue(out curCommand);
-                                }
-                                else
-                                {
-                                    //si on a pas ce qu'il faut pour process on attend
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Debug.LogError($"Erreure lors du processing du paquet {curCommand}");
-                                Debug.LogError(e);
-                                _gameCommands.TryDequeue(out _);
-                            }
-                        }
-                    }
-                });
-                _gameProcessThread.Start();
+                    Debug.LogError("Erreure lors d'une action sur le thread de jeu");
+                    Debug.LogError(e);
+                }
             }
         }
 
@@ -231,23 +299,31 @@ namespace Script.Networking
             }
             else
             {
-                PreQueue(packet);
+                AddCommandToQueue(packet);
             }
         }
 
-        private void PreQueue(GameCommand command)
+        private void AddCommandToQueue(GameCommand command)
         {
-            if (command is ExternalCommand externalCommand)
+            lock (this)
             {
-                //on verifie les attendeurs
-                if (_waitedExternalCommands.TryGetValue(command.GetType(), out var value))
+                if (command is ExternalCommand externalCommand)
                 {
-                    value(externalCommand);
+                    //on verifie les attendeurs
+                    lock (this)
+                    {
+                        if (_waitedExternalCommands.TryRemove(command.GetType(), out var value))
+                        {
+                            value.SetResult(externalCommand);
+                        }
+                    }
                 }
-            }
-            else
-            {
-                _gameCommands.Enqueue(command);
+                else
+                {
+                    _gameCommands.Enqueue(command);
+                }
+
+                Monitor.PulseAll(this);
             }
         }
 
@@ -263,20 +339,90 @@ namespace Script.Networking
             }
             else
             {
-                PreQueue(command);
+                AddCommandToQueue(command);
                 _networkManager.Send(command);
             }
         }
 
-        public bool IsLocalPlayer(Player player)
+        private volatile bool _interrupted;
+
+        public T WaitForTaskWithPolling<T>(TaskCompletionSource<T> completionSource, bool onGameThread)
         {
-            return Equals(UnityGame.LocalGamePlayer, player);
+            if (_interrupted)
+            {
+                throw new ThreadInterruptedException();
+            }
+            // Debug.Log($"On rentre dans WaitForTaskWithPolling {Thread.CurrentThread.Name}");
+            lock (this)
+            {
+                while (true)
+                {
+                    // Debug.Log($"On pulse all {Thread.CurrentThread.Name}");
+                    Monitor.PulseAll(this);
+                    switch (completionSource.Task.Status)
+                    {
+                        case TaskStatus.Canceled:
+                            throw new InvalidOperationException("External command task was cancelled");
+                        case TaskStatus.Created:
+                        case TaskStatus.Running:
+                        case TaskStatus.WaitingForActivation:
+                        case TaskStatus.WaitingForChildrenToComplete:
+                        case TaskStatus.WaitingToRun:
+                            // Debug.Log($"la tache est pas finie {Thread.CurrentThread.Name}");
+                            if (onGameThread)
+                            {
+                                // Debug.Log($"GameThread, on process {Thread.CurrentThread.Name}");
+                                ProcessGameThreadActions();
+                            }
+
+                            // Debug.Log($"Dodo {Thread.CurrentThread.Name}");
+                            try
+                            {
+                                Monitor.Wait(this);
+                            }
+                            catch (ThreadInterruptedException)
+                            {
+                                _interrupted = true;
+                                throw;
+                            }
+
+                            // Debug.Log($"Debout{Thread.CurrentThread.Name}");
+                            break;
+                        case TaskStatus.Faulted:
+                            if (completionSource.Task.Exception != null)
+                                throw completionSource.Task.Exception;
+                            else throw new InvalidOperationException();
+                        case TaskStatus.RanToCompletion:
+                            return completionSource.Task.Result;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+            }
         }
 
-        public void WaitFor<T>(Action<T> action) where T : ExternalCommand
+        public T WaitForExternalCommand<T>() where T : ExternalCommand
         {
-            _waitedExternalCommands[typeof(T)] = (e) => action((T)e);
+            if (_waitedExternalCommands.ContainsKey(typeof(T)))
+                throw new InvalidOperationException(
+                    $"Il y a déja une attente pour une commande de type {typeof(T)}");
+            var commandTask = new TaskCompletionSource<ExternalCommand>();
+            _waitedExternalCommands[typeof(T)] = commandTask;
+
+            return (T)WaitForTaskWithPolling(commandTask, true);
         }
+        
+        public T RunOnGameThread<T>(Func<Game,T> action)
+        {
+            var actionTask = new TaskCompletionSource<bool>();
+            var res = default(T);
+            GameThreadQueue.Enqueue((actionTask, () => { res = action(Game); }));
+
+            WaitForTaskWithPolling(actionTask, false);
+
+            return res;
+        }
+
 
         public Card ResolveCard(int objCardId)
         {
@@ -285,10 +431,17 @@ namespace Script.Networking
 
         public Player ResolvePlayer(int playerId)
         {
+            Debug.Log($"Resolving playerid {playerId}");
             if (Game.Player1.Id == playerId)
+            {
+                Debug.Log("its first");
                 return Game.Player1;
+            }
             else if (Game.Player2.Id == playerId)
+            {
+                Debug.Log("its second");
                 return Game.Player2;
+            }
             else
             {
                 throw new InvalidOperationException($"Playerid {playerId} does not exist");
@@ -312,7 +465,8 @@ namespace Script.Networking
         private void OnDisable()
         {
             NetworkGameState = NetworkGameState.NOT_CONNECTED;
-            _gameProcessThread?.Abort();
+            _gameProcessThread?.Interrupt();
+            _interrupted = true;
         }
     }
 }

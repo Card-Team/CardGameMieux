@@ -105,7 +105,7 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
             cardRenderer.Flip();
         }
         var oldPos = cardRenderer.transform.position;
-        oldPos.z = transform.position.z + cards.IndexOf(cardRenderer);
+        oldPos.z = -(transform.position.z + cards.IndexOf(cardRenderer));
         cardRenderer.transform.position = oldPos;
     }
 

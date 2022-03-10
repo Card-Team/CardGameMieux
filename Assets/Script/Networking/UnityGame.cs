@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using CardGameEngine;
 using CardGameEngine.Cards;
 using CardGameEngine.Cards.CardPiles;
@@ -28,10 +30,12 @@ namespace Script.Networking
         private Queue<Func<IEnumerator>> _player1AnimQueue = new Queue<Func<IEnumerator>>();
         private Queue<Func<IEnumerator>> _player2AnimQueue = new Queue<Func<IEnumerator>>();
         private NetworkConfiguration _nc;
+        private NetworkedGame _network;
 
 
         private void Awake()
         {
+            _syncEventsManager = FindObjectOfType<SyncEventsManager>();
             _nc = new NetworkConfiguration()
             {
                 NetworkMode =
@@ -47,8 +51,8 @@ namespace Script.Networking
             if (_nc.NetworkMode == NetworkMode.Client)
             {
                 LocalPlayer = Owner.Player2;
-                j1.transform.localRotation = Quaternion.Euler(0,0,180);
-                j2.transform.localRotation = Quaternion.Euler(0,0,0);
+                j1.transform.localRotation = Quaternion.Euler(0, 0, 180);
+                j2.transform.localRotation = Quaternion.Euler(0, 0, 0);
             }
             else
             {
@@ -59,11 +63,11 @@ namespace Script.Networking
         // Start is called before the first frame update
         void OnEnable()
         {
-            var network = FindObjectOfType<NetworkedGame>();
-           
+            _network = FindObjectOfType<NetworkedGame>();
 
-            network.EventRegistration = GameInit;
-            network.SetUpNetworkGame(_nc, "Raoult", new List<string>() {"pistolet","carteblanche"});
+
+            _network.EventRegistration = GameInit;
+            _network.SetUpNetworkGame(_nc, "Raoult", new List<string>() { "pistolet", "carteblanche" });
         }
 
         private void GameInit(Game game)
@@ -100,6 +104,14 @@ namespace Script.Networking
             // game.EventManager.SubscribeToEvent<CardPlayEvent>(e => Debug.Log($"Card played : {e.Card.Name}"));
         }
 
+        private SyncEventsManager _syncEventsManager;
+
+        public T RunOnGameThread<T>(Func<Game,T> func)
+        {
+            var res = _network.RunOnGameThread(func);
+            return res;
+        }
+
         public void AddToQueue(Func<IEnumerator> action, Owner owner)
         {
             var queue = owner switch
@@ -124,6 +136,11 @@ namespace Script.Networking
                 yield return StartCoroutine(action());
                 queue.Dequeue();
             }
+        }
+
+        public static bool IsLocalPlayer(Player player)
+        {
+            return Equals(UnityGame.LocalGamePlayer, player);
         }
     }
 }

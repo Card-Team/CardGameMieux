@@ -19,7 +19,7 @@ namespace Script.Input
         private PlayerActions.IMainActions _myTurnInputManager;
         private PlayerActions.ITargetingActions _targetingActions;
 
-        private void Start()
+        private void Awake()
         {
             _myTurnInputManager = GetComponent<PlayerActions.IMainActions>();
             _targetingActions = GetComponent<PlayerActions.ITargetingActions>();
