@@ -13,12 +13,13 @@ public class EnregistrementDeck : MonoBehaviour
 {
     public Button enregistrer;
     public TMP_InputField nomDeck; 
-    List<string> liste = FindObjectOfType<LectureCartes>().listeCarteSelectionner;
+    private List<string> _liste = FindObjectOfType<LectureCartes>().listeCarteSelectionner = new List<string>();
     public GameObject panelDeckExistant;
     public void Enregistrement()
     {
-        if (liste.Count == 12)
+        if (_liste.Count == 12)
         {
+            Debug.Log(_liste[_liste.Count-1]);
             if (File.Exists(nomDeck + ".txt"))
             {
                 panelDeckExistant.SetActive(true);
@@ -35,6 +36,10 @@ public class EnregistrementDeck : MonoBehaviour
                 fileStr.Write(textfile, 0, textfile.Length);
                 Debug.Log("creer le fichier");
             }
+        }
+        else
+        {
+            Debug.Log("Il faut selectionner 12 cartes pour pouvoir enregistrer le deck");
         }
     }
 }

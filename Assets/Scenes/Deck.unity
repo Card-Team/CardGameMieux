@@ -160,7 +160,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 106.74, y: -194}
+  m_AnchoredPosition: {x: 117.29, y: -198.92}
   m_SizeDelta: {x: 94.9637, y: 32.1692}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &828341
@@ -1060,7 +1060,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 396956033}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.9537197
+  m_Size: 0.44545937
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1128,7 +1128,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 923075522}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -387.0736, y: -249.1588, z: 0}
+  m_LocalPosition: {x: -384.3, y: -242.2, z: 0}
   m_LocalScale: {x: 7.7910066, y: 1.6170493, z: 1}
   m_Children: []
   m_Father: {fileID: 1314562527}
@@ -1221,7 +1221,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 111.139984, y: 153}
+  m_AnchoredPosition: {x: 117.29, y: 159}
   m_SizeDelta: {x: 142.099, y: 41.161}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1203875708
@@ -1436,7 +1436,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1310985730}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -386.4372, y: -207.3161, z: 0}
+  m_LocalPosition: {x: -386.4372, y: -210.3, z: 0}
   m_LocalScale: {x: 7.31411, y: 1.5616764, z: 1}
   m_Children: []
   m_Father: {fileID: 1314562527}
@@ -1454,7 +1454,6 @@ GameObject:
   - component: {fileID: 1314562526}
   - component: {fileID: 1314562525}
   - component: {fileID: 1314562524}
-  - component: {fileID: 1314562528}
   m_Layer: 5
   m_Name: Deck
   m_TagString: Untagged
@@ -1550,38 +1549,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1314562528
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1314562523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9345ac9bc107b4d448d89437e0ecd0d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GameObjectCartes: {fileID: 0}
-  textTemplate: {fileID: 0}
-  cardTemplate: {fileID: 0}
-  _contactFilter2D:
-    useTriggers: 0
-    useLayerMask: 0
-    useDepth: 0
-    useOutsideDepth: 0
-    useNormalAngle: 0
-    useOutsideNormalAngle: 0
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 0
-    minDepth: 0
-    maxDepth: 0
-    minNormalAngle: 0
-    maxNormalAngle: 0
-  enregistrer: {fileID: 0}
-  nomDeck: {fileID: 0}
-  listeCarteSelectionner: []
 --- !u!1 &1397313783
 GameObject:
   m_ObjectHideFlags: 0
@@ -1776,8 +1743,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 111.14, y: -25}
-  m_SizeDelta: {x: 150.89, y: 286.1159}
+  m_AnchoredPosition: {x: 117.29, y: -29.93}
+  m_SizeDelta: {x: 163.19, y: 295.97}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1450816723
 MonoBehaviour:
@@ -1798,14 +1765,14 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 5
   m_Viewport: {fileID: 1639141204}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 862602269}
   m_HorizontalScrollbarVisibility: 2
   m_VerticalScrollbarVisibility: 2
   m_HorizontalScrollbarSpacing: -3
-  m_VerticalScrollbarSpacing: -3
+  m_VerticalScrollbarSpacing: -6
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2740,6 +2707,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1871659396}
+  - component: {fileID: 1871659397}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -2764,8 +2732,34 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.000019663285}
-  m_SizeDelta: {x: 0, y: 300}
+  m_SizeDelta: {x: -8.3142, y: 664.4152}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &1871659397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871659395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 1
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &1936173227
 GameObject:
   m_ObjectHideFlags: 0
@@ -2863,7 +2857,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameObjectCartes: {fileID: 373538930}
-  textTemplate: {fileID: 58114822}
   cardTemplate: {fileID: 2530034160083761924, guid: f60c7b4a37f753a44b7b4859852ddb3f, type: 3}
   _contactFilter2D:
     useTriggers: 1
@@ -2879,8 +2872,8 @@ MonoBehaviour:
     maxDepth: 0
     minNormalAngle: 0
     maxNormalAngle: 0
-  enregistrer: {fileID: 828341}
-  nomDeck: {fileID: 1203875708}
+  ButtonDeck: {fileID: 7586235910743885947, guid: 57b82a5e044738f41bb6da4ae4574e26, type: 3}
+  ParentDeck: {fileID: 1871659396}
   listeCarteSelectionner: []
 --- !u!1 &1980384446
 GameObject:

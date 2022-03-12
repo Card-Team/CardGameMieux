@@ -13,15 +13,13 @@ using UnityEngine.UI;
 public class LectureCartes : MonoBehaviour
 {
     public Transform GameObjectCartes;
-    public TextMeshProUGUI textTemplate;
     TextMeshPro text;
     public CardRenderer cardTemplate;
     List<CardRenderer> cartes = new List<CardRenderer>();
     private float tailleListe;
     public ContactFilter2D _contactFilter2D;
-
-    public Button enregistrer;
-    public TMP_InputField nomDeck;
+    public Button ButtonDeck;
+    public Transform ParentDeck;
 
     public void Start()
     {
@@ -48,8 +46,7 @@ public class LectureCartes : MonoBehaviour
             String fileSansPath2 = fileSansPath1.Replace(".lua", "");
             //Debug.Log(fileSansPath2);
             //carte
-            var cardRenderer =
-                Instantiate(cardTemplate, GameObjectCartes); //Creer un nouveau cardRenderer avec instantiate
+            var cardRenderer = Instantiate(cardTemplate, GameObjectCartes); //Creer un nouveau cardRenderer avec instantiate
             cartes.Add(cardRenderer);
             cardRenderer.scriptToDisplay = fileSansPath2; //champs pour afficher ce script la
             cardRenderer.transform.localPosition = new Vector3(posX, posY, 0);
@@ -102,6 +99,14 @@ public class LectureCartes : MonoBehaviour
         {
             //boite de colision de la carte en dessous
             var first = proche.First().GetComponent<CardRenderer>();
+            //verification que la carte n'a pas ete pris plus de 2 fois sinon ne pas la mettre dans la liste
+            if (listeCarteSelectionner.Count(list => first.scriptToDisplay == list)==2)
+            {
+                //TODO faire griser la carte non selectionnable
+                Debug.Log("Existe deja");
+                first.transform.localScale = Vector3.one;
+                return ;
+            }
             //Debug.Log(first.name);
             if (first != selectionCarte && selectionCarte != null)
             {
@@ -110,11 +115,13 @@ public class LectureCartes : MonoBehaviour
 
             first.transform.localScale = new Vector3(1.2f, 1.2f, 1);
             selectionCarte = first;
-            //clique souris
+            //clique souris et liste inferieur a 12 alors ajout dans la liste 
             if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count < 12)
             {
-                var firstClique = proche.First().GetComponent<CardRenderer>();
-                listeCarteSelectionner.Add(firstClique.name);
+                Button b = Instantiate(ButtonDeck, ParentDeck, false);
+                b.GetComponentInChildren<TextMeshProUGUI>().text = first.Card.Name.Value;
+
+                listeCarteSelectionner.Add(first.scriptToDisplay);
                 Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);
             }
         }
