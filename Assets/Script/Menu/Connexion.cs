@@ -96,7 +96,8 @@ public class Connexion : MonoBehaviour
     
     public void RetourConnexion()
     {
-        StopAllCoroutines();
-        panelConnexion.SetActive(false);
+        // StopAllCoroutines();
+        // panelConnexion.SetActive(false);
+        SceneManager.LoadScene("Scenes/Menu Principal");
     }
 }

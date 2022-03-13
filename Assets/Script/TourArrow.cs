@@ -7,9 +7,12 @@ using UnityEngine;
 
 public class TourArrow : MonoBehaviour, IEventSubscriber
 {
+    private SpriteRenderer _spriteRenderer;
     // Start is called before the first frame update
     void Start()
     {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _spriteRenderer.enabled = false;
     }
 
     // Update is called once per frame
@@ -20,6 +23,11 @@ public class TourArrow : MonoBehaviour, IEventSubscriber
     public void Subscribe(SyncEventWrapper eventManager)
     {
         eventManager.SubscribeToEvent<StartTurnEvent>(OnStartTurn, false, true);
+        _spriteRenderer.enabled = true;
+        if (UnityGame.LocalPlayer == Owner.Player2)
+        {
+            transform.localRotation = Quaternion.Euler(0, 0, 90);
+        }
     }
 
     private void OnStartTurn(StartTurnEvent evt)

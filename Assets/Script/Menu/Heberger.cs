@@ -90,7 +90,8 @@ public class Heberger : MonoBehaviour
 
     public void RetourHerberger()
     {
-        StopAllCoroutines();
-        panelHeberger.SetActive(false);
+        // StopAllCoroutines();
+        // panelHeberger.SetActive(false);
+        SceneManager.LoadScene("Scenes/Menu Principal");
     }
 }

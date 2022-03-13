@@ -33,6 +33,7 @@ namespace Script.Networking
         private NetworkedGame _network;
 
 
+
         private void Awake()
         {
             _syncEventsManager = FindObjectOfType<SyncEventsManager>();
@@ -68,10 +69,12 @@ namespace Script.Networking
                 LocalPlayer = Owner.Player2;
                 j1.transform.localRotation = Quaternion.Euler(0, 0, 180);
                 j2.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                connectingObject.SetActive(true);
             }
             else
             {
                 LocalPlayer = Owner.Player1;
+                hostingObject.SetActive(true);
             }
         }
 
@@ -116,11 +119,18 @@ namespace Script.Networking
                 }
             }
 
+            interFaceObject.SetActive(true);
+            connectingObject.SetActive(false);
+            hostingObject.SetActive(false);
             // game.EventManager.SubscribeToEvent<CardPlayEvent>(e => Debug.Log($"Card played : {e.Card.Name}"));
         }
 
         private SyncEventsManager _syncEventsManager;
         private List<string> _ownDeck;
+        public GameObject interFaceObject;
+        public GameObject connectingObject;
+        public GameObject hostingObject;
+        
 
         public T RunOnGameThread<T>(Func<Game, T> func)
         {
