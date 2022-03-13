@@ -73,8 +73,8 @@ public class LectureCartes : MonoBehaviour
     {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         //Connaitre la position de la souris par rapport a la camera
-        //Debug.Log("x : " +mousePos.x + "et y: "+mousePos.y);
-        if (mousePos.x > -9 && mousePos.y < 5.2)
+        //Debug.Log("x : " +mousePos.x + " et y: "+mousePos.y);
+        if (mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5)
         {
             //changer la postion du GameobjectCartes : faire desendre les cartes
             Vector3 pos = GameObjectCartes.transform.position;
@@ -103,7 +103,7 @@ public class LectureCartes : MonoBehaviour
             if (listeCarteSelectionner.Count(list => first.scriptToDisplay == list)==2)
             {
                 //TODO faire griser la carte non selectionnable
-                Debug.Log("Existe deja");
+                //Debug.Log("Existe deja");
                 first.transform.localScale = Vector3.one;
                 return ;
             }
@@ -113,8 +113,12 @@ public class LectureCartes : MonoBehaviour
                 selectionCarte.transform.localScale = Vector3.one;
             }
 
-            first.transform.localScale = new Vector3(1.2f, 1.2f, 1);
-            selectionCarte = first;
+            if (mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5)
+            {
+                first.transform.localScale = new Vector3(1.2f, 1.2f, 1);
+                selectionCarte = first;
+            }
+
             //clique souris et liste inferieur a 12 alors ajout dans la liste 
             if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count < 12)
             {
@@ -122,8 +126,10 @@ public class LectureCartes : MonoBehaviour
                 b.GetComponentInChildren<TextMeshProUGUI>().text = first.Card.Name.Value;
 
                 listeCarteSelectionner.Add(first.scriptToDisplay);
-                Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);
+                //Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);
             }
+            //clique sur une carte dans la liste : le supprimer de la liste
+            
         }
         else
         {

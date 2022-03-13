@@ -6,40 +6,81 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 using Button = UnityEngine.UIElements.Button;
 
 [Serializable]
 public class EnregistrementDeck : MonoBehaviour
 {
-    public Button enregistrer;
-    public TMP_InputField nomDeck; 
-    private List<string> _liste = FindObjectOfType<LectureCartes>().listeCarteSelectionner = new List<string>();
+    public TMP_InputField nomDeck;
+    private List<string> liste;
     public GameObject panelDeckExistant;
+    public Button Ok;
+    public Button Non;
+    public GameObject pas12Cartes;
+    public GameObject panelNomDeckVide;
+    private String name;
+
+    void Start()
+    {
+        liste = FindObjectOfType<LectureCartes>().listeCarteSelectionner = new List<string>();
+    }
+
+    IEnumerator OnCoroutine(GameObject panel)
+    {
+        yield return new WaitForSeconds(5);
+        panel.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            panelDeckExistant.SetActive(false);
+            panelNomDeckVide.SetActive(false);
+            pas12Cartes.SetActive(false);
+        }
+    }
+
     public void Enregistrement()
     {
-        if (_liste.Count == 12)
+        //Debug.Log("Nom du deck : " + nomDeck.text + nomDeck.text.Length);
+        if (String.IsNullOrWhiteSpace(nomDeck.text))
         {
-            Debug.Log(_liste[_liste.Count-1]);
-            if (File.Exists(nomDeck + ".txt"))
+            //Visible 5 sec
+            //Debug.Log("Nom du deck : ");
+            panelNomDeckVide.gameObject.SetActive(true);
+            StartCoroutine(OnCoroutine(panelNomDeckVide));
+        }
+        else if (liste.Count == 12)
+        {
+            var nomDeckText = nomDeck.text + ".txt";
+            name = nomDeckText;
+            if (File.Exists(nomDeckText))
             {
-                panelDeckExistant.SetActive(true);
                 //interface de validation pour suppression du fichier deja existant
-                File.Delete(nomDeck + ".txt");
-                Debug.Log("fichier deja existant");
+                panelDeckExistant.SetActive(true);
             }
-
             //creation de fichier
-            using (FileStream fileStr = File.Create(nomDeck + ".txt"))
-            {
-                // Ajouter du texte au fichier  
-                Byte[] textfile = new UTF8Encoding(true).GetBytes("TESTTTT");
-                fileStr.Write(textfile, 0, textfile.Length);
-                Debug.Log("creer le fichier");
-            }
+            File.Create(nomDeckText);
+            // Ajouter du texte au fichier  
+            File.WriteAllLines(nomDeckText, liste);
+            //Debug.Log("fichier"+nomDeckText+ " creer");
         }
         else
         {
-            Debug.Log("Il faut selectionner 12 cartes pour pouvoir enregistrer le deck");
+            pas12Cartes.gameObject.SetActive(true);
+            StartCoroutine(OnCoroutine(pas12Cartes));
         }
+    }
+
+    public void CliqueOk()
+    {
+        File.Delete(name+".txt");
+    }
+
+    public void CliqueNon()
+    {
+        panelDeckExistant.gameObject.SetActive(false);
     }
 }
