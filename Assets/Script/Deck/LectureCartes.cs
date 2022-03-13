@@ -7,7 +7,9 @@ using System.Text;
 using CardGameEngine.Cards;
 using Script;
 using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LectureCartes : MonoBehaviour
@@ -24,6 +26,10 @@ public class LectureCartes : MonoBehaviour
     public void Start()
     {
         NomCartes();
+        
+        //si on modifie un deck existant
+        //foreach sur le fichier texte du deck choisis
+        //dans le foreach on creer la carte
     }
 
     public void NomCartes()
@@ -33,7 +39,7 @@ public class LectureCartes : MonoBehaviour
         DirectoryInfo di = new DirectoryInfo(Application.streamingAssetsPath + "/EffectsScripts/Card");
         var files = Directory.GetFiles(Application.streamingAssetsPath + "/EffectsScripts/Card", "*.lua",
                 SearchOption.AllDirectories)
-            .Where(s => !(s.Contains("_")) && s.EndsWith(".lua")).ToList();
+            .Where(s => !(s.StartsWith("_")) && s.EndsWith(".lua") && !(s.Contains("example"))).ToList();
 
         int tour = 0;
         float posY = 0;
@@ -103,7 +109,6 @@ public class LectureCartes : MonoBehaviour
             if (listeCarteSelectionner.Count(list => first.scriptToDisplay == list)==2)
             {
                 //TODO faire griser la carte non selectionnable
-                //Debug.Log("Existe deja");
                 first.transform.localScale = Vector3.one;
                 return ;
             }
@@ -119,17 +124,11 @@ public class LectureCartes : MonoBehaviour
                 selectionCarte = first;
             }
 
-            //clique souris et liste inferieur a 12 alors ajout dans la liste 
-            if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count < 12)
+            //clique souris dans le rectangle des cartes du deck et liste inferieur a 12 alors ajout dans la liste  
+            if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count < 12 && mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5)
             {
-                Button b = Instantiate(ButtonDeck, ParentDeck, false);
-                b.GetComponentInChildren<TextMeshProUGUI>().text = first.Card.Name.Value;
-
-                listeCarteSelectionner.Add(first.scriptToDisplay);
-                //Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);
+                AjouterCarte(first);
             }
-            //clique sur une carte dans la liste : le supprimer de la liste
-            
         }
         else
         {
@@ -138,5 +137,20 @@ public class LectureCartes : MonoBehaviour
                 selectionCarte.transform.localScale = Vector3.one;
             }
         }
+    }
+
+    private void AjouterCarte(CardRenderer first)
+    {
+        Button b = Instantiate(ButtonDeck, ParentDeck, false);
+        b.GetComponentInChildren<TextMeshProUGUI>().text = first.Card.Name.Value;
+        b.name = first.Card.Name.Value;
+        b.GetComponentInChildren<RemoveCardList>().NomCard = first.scriptToDisplay;
+        listeCarteSelectionner.Add(first.scriptToDisplay);
+        //Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);
+    }
+
+    public void Retour()
+    {
+        SceneManager.LoadScene("Menu Principal");
     }
 }

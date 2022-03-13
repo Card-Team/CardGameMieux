@@ -15,28 +15,30 @@ public class EnregistrementDeck : MonoBehaviour
     public TMP_InputField nomDeck;
     private List<string> liste;
     public GameObject panelDeckExistant;
-    public Button Ok;
-    public Button Non;
     public GameObject pas12Cartes;
     public GameObject panelNomDeckVide;
-    private String name;
+    public GameObject deckEnregistrer;
 
     void Start()
     {
-        liste = FindObjectOfType<LectureCartes>().listeCarteSelectionner = new List<string>();
+        liste = FindObjectOfType<LectureCartes>().listeCarteSelectionner;
     }
 
     IEnumerator OnCoroutine(GameObject panel)
     {
         yield return new WaitForSeconds(5);
         panel.SetActive(false);
+        if (panel == deckEnregistrer)
+        {
+            Debug.Log("SORTIR");
+        }
     }
 
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            panelDeckExistant.SetActive(false);
+            deckEnregistrer.SetActive(false);
             panelNomDeckVide.SetActive(false);
             pas12Cartes.SetActive(false);
         }
@@ -55,17 +57,17 @@ public class EnregistrementDeck : MonoBehaviour
         else if (liste.Count == 12)
         {
             var nomDeckText = nomDeck.text + ".txt";
-            name = nomDeckText;
             if (File.Exists(nomDeckText))
             {
                 //interface de validation pour suppression du fichier deja existant
                 panelDeckExistant.SetActive(true);
+                return;
             }
-            //creation de fichier
-            File.Create(nomDeckText);
             // Ajouter du texte au fichier  
-            File.WriteAllLines(nomDeckText, liste);
+            File.WriteAllLines(Application.persistentDataPath+"/"+nomDeckText, liste);
             //Debug.Log("fichier"+nomDeckText+ " creer");
+            deckEnregistrer.gameObject.SetActive(true);
+            StartCoroutine(OnCoroutine(deckEnregistrer));
         }
         else
         {
@@ -76,7 +78,11 @@ public class EnregistrementDeck : MonoBehaviour
 
     public void CliqueOk()
     {
-        File.Delete(name+".txt");
+        Debug.Log(nomDeck.text);
+        File.WriteAllLines(Application.persistentDataPath+"/"+nomDeck.text+".txt", liste);
+        deckEnregistrer.gameObject.SetActive(true);
+        panelDeckExistant.gameObject.SetActive(false);
+        StartCoroutine(OnCoroutine(deckEnregistrer));
     }
 
     public void CliqueNon()
