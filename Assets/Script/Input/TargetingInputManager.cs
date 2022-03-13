@@ -6,6 +6,9 @@ namespace Script.Input
     {
         private CardTargetCP _cardTargetCp;
 
+        public float scrollSensitivity = 1;
+        
+
         private void Start()
         {
             _cardTargetCp = FindObjectOfType<CardTargetCP>();
@@ -27,6 +30,17 @@ namespace Script.Input
                     HoveredCard = null;
                     _cardTargetCp.OnSelected(card);
                 }
+            }
+        }
+
+       
+
+        public void OnScrollTargets(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                var axis = context.ReadValue<float>();
+                _cardTargetCp.Scroll(axis * scrollSensitivity);
             }
         }
     }

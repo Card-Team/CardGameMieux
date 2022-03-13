@@ -4,8 +4,10 @@ using Network;
 using Network.Enums;
 using Network.Interfaces;
 using Script.Networking.Management.EstablishmentPackets;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using Random = System.Random;
+using Task = System.Threading.Tasks.Task;
 
 namespace Script.Networking.Management
 {
@@ -31,10 +33,12 @@ namespace Script.Networking.Management
             _serverConnectionContainer.ConnectionEstablished += OnClientConnect;
             _serverConnectionContainer.ConnectionLost += OnClientLost;
             _serverConnectionContainer.AllowUDPConnections = false;
+            
+            Task.Run(async () =>
+            {
+                await _serverConnectionContainer.Start();
+            });
 
-#pragma warning disable CS4014
-            _serverConnectionContainer.Start();
-#pragma warning restore CS4014
         }
 
         private void OnClientLost(Connection connection, ConnectionType connectionType, CloseReason closeReason)

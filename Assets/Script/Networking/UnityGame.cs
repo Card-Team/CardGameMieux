@@ -36,17 +36,32 @@ namespace Script.Networking
         private void Awake()
         {
             _syncEventsManager = FindObjectOfType<SyncEventsManager>();
-            _nc = new NetworkConfiguration()
+            var elem = FindObjectOfType<GameSettingsContainer>();
+            if (elem != null)
             {
-                NetworkMode =
+                _nc = new NetworkConfiguration()
+                {
+                    NetworkMode = elem.NetworkMode,
+                    IPAddress = elem.IPAddress,
+                    Port = elem.port,
+                };
+                _ownDeck = new List<string>(elem.playerDeck);
+            }
+            else
+            {
+                _nc = new NetworkConfiguration()
+                {   
+                    NetworkMode =
 #if UNITY_EDITOR
-                    ClonesManager.IsClone() ? NetworkMode.Client : NetworkMode.Server,
+                        ClonesManager.IsClone() ? NetworkMode.Client : NetworkMode.Server,
 #else
                     NetworkMode.Client,
 #endif
-                IPAddress = IPAddress.IPv6Loopback,
-                Port = 1246
-            };
+                    IPAddress = IPAddress.IPv6Loopback,
+                    Port = 1246
+                };
+                _ownDeck = new List<string> { "pistolet", "carteblanche" };
+            }
 
             if (_nc.NetworkMode == NetworkMode.Client)
             {
@@ -67,7 +82,7 @@ namespace Script.Networking
 
 
             _network.EventRegistration = GameInit;
-            _network.SetUpNetworkGame(_nc, "Raoult", new List<string>() { "pistolet", "carteblanche" });
+            _network.SetUpNetworkGame(_nc, "Raoult", _ownDeck);
         }
 
         private void GameInit(Game game)
@@ -105,8 +120,9 @@ namespace Script.Networking
         }
 
         private SyncEventsManager _syncEventsManager;
+        private List<string> _ownDeck;
 
-        public T RunOnGameThread<T>(Func<Game,T> func)
+        public T RunOnGameThread<T>(Func<Game, T> func)
         {
             var res = _network.RunOnGameThread(func);
             return res;

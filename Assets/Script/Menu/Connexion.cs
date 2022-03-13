@@ -1,8 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using Script.Networking;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Connexion : MonoBehaviour
@@ -59,8 +64,25 @@ public class Connexion : MonoBehaviour
 
     public void Rejoindre()
     {
-        PlayerPrefs.SetString(Ip,ip1.text + "." + ip2.text + "." + ip3.text + "." + ip4.text);                //playerPrefs IP
-        PlayerPrefs.SetString(PortC,port.text);                //playerPrefs port
+        var ip1Text = ip1.text + "." + ip2.text + "." + ip3.text + "." + ip4.text;
+        var portText = port.text;
+        var deck = PlayerPrefs.GetString(NomButton.Nomdeck);
+        var deckFile =  Directory.EnumerateFiles(Application.persistentDataPath,"*.txt")
+            .First(f => f.EndsWith(deck));
+        var cartes = File.ReadLines(deckFile);
+
+        var gameSettingsContainer = new GameObject("ParametresContainer")
+            .AddComponent<GameSettingsContainer>();
+
+        gameSettingsContainer.port = int.Parse(portText);
+        gameSettingsContainer.IPAddress = IPAddress.Parse(ip1Text);
+        gameSettingsContainer.playerDeck = cartes;
+        gameSettingsContainer.NetworkMode = NetworkMode.Client;
+        
+        PlayerPrefs.SetString(Ip,ip1Text.Trim());                //playerPrefs IP
+        PlayerPrefs.SetString(PortC,portText.Trim());                //playerPrefs port
+        SceneManager.LoadScene("Scenes/Partie");
+        
     }
     public void AppuieConnexion()
     {

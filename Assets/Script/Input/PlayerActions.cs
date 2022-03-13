@@ -132,6 +132,15 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Scroll Targets"",
+                    ""type"": ""Value"",
+                    ""id"": ""946c90cb-47f4-4aec-afd3-974a04c67832"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -154,6 +163,17 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard & Mouse"",
                     ""action"": ""Point Card"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1bda6c79-5ecf-46fb-9a7d-f15b041d6002"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Scroll Targets"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -189,6 +209,7 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
         m_Targeting = asset.FindActionMap("Targeting", throwIfNotFound: true);
         m_Targeting_PickCard = m_Targeting.FindAction("Pick Card", throwIfNotFound: true);
         m_Targeting_PointCard = m_Targeting.FindAction("Point Card", throwIfNotFound: true);
+        m_Targeting_ScrollTargets = m_Targeting.FindAction("Scroll Targets", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -307,12 +328,14 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
     private ITargetingActions m_TargetingActionsCallbackInterface;
     private readonly InputAction m_Targeting_PickCard;
     private readonly InputAction m_Targeting_PointCard;
+    private readonly InputAction m_Targeting_ScrollTargets;
     public struct TargetingActions
     {
         private @PlayerActions m_Wrapper;
         public TargetingActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @PickCard => m_Wrapper.m_Targeting_PickCard;
         public InputAction @PointCard => m_Wrapper.m_Targeting_PointCard;
+        public InputAction @ScrollTargets => m_Wrapper.m_Targeting_ScrollTargets;
         public InputActionMap Get() { return m_Wrapper.m_Targeting; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -328,6 +351,9 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                 @PointCard.started -= m_Wrapper.m_TargetingActionsCallbackInterface.OnPointCard;
                 @PointCard.performed -= m_Wrapper.m_TargetingActionsCallbackInterface.OnPointCard;
                 @PointCard.canceled -= m_Wrapper.m_TargetingActionsCallbackInterface.OnPointCard;
+                @ScrollTargets.started -= m_Wrapper.m_TargetingActionsCallbackInterface.OnScrollTargets;
+                @ScrollTargets.performed -= m_Wrapper.m_TargetingActionsCallbackInterface.OnScrollTargets;
+                @ScrollTargets.canceled -= m_Wrapper.m_TargetingActionsCallbackInterface.OnScrollTargets;
             }
             m_Wrapper.m_TargetingActionsCallbackInterface = instance;
             if (instance != null)
@@ -338,6 +364,9 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                 @PointCard.started += instance.OnPointCard;
                 @PointCard.performed += instance.OnPointCard;
                 @PointCard.canceled += instance.OnPointCard;
+                @ScrollTargets.started += instance.OnScrollTargets;
+                @ScrollTargets.performed += instance.OnScrollTargets;
+                @ScrollTargets.canceled += instance.OnScrollTargets;
             }
         }
     }
@@ -362,5 +391,6 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
     {
         void OnPickCard(InputAction.CallbackContext context);
         void OnPointCard(InputAction.CallbackContext context);
+        void OnScrollTargets(InputAction.CallbackContext context);
     }
 }

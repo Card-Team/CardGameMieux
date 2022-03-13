@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Network.Enums;
 using Network.Packets;
+using UnityEngine;
+using Random = System.Random;
 
 namespace Network
 {
@@ -128,7 +130,7 @@ namespace Network
             if (IsTCPOnline) return;
 
             tcpListener = new TcpListener(System.Net.IPAddress.Parse(IPAddress), Port);
-            tcpListener.Server.DualMode = true;
+            // tcpListener.Server.DualMode = true;
             IsTCPOnline = !IsTCPOnline;
             tcpListener.Start();
 

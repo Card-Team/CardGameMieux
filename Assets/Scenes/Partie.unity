@@ -507,6 +507,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc4f95855c9c4247a62af02826909459, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scrollSensitivity: 0.001
 --- !u!1 &811749531
 GameObject:
   m_ObjectHideFlags: 0
@@ -935,6 +936,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 472bbbde30a048d6a3d70db970dbb0fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  networkedGame: {fileID: 0}
 --- !u!1 &1245867476
 GameObject:
   m_ObjectHideFlags: 0
@@ -1230,6 +1232,7 @@ MonoBehaviour:
   locationPrefab: {fileID: 8869492223007743059, guid: 57de9d5fd7fdcec4197667c884b031ec, type: 3}
   targetPicker: {fileID: 1689893926}
   cardContainer: {fileID: 1631263676}
+  maxScrollDistance: 5
 --- !u!4 &1583448120
 Transform:
   m_ObjectHideFlags: 0
