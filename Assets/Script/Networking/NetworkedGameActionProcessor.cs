@@ -1,4 +1,5 @@
 using CardGameEngine.EventSystem;
+using Script.Input;
 using Script.Networking.Commands;
 using Script.Networking.Commands.Extern;
 using UnityEngine;
@@ -18,6 +19,7 @@ namespace Script.Networking
             {
                 Game.PlayCard(ResolvePlayer(playCardCommand.PlayerId), ResolveCard(playCardCommand.CardId),
                     playCardCommand.Upgrade);
+                _inputManager.playFinished = true;
                 return true;
             } else if (curCommand is EndTurnCommand endTurnCommand)
             {

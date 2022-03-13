@@ -56,9 +56,7 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
 
     protected virtual void OnCardMovePile(CardMovePileEvent evt)
     {
-        Debug.Log("CardMovePile aaaaaaa");
         if (evt.SourcePile != _cardPile) return;
-        Debug.Log("CardMovePile a moi");
         
         var cardRenderer = _unityGame.CardRenderers[evt.Card];
         cardRenderer.fond.color = Color.white; //todo peut etre a enlever quand l'effet sera bougé sur un autre gameobject que le fond
@@ -78,19 +76,28 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
 
     private IEnumerator MoveCardAnimation(CardRenderer cardRenderer, Vector2 destination)
     {
-        Debug.Log(destination);
-        var start = (Vector2) cardRenderer.transform.localPosition;
-        var pourcentage = 0.0f;
 
-        while ((Vector2) cardRenderer.transform.localPosition != destination)
+        yield return MoveCardInTime(cardRenderer, destination, 0.2f,OnCardArrived);
+
+        ;
+    }
+
+    public static IEnumerator MoveCardInTime(CardRenderer cardRenderer, Vector3 destination, float time
+        , Action<CardRenderer> onFinish)
+    {
+        var start = (Vector2)cardRenderer.transform.localPosition;
+
+        float tempsParcouru = 0;
+
+        while (tempsParcouru < time)
         {
-            var newPos = Vector2.Lerp(start, destination, pourcentage);
-            cardRenderer.transform.localPosition = newPos;
-            pourcentage += 0.02f;
-            yield return new WaitForEndOfFrame();
+            cardRenderer.transform.localPosition = Vector3.Lerp(start, destination, (tempsParcouru / time));
+            tempsParcouru += Time.deltaTime;
+            yield return null;
         }
 
-        OnCardArrived(cardRenderer);
+        cardRenderer.transform.localPosition = destination;
+        onFinish(cardRenderer);
     }
 
     protected virtual Vector2 GetNewCardDestination(CardRenderer cardRenderer)

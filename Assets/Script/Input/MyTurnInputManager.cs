@@ -28,6 +28,7 @@ namespace Script.Input
                         HoveredCard.Hover = false;
                         var carte = HoveredCard;
                         HoveredCard = null;
+                        InputManager.DisableAll();
                         _game.DoLocalAction(
                             new PlayCardCommand((int)UnityGame.LocalPlayer, carte.Card.Id, false));
                         
@@ -53,6 +54,7 @@ namespace Script.Input
                         HoveredCard.Hover = false;
                         var card = HoveredCard;
                         HoveredCard = null;
+                        InputManager.DisableAll();
                         _game.DoLocalAction(
                             new PlayCardCommand((int)UnityGame.LocalPlayer, card.Card.Id, true));
                         

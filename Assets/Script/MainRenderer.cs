@@ -45,14 +45,13 @@ namespace Script
 
         private IEnumerator ReorganiseCards(CardRenderer cardRenderer)
         {
-            var start = 0;
-            var dest = cardRenderer.Width / 2;
-            float cur = 0;
+            const float time = 0.1f;
+            float elapsed = 0.0f;
 
             List<Vector3> oldPositions = cards.Select(c => c.transform.localPosition).ToList();
             List<CardRenderer> theCrds = cards.ToList();
 
-            while (cur < 1)
+            while (elapsed < time)
             {
                 for (var i = 0; i < oldPositions.Count; i++)
                 {
@@ -61,11 +60,11 @@ namespace Script
                         new Vector2((cardRenderer.Width) * i - ((cardRenderer.Width) * (oldPositions.Count - 1)) / 2, 0f);
 
                     act.transform.localPosition = Vector2.Lerp(oldPositions[i],
-                        destVec, cur);
+                        destVec, (elapsed / time));
                 }
 
-                cur += 0.05f;
-                yield return new WaitForEndOfFrame();
+                elapsed += Time.deltaTime;
+                yield return null;
             }
         }
 

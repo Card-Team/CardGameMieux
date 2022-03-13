@@ -18,6 +18,9 @@ public class CardTargetCP : CommandProviderBehaviour
     public TextMeshPro locationPrefab;
     public GameObject targetPicker;
     public GameObject cardContainer;
+
+    public float maxScrollDistance = 3;
+
     private TextMeshPro _targetText;
     public List<CardRenderer> Pickable { get; } = new List<CardRenderer>();
 
@@ -37,7 +40,7 @@ public class CardTargetCP : CommandProviderBehaviour
 
     protected override void DoAction()
     {
-        _inputManager.OnTarget();
+        _inputManager.DisableAll();
         var cardTarget = (ChooseCardTargetData)infoStruct;
 
         _targetText.text = cardTarget.TargetName;
@@ -52,17 +55,21 @@ public class CardTargetCP : CommandProviderBehaviour
         var positionZ = targetPicker.transform.position.z + 2;
         for (var index = 0; index < cardRenderers.Count; index++)
         {
-            var (cardRenderer,location) = cardRenderers[index];
+            var (cardRenderer, location) = cardRenderers[index];
             _originalPositions[cardRenderer] = cardRenderer.transform.localPosition;
             _parents[cardRenderer] = cardRenderer.transform.parent;
             cardRenderer.transform.parent = cardContainer.transform;
 
             float xpos = (cardWidth + margin) * index - toalWidth / 2.0f;
 
-            cardRenderer.transform.localPosition = new Vector3(xpos * inverseScale, 0f, positionZ);
+            StartCoroutine(
+                PileRenderer.MoveCardInTime(cardRenderer, new Vector3(xpos * inverseScale, 0f, positionZ), 0.1f,
+                    c => _inputManager.EnableThis(InputManager.InputType.Targeting))
+                );
             Pickable.Add(cardRenderer);
             TextMeshPro locPref = Instantiate(locationPrefab, cardContainer.transform);
-            locPref.transform.localPosition = new Vector3(xpos * inverseScale, -(cardRenderer.Height + 0.2f) * inverseScale);
+            locPref.transform.localPosition =
+                new Vector3(xpos * inverseScale, -(cardRenderer.Height + 0.2f) * inverseScale);
             locPref.text = location;
         }
 
@@ -72,7 +79,7 @@ public class CardTargetCP : CommandProviderBehaviour
         // _networkedGame.DoLocalAction(chooseCardTargetCommand);
     }
 
-    private (CardRenderer,string) WithLocation(CardRenderer cardRenderer)
+    private (CardRenderer, string) WithLocation(CardRenderer cardRenderer)
     {
         var pile = _unityGame.PileRenderers.Select(p => p.Value).FirstOrDefault(f => f.cards.Contains(cardRenderer));
 
@@ -84,18 +91,25 @@ public class CardTargetCP : CommandProviderBehaviour
             PileType.Hand => "Main",
             _ => throw new ArgumentOutOfRangeException()
         };
-        texte += $"[{pile.cards.IndexOf(cardRenderer)}] (" + (UnityGame.LocalPlayer == pile.owner ? "Moi" : "Adv") + ")";
+        texte += $"[{pile.cards.IndexOf(cardRenderer)}] (" + (UnityGame.LocalPlayer == pile.owner ? "Moi" : "Adv") +
+                 ")";
 
-        return (cardRenderer,texte);
+        return (cardRenderer, texte);
     }
 
     public void OnSelected(CardRenderer cardRenderer)
     {
-        _inputManager.OnAfterTarget();
+        _inputManager.DisableAll();
         foreach (var (card, pos) in _originalPositions.Select(x => (x.Key, x.Value)))
         {
             card.transform.parent = _parents[card];
-            card.transform.localPosition = pos;
+            StartCoroutine(
+                PileRenderer.MoveCardInTime(card, pos, 0.1f, c =>
+                {
+                    var ourTurn = Equals(_unityGame.RunOnGameThread(g => g.CurrentPlayer), UnityGame.LocalGamePlayer);
+                    if(ourTurn) _inputManager.EnableThis(InputManager.InputType.Main);
+                })
+            );
         }
 
         _originalPositions.Clear();
@@ -105,9 +119,66 @@ public class CardTargetCP : CommandProviderBehaviour
         {
             Destroy(o.gameObject);
         }
+
         targetPicker.SetActive(false);
-        
+
         var chooseCardTargetCommand = new ChooseCardTargetCommand { CardId = cardRenderer.Card.Id };
         _networkedGame.DoLocalAction(chooseCardTargetCommand);
+    }
+
+    private float GetFirstCardLeft()
+    {
+        var cardRenderer = Pickable[0];
+        return cardRenderer.transform.position.x - (cardRenderer.Width * 1 / cardContainer.transform.localScale.x) / 2;
+    }
+
+    private float GetLastCardRight()
+    {
+        var cardRenderer = Pickable[Pickable.Count - 1];
+        return cardRenderer.transform.position.x + (cardRenderer.Width * 1 / cardContainer.transform.localScale.x) / 2;
+    }
+
+    public void Scroll(float scrollValue)
+    {
+        float newPos;
+        if (scrollValue < 0)
+        {
+            newPos = GetLastCardRight() + scrollValue * 1 / cardContainer.transform.localScale.x;
+            if (newPos <= maxScrollDistance)
+            {
+                return;
+            }
+        }
+        else if (scrollValue > 0)
+        {
+            newPos = GetFirstCardLeft() + scrollValue * 1 / cardContainer.transform.localScale.x;
+            if (newPos >= -maxScrollDistance)
+            {
+                return;
+            }
+        }
+        
+
+        var oldPos = cardContainer.transform.localPosition;
+        oldPos.x += scrollValue;
+        cardContainer.transform.localPosition = oldPos;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (Pickable.Count > 0)
+        {
+            Gizmos.color = Color.blue;
+            var firstCardLeft = GetFirstCardLeft();
+            Gizmos.DrawCube(new Vector3(firstCardLeft, 0), Vector3.one * 0.5f);
+            Gizmos.color = Color.red;
+            var lastCardRight = GetLastCardRight();
+            Gizmos.DrawCube(new Vector3(lastCardRight, 0), Vector3.one * 0.5f);
+
+            var firstX = maxScrollDistance * 1 / cardContainer.transform.localScale.x;
+            var lastX = -maxScrollDistance * 1 / cardContainer.transform.localScale.x;
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(new Vector3(firstX, 0), new Vector3(lastX, 0));
+        }
     }
 }

@@ -15,6 +15,7 @@ using JetBrains.Annotations;
 using Network;
 using Network.Packets;
 using Script.Debugging;
+using Script.Input;
 using Script.Networking.Commands;
 using Script.Networking.Commands.Extern;
 using UnityEditor;
@@ -45,6 +46,7 @@ namespace Script.Networking
         [CanBeNull] public SetUpGameCommand OtherPlayerConfiguration { get; private set; }
 
 
+        private InputManager _inputManager;
         private NetworkMode acceptFrom = NetworkMode.Server;
         private MainRenderer _localMainRenderer;
         private Thread _gameProcessThread;
@@ -52,6 +54,7 @@ namespace Script.Networking
 
         private void Awake()
         {
+            _inputManager = FindObjectOfType<InputManager>();
             FindObjectOfType<DebugConsole>().Init();
             _networkManager = GetComponent<NetworkManager>();
         }
@@ -133,6 +136,7 @@ namespace Script.Networking
                     }
                     lock (this)
                     {
+                        if(_interrupted) return;
                         // Debug.Log($"On lock pour les commandes {Thread.CurrentThread.Name}");
                         if(NetworkGameState == NetworkGameState.PLAYING )
                             ProcessGameCommands();
@@ -181,7 +185,7 @@ namespace Script.Networking
         {
             foreach (var curCommand in _gameCommands)
             {
-                Debug.Log("on process le packet");
+                // Debug.Log("on process le packet");
                 try
                 {
                     if (ProcessAction(curCommand))
@@ -289,7 +293,7 @@ namespace Script.Networking
 
         private void ReceiveRemoteAction(GameCommand packet, Connection connection)
         {
-            Debug.Log($"J'ai recu un paket");
+            // Debug.Log($"J'ai recu un paket");
             if ((acceptFrom == NetworkMode.Client && _networkManager.IsClient) ||
                 acceptFrom == NetworkMode.Server && _networkManager.IsServer)
             {
@@ -330,7 +334,7 @@ namespace Script.Networking
 
         public void DoLocalAction(GameCommand command)
         {
-            Debug.Log($"Action locale qu'il faut dupliquer");
+            // Debug.Log($"Action locale qu'il faut dupliquer");
             if ((acceptFrom == NetworkMode.Client && _networkManager.IsServer) ||
                 acceptFrom == NetworkMode.Server && _networkManager.IsClient)
             {
@@ -431,15 +435,13 @@ namespace Script.Networking
 
         public Player ResolvePlayer(int playerId)
         {
-            Debug.Log($"Resolving playerid {playerId}");
             if (Game.Player1.Id == playerId)
             {
-                Debug.Log("its first");
+       
                 return Game.Player1;
             }
             else if (Game.Player2.Id == playerId)
             {
-                Debug.Log("its second");
                 return Game.Player2;
             }
             else
@@ -468,5 +470,6 @@ namespace Script.Networking
             _gameProcessThread?.Interrupt();
             _interrupted = true;
         }
+
     }
 }

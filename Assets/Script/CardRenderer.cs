@@ -159,7 +159,7 @@ namespace Script
         {
             eventManager.SubscribeToEvent<CardEvent>(e =>
             {
-                Debug.Log($"CardEvent : {e.GetType()}");
+                // Debug.Log($"CardEvent : {e.GetType()}");
                 if (!Equals(e.Card, Card)) return;
                 SetData();
                 RefreshPrecondition();
@@ -171,7 +171,7 @@ namespace Script
         {
             eventManager.SubscribeToEvent<CardEvent>(e =>
             {
-                Debug.Log($"CardEvent : {e.GetType()}");
+                // Debug.Log($"CardEvent : {e.GetType()}");
                 if (!Equals(e.Card, Card)) return;
                 SetData();
             }, postEvent: true);

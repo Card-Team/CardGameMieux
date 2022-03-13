@@ -14,30 +14,38 @@ namespace Script.Input
     {
         public ContactFilter2D cardFilter;
 
-        private PlayerActions _playerActions;
+        public PlayerActions PlayerActions;
 
         private PlayerActions.IMainActions _myTurnInputManager;
         private PlayerActions.ITargetingActions _targetingActions;
+        public volatile bool playFinished;
 
         private void Awake()
         {
             _myTurnInputManager = GetComponent<PlayerActions.IMainActions>();
             _targetingActions = GetComponent<PlayerActions.ITargetingActions>();
-            _playerActions = new PlayerActions();
-            _playerActions.Main.SetCallbacks(_myTurnInputManager);
-            _playerActions.Targeting.SetCallbacks(_targetingActions);
-            _playerActions.Main.Disable();
-            _playerActions.Targeting.Disable();
+            PlayerActions = new PlayerActions();
+            PlayerActions.Main.SetCallbacks(_myTurnInputManager);
+            PlayerActions.Targeting.SetCallbacks(_targetingActions);
+            PlayerActions.Disable();
         }
 
-        private void OnEnable()
+        private void Update()
         {
-            _playerActions.Enable();
+            if (playFinished)
+            {
+                playFinished = false;
+                if (_lastInputType != null)
+                {
+                    EnableThis(_lastInputType.Value);
+                }
+            }
         }
+
 
         private void OnDisable()
         {
-            _playerActions.Disable();
+            PlayerActions.Disable();
         }
 
         public void Subscribe(SyncEventWrapper eventManager)
@@ -46,33 +54,53 @@ namespace Script.Input
             eventManager.SubscribeToEvent<EndTurnEvent>(OnEndTurn, false, true);
         }
 
-        private bool _wasMainEnabled = false;
-
-        public void OnAfterTarget()
-        {
-            Debug.Log("Targeting ended");
-            _playerActions.Targeting.Disable();
-            if (_wasMainEnabled) _playerActions.Main.Enable();
-        }
-
-        public void OnTarget()
-        {
-            Debug.Log("Targeting started");
-            _playerActions.Targeting.Enable();
-            _wasMainEnabled = _playerActions.Main.enabled;
-            _playerActions.Main.Disable();
-        }
-
         private void OnEndTurn(EndTurnEvent evt)
         {
-            _playerActions.Main.Disable();
+            DisableAll();
         }
+        
 
-        public void OnStartTurn(StartTurnEvent evt)
+        private void OnStartTurn(StartTurnEvent evt)
         {
             if (Equals(evt.Player, UnityGame.LocalGamePlayer))
             {
-                _playerActions.Main.Enable();
+                EnableThis(InputType.Main);
+            }
+        }
+
+        public void DisableAll()
+        {
+            Debug.Log($"Disabling all, current is {_currentInputType}");
+            _lastInputType = _currentInputType;
+            _currentInputType = null;
+            PlayerActions.Disable();
+        }
+
+        public enum InputType
+        {
+            Main,
+            Targeting
+        }
+
+        private InputType? _lastInputType;
+        private InputType? _currentInputType;
+
+        public void EnableThis(InputType actions)
+        {
+            Debug.Log($"Enabling input {actions}");
+            _lastInputType = _currentInputType;
+            _currentInputType = actions;
+            PlayerActions.Disable();
+            switch (actions)
+            {
+                case InputType.Main:
+                    PlayerActions.Main.Enable();
+                    break;
+                case InputType.Targeting:
+                    PlayerActions.Targeting.Enable();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(actions), actions, null);
             }
         }
     }
