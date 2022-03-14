@@ -435,8 +435,6 @@ namespace Script.Networking
             return res;
         }
 
-        public readonly Dictionary<int, Card> VirtualTracking = new Dictionary<int, Card>();
-
         public Card ResolveCard(int objCardId)
         {
             return Game.AllCards.First(c => c.Id == objCardId);

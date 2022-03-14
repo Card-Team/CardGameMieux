@@ -31,7 +31,6 @@ namespace Script
                 cardRenderer.transform.localScale = UnityGame.CardScale;
                 cardRenderer.transform.localPosition = new Vector3(0, 30);
                 cardRenderer.Card = card;
-                NetworkedGame.VirtualTracking[card.Id] = card;
                 _cards.Add(cardRenderer);
             }
 
@@ -59,7 +58,6 @@ namespace Script
             yield return new WaitForSeconds(4);
             foreach (var cardRenderer in cardRenderers)
             {
-                NetworkedGame.VirtualTracking.Remove(cardRenderer.Card.Id);
                 Destroy(cardRenderer);
             }
         }
