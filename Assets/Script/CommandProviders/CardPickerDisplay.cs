@@ -9,7 +9,7 @@ using Script.Networking.Commands.Extern;
 using TMPro;
 using UnityEngine;
 
-public class CardTargetCP : CommandProviderBehaviour
+public class CardPickerDisplay : MonoBehaviour
 {
     private NetworkedGame _networkedGame;
     private InputManager _inputManager;
@@ -30,23 +30,27 @@ public class CardTargetCP : CommandProviderBehaviour
         _inputManager = FindObjectOfType<InputManager>();
         _networkedGame = FindObjectOfType<NetworkedGame>();
         _unityGame = FindObjectOfType<UnityGame>();
-        _networkedGame.RegisterCommandProvider<ChooseCardTargetCommand>(this);
         _targetText = targetPicker.GetComponentInChildren<TextMeshPro>();
     }
 
     private Dictionary<CardRenderer, Vector3> _originalPositions = new Dictionary<CardRenderer, Vector3>();
     private Dictionary<CardRenderer, Transform> _parents = new Dictionary<CardRenderer, Transform>();
     private UnityGame _unityGame;
+    private Action<CardRenderer> _onPickCallback;
 
-    protected override void DoAction()
+
+    public void DisplayPicker(IEnumerable<CardRenderer> cardRenderers,string text,Action<CardRenderer> onPick)
     {
+        DisplayPicker(cardRenderers.Select(c => (c,"")).ToList(),text,onPick);
+    }
+    
+    public void DisplayPicker(List<(CardRenderer,string)> cardRenderers,string text,Action<CardRenderer> onPick)
+    {
+        _onPickCallback = onPick;
         _inputManager.DisableAll();
-        var cardTarget = (ChooseCardTargetData)infoStruct;
 
-        _targetText.text = cardTarget.TargetName;
-
-        var cardRenderers = cardTarget.CardList.Select(c => _unityGame.CardRenderers[c]).Select(WithLocation).ToList();
-
+        _targetText.text = text;
+        
         float cardWidth = cardRenderers[0].Item1.Width;
 
         float margin = 0.1f;
@@ -65,7 +69,7 @@ public class CardTargetCP : CommandProviderBehaviour
             StartCoroutine(
                 PileRenderer.MoveCardInTime(cardRenderer, new Vector3(xpos * inverseScale, 0f, positionZ), 0.1f,
                     c => _inputManager.EnableThis(InputManager.InputType.Targeting))
-                );
+            );
             Pickable.Add(cardRenderer);
             TextMeshPro locPref = Instantiate(locationPrefab, cardContainer.transform);
             locPref.transform.localPosition =
@@ -74,27 +78,6 @@ public class CardTargetCP : CommandProviderBehaviour
         }
 
         targetPicker.SetActive(true);
-
-        // var chooseCardTargetCommand = new ChooseCardTargetCommand {CardId = cardId};
-        // _networkedGame.DoLocalAction(chooseCardTargetCommand);
-    }
-
-    private (CardRenderer, string) WithLocation(CardRenderer cardRenderer)
-    {
-        var pile = _unityGame.PileRenderers.Select(p => p.Value).FirstOrDefault(f => f.cards.Contains(cardRenderer));
-
-        if (pile == null) return (cardRenderer, "Inconnu");
-        string texte = pile.pileType switch
-        {
-            PileType.Deck => "Deck",
-            PileType.Discard => "Défausse",
-            PileType.Hand => "Main",
-            _ => throw new ArgumentOutOfRangeException()
-        };
-        texte += $"[{pile.cards.IndexOf(cardRenderer)}] (" + (UnityGame.LocalPlayer == pile.owner ? "Moi" : "Adv") +
-                 ")";
-
-        return (cardRenderer, texte);
     }
 
     public void OnSelected(CardRenderer cardRenderer)
@@ -122,8 +105,7 @@ public class CardTargetCP : CommandProviderBehaviour
 
         targetPicker.SetActive(false);
 
-        var chooseCardTargetCommand = new ChooseCardTargetCommand { CardId = cardRenderer.Card.Id };
-        _networkedGame.DoLocalAction(chooseCardTargetCommand);
+        _onPickCallback(cardRenderer);
     }
 
     private float GetFirstCardLeft()

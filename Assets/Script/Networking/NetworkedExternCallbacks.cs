@@ -70,7 +70,7 @@ namespace Script.Networking
         {
             if (UnityGame.IsLocalPlayer(player))
             {
-                _networkedGame.WantLocal<ChooseBetweenCardsCommand>(new ChooseCardTargetData() {CardList =  cardList});
+                _networkedGame.WantLocal<ChooseBetweenCardsCommand>(new ChooseBetweenCardData() {CardList =  cardList});
             }
 
             var command = _networkedGame.WaitForExternalCommand<ChooseBetweenCardsCommand>();

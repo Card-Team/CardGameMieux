@@ -691,6 +691,11 @@
             </summary>
             <seealso cref="T:CardGameEngine.GameSystems.Effects.Effect"/>
         </member>
+        <member name="P:CardGameEngine.Game.AllCards">
+            <summary>
+                Toutes les cartes de la partie
+            </summary>
+        </member>
         <member name="F:CardGameEngine.Game._externCallbacks">
             <summary>
             Callbacks externes au moteurs, ce champ va être donné par l'application externe.

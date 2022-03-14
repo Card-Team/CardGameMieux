@@ -12,6 +12,7 @@ using CardGameEngine.EventSystem.Events.GameStateEvents;
 using CardGameEngine.GameSystems;
 using CardGameEngine.GameSystems.Effects;
 using JetBrains.Annotations;
+using MoonSharp.Interpreter;
 using Network;
 using Network.Packets;
 using Script.Debugging;
@@ -125,8 +126,8 @@ namespace Script.Networking
             NetworkGameState = NetworkGameState.PLAYING;
             _gameProcessThread = new Thread(() =>
             {
-                while (NetworkGameState == NetworkGameState.PLAYING || 
-                       NetworkGameState == NetworkGameState.READY || 
+                while (NetworkGameState == NetworkGameState.PLAYING ||
+                       NetworkGameState == NetworkGameState.READY ||
                        NetworkGameState == NetworkGameState.STARTING)
                 {
                     if (NetworkGameState == NetworkGameState.STARTING)
@@ -134,11 +135,12 @@ namespace Script.Networking
                         Game.StartGame();
                         NetworkGameState = NetworkGameState.PLAYING;
                     }
+
                     lock (this)
                     {
-                        if(_interrupted) return;
+                        if (_interrupted) return;
                         // Debug.Log($"On lock pour les commandes {Thread.CurrentThread.Name}");
-                        if(NetworkGameState == NetworkGameState.PLAYING )
+                        if (NetworkGameState == NetworkGameState.PLAYING)
                             ProcessGameCommands();
                         ProcessGameThreadActions();
                         // Debug.Log($"On a process les commandes et les actions{Thread.CurrentThread.Name}");
@@ -162,7 +164,7 @@ namespace Script.Networking
             });
             _gameProcessThread.Name = "GameThread";
             _gameProcessThread.Start();
-            
+
             try
             {
                 EventRegistration?.Invoke(Game);
@@ -201,6 +203,11 @@ namespace Script.Networking
                 catch (Exception e)
                 {
                     Debug.LogError($"Erreure lors du processing du paquet {curCommand}");
+                    if (e is InterpreterException ie)
+                    {
+                        FindObjectOfType<ErrorUtils>().PrintError(ie);
+                    }
+
                     Debug.LogError(e);
                     _gameCommands.TryDequeue(out _);
                 }
@@ -356,6 +363,7 @@ namespace Script.Networking
             {
                 throw new ThreadInterruptedException();
             }
+
             // Debug.Log($"On rentre dans WaitForTaskWithPolling {Thread.CurrentThread.Name}");
             lock (this)
             {
@@ -415,8 +423,8 @@ namespace Script.Networking
 
             return (T)WaitForTaskWithPolling(commandTask, true);
         }
-        
-        public T RunOnGameThread<T>(Func<Game,T> action)
+
+        public T RunOnGameThread<T>(Func<Game, T> action)
         {
             var actionTask = new TaskCompletionSource<bool>();
             var res = default(T);
@@ -427,17 +435,17 @@ namespace Script.Networking
             return res;
         }
 
+        public readonly Dictionary<int, Card> VirtualTracking = new Dictionary<int, Card>();
 
         public Card ResolveCard(int objCardId)
         {
-            return objCardId < 0 ? null : Game.Player1.Cards.Concat(Game.Player2.Cards).First(c => c.Id == objCardId);
+            return Game.AllCards.First(c => c.Id == objCardId);
         }
 
         public Player ResolvePlayer(int playerId)
         {
             if (Game.Player1.Id == playerId)
             {
-       
                 return Game.Player1;
             }
             else if (Game.Player2.Id == playerId)
@@ -454,8 +462,8 @@ namespace Script.Networking
         {
             if (_commandProviderBehaviours.TryGetValue(typeof(T), out var provider))
             {
-                provider.infoStruct = externStruct;
-                provider.isNeeded = true;
+                provider.InfoStruct = externStruct;
+                provider.IsNeeded = true;
             }
         }
 
@@ -470,6 +478,5 @@ namespace Script.Networking
             _gameProcessThread?.Interrupt();
             _interrupted = true;
         }
-
     }
 }

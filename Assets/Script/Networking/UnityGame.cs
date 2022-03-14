@@ -61,7 +61,7 @@ namespace Script.Networking
                     IPAddress = IPAddress.IPv6Loopback,
                     Port = 1246
                 };
-                _ownDeck = new List<string> { "pistolet", "carteblanche" };
+                _ownDeck = new List<string> { "pistolet", "carteblanche" ,"visionnaire","debugamelioration"};
             }
 
             if (_nc.NetworkMode == NetworkMode.Client)
@@ -97,7 +97,7 @@ namespace Script.Networking
             foreach (var card in game.Player1.Cards.Concat(game.Player2.Cards))
             {
                 var cardObjet = Instantiate(cardRenderer);
-                cardObjet.transform.localScale = new Vector3(0.40f, 0.40f, 1);
+                cardObjet.transform.localScale = CardScale;
                 cardObjet.Card = card;
                 cardObjet.gameObject.SetActive(false);
                 CardRenderers.Add(card, cardObjet);
@@ -130,7 +130,8 @@ namespace Script.Networking
         public GameObject interFaceObject;
         public GameObject connectingObject;
         public GameObject hostingObject;
-        
+        public static readonly Vector3 CardScale = new Vector3(0.40f, 0.40f, 1);
+
 
         public T RunOnGameThread<T>(Func<Game, T> func)
         {
