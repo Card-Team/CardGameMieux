@@ -149,8 +149,11 @@ public class LectureCartes : MonoBehaviour
         //Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);
     }
 
-    public void Retour()
+    public void RetourMenu(GameObject kill)
     {
-        SceneManager.LoadScene("Menu Principal");
+        var actuel = GameObject.FindObjectOfType<Canvas>(); //recupere la fenetre active
+        actuel.gameObject.SetActive(false);
+        
+        kill.gameObject.SetActive(true);
     }
 }

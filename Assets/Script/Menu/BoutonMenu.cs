@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class BoutonMenu : MonoBehaviour
@@ -21,7 +22,10 @@ public class BoutonMenu : MonoBehaviour
         nouvelfenetre.gameObject.SetActive(true);
     }
     
-
+    public void AllezDeck()
+    {
+        SceneManager.LoadScene("Deck");
+    }
     
     public void Exit()
     {
