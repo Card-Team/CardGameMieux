@@ -40,7 +40,7 @@ namespace Script
                     cercle.color = niveauActuel == niveauMax ? couleureMax : couleureNormal;
                 }
                 
-                cercle.transform.localPosition = new Vector3(decalage*i - (decalage * (niveauMax - 1))/2,0f,-1f);
+                cercle.transform.localPosition = new Vector3(decalage*i - (decalage * (niveauMax - 1))/2,0f);
             } 
         }
         // Update is called once per frame

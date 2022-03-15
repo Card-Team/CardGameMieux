@@ -79,7 +79,8 @@ namespace Script.Input
         public enum InputType
         {
             Main,
-            Targeting
+            Targeting,
+            UI
         }
 
         private InputType? _lastInputType;
@@ -98,6 +99,9 @@ namespace Script.Input
                     break;
                 case InputType.Targeting:
                     PlayerActions.Targeting.Enable();
+                    break;
+                case InputType.UI:
+                    PlayerActions.UI.Enable();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(actions), actions, null);

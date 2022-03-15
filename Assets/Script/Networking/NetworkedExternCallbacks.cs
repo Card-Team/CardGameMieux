@@ -49,7 +49,7 @@ namespace Script.Networking
         {
             if (UnityGame.IsLocalPlayer(effectOwner))
             {
-                _networkedGame.WantLocal<ChooseCardTargetCommand>(new ChoosePlayerTargetData() {TargetName = targetName});
+                _networkedGame.WantLocal<ChoosePlayerTargetCommand>(new ChoosePlayerTargetData() {TargetName = targetName});
             }
 
             var command= _networkedGame.WaitForExternalCommand<ChoosePlayerTargetCommand>();

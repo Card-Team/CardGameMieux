@@ -29,7 +29,7 @@ namespace Script.Input
                 var count = Physics2D.OverlapPoint(worldPos, InputManager.cardFilter, resultats);
                 var newHover = resultats.Count > 0
                     ? resultats
-                        .Select(c => c.GetComponent<CardRenderer>())
+                        .Select(c => c.GetComponentInParent<CardRenderer>())
                         .FirstOrDefault(IsPointable)
                     : null;
                 if (newHover != HoveredCard)
