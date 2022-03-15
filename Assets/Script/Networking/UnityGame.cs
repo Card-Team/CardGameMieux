@@ -10,7 +10,9 @@ using CardGameEngine.Cards;
 using CardGameEngine.Cards.CardPiles;
 using CardGameEngine.EventSystem.Events.CardEvents;
 using CardGameEngine.GameSystems;
+#if UNITY_EDITOR
 using ParrelSync;
+#endif
 using UnityEngine;
 
 namespace Script.Networking
