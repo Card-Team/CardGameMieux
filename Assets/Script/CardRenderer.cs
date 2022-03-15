@@ -42,8 +42,9 @@ namespace Script
         private bool _hover = false;
         private static readonly int HoverProp = Animator.StringToHash("Hovered");
 
-        [NonSerialized] public bool PreconditionJouable;
-        [NonSerialized] public bool AssezDePa;
+        public bool PreconditionJouable { get; private set; }
+        public bool AssezDePa { get; private set; }
+        public bool Ameliorable { get; private set; }
 
         [SerializeField] private Color couleurJouable;
         [SerializeField] private Color couleurPasJouable;
@@ -51,6 +52,7 @@ namespace Script
         [SerializeField] private Color paColorQuandAssez;
         [SerializeField] private Color paColorQuandPasAssez;
         private UnityGame _game;
+        [SerializeField] private SpriteRenderer ameliorationImage;
 
         public bool Hover
         {
@@ -81,7 +83,7 @@ namespace Script
             {
                 Game game = new Game(Application.streamingAssetsPath + "/EffectsScripts",
                     new DumbCallbacks(),
-                    new List<string> { scriptToDisplay },
+                    new List<string> {scriptToDisplay},
                     new List<string>());
                 this.Card = game.Player1.Deck[0];
                 Subscribe(game.EventManager);
@@ -143,17 +145,22 @@ namespace Script
             {
                 this.PreconditionJouable = _game.RunOnGameThread(g => Card.CanBePlayed(cardHolder));
                 this.AssezDePa = Card.Cost.Value <= UnityGame.LocalGamePlayer.ActionPoints.Value;
+                this.Ameliorable = !Card.IsMaxLevel;
             }
             else
             {
                 this.PreconditionJouable = true;
                 this.AssezDePa = true;
+                this.Ameliorable = false;
             }
+            
+            this.ameliorationImage.gameObject.SetActive(this.Ameliorable && !faceCachee);
 
             fond.color = this.PreconditionJouable || faceCachee ? couleurJouable : couleurPasJouable;
 
             this.cout.color = AssezDePa ? paColorQuandAssez : paColorQuandPasAssez;
         }
+
 
         public void Subscribe(SyncEventWrapper eventManager)
         {
