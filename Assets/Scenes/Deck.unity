@@ -2304,7 +2304,7 @@ MonoBehaviour:
   CreerDeck: {fileID: 228928667}
   ModifierDeck: {fileID: 1191422744}
   List: {fileID: 910280686}
-  buttonTemplate: {fileID: 7586235910743885947, guid: 8d92198003e380e4c92609728e2d3fc9, type: 3}
+  buttonTemplate: {fileID: 7255988269487447471, guid: 8d92198003e380e4c92609728e2d3fc9, type: 3}
   ParentDeck: {fileID: 1628238636}
 --- !u!1 &607469003
 GameObject:
@@ -2501,7 +2501,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -13.1493, y: 0}
+  m_SizeDelta: {x: -14, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &641935370
 MonoBehaviour:
@@ -3504,10 +3504,10 @@ RectTransform:
   m_Father: {fileID: 1455861996}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 165.99997, y: -42.62699}
-  m_SizeDelta: {x: 177.6882, y: 254.5709}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 566.99866, y: -46.122437}
+  m_SizeDelta: {x: 175.6908, y: 261.5618}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &910280688
 MonoBehaviour:
@@ -5281,7 +5281,7 @@ Animator:
   m_GameObject: {fileID: 1397313783}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0999355f563c2b44dae4c0ab616c7834, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -6067,7 +6067,7 @@ Animator:
   m_GameObject: {fileID: 1479033477}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0999355f563c2b44dae4c0ab616c7834, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -7010,8 +7010,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0008038542, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0.0008772166, y: 0}
+  m_SizeDelta: {x: -161.6908, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1628238637
 MonoBehaviour:
@@ -7025,7 +7025,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 1
+  m_HorizontalFit: 0
   m_VerticalFit: 2
 --- !u!114 &1628238638
 MonoBehaviour:
@@ -7042,12 +7042,12 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 0
+    m_Top: 5
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 0
+  m_Spacing: 5
   m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0

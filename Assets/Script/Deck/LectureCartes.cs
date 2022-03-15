@@ -139,7 +139,7 @@ public class LectureCartes : MonoBehaviour
         Button b = Instantiate(ButtonDeck, ParentDeck, false);
         b.GetComponentInChildren<TextMeshProUGUI>().text = first.Card.Name.Value;
         b.name = first.Card.Name.Value;
-        b.GetComponentInChildren<RemoveCardList>().NomCard = first.scriptToDisplay;
+        //b.GetComponentInChildren<RemoveCardList>().NomCard = first.scriptToDisplay;
         listeCarteSelectionner.Add(first.scriptToDisplay);
         //Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);
     }

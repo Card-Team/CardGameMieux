@@ -14,4 +14,10 @@ public class RemoveCardList : MonoBehaviour
         FindObjectOfType<LectureCartes>().listeCarteSelectionner.Remove(NomCard);
         Destroy(gameObject);
     }
+    
+    public void RemoveFichierDeckList()
+    {
+        //supprimer le fichier deck
+        
+    }
 }
