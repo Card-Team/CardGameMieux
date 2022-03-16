@@ -17,7 +17,8 @@ public class LectureCartes : MonoBehaviour
     public ContactFilter2D _contactFilter2D;
     public Button ButtonDeck;
     public Transform ParentDeck;
-
+    public TMP_Text nbCartes; 
+    
     public void Start()
     {
         NomCartes();
@@ -87,7 +88,6 @@ public class LectureCartes : MonoBehaviour
             {
                 return;
             }
-
             GameObjectCartes.transform.position = pos;
         }
 
@@ -99,7 +99,7 @@ public class LectureCartes : MonoBehaviour
         if (count > 0)
         {
             //boite de colision de la carte en dessous
-            var first = proche.First().GetComponent<CardRenderer>();
+            var first = proche.First().GetComponentInParent<CardRenderer>();
             //verification que la carte n'a pas ete pris plus de 2 fois sinon ne pas la mettre dans la liste
             if (listeCarteSelectionner.Count(list => first.scriptToDisplay == list)==2)
             {
@@ -122,6 +122,7 @@ public class LectureCartes : MonoBehaviour
             //clique souris dans le rectangle des cartes du deck et liste inferieur a 12 alors ajout dans la liste  
             if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count < 12 && mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5)
             {
+                nbCartes.SetText(listeCarteSelectionner.Count+"");
                 AjouterCarte(first);
             }
         }
@@ -139,7 +140,7 @@ public class LectureCartes : MonoBehaviour
         Button b = Instantiate(ButtonDeck, ParentDeck, false);
         b.GetComponentInChildren<TextMeshProUGUI>().text = first.Card.Name.Value;
         b.name = first.Card.Name.Value;
-        //b.GetComponentInChildren<RemoveCardList>().NomCard = first.scriptToDisplay;
+        b.GetComponentInChildren<RemoveCardList>().NomCard = first.scriptToDisplay;
         listeCarteSelectionner.Add(first.scriptToDisplay);
         //Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);
     }

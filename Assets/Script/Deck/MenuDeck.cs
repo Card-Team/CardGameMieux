@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using TMPro;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class MenuDeck : MonoBehaviour
     public GameObject List;
     public Button buttonTemplate;
     public Transform ParentDeck;
+    public GameObject FenetreActive;
 
     void Start()
     {
@@ -23,7 +25,7 @@ public class MenuDeck : MonoBehaviour
         //si aucun fichier
         if (files.Length == 0)
         {
-            CreerDeck.transform.position = new Vector3(-193f,-42.627f,0f);
+            CreerDeck.transform.localPosition = new Vector3(0f,0f,0f);
             List.gameObject.SetActive(false);
             ModifierDeck.gameObject.SetActive(false);
         }
@@ -48,8 +50,13 @@ public class MenuDeck : MonoBehaviour
 
     public void CreerUnDeck()
     {
-        var actuel = GameObject.FindObjectOfType<Canvas>(); //recupere la fenetre active
-        actuel.gameObject.SetActive(false);
-        CreationDeck.gameObject.SetActive(true);
+        StartCoroutine(ActivDelayFrame());
+    }
+
+    IEnumerator ActivDelayFrame()
+    {
+        yield return new WaitForEndOfFrame();
+        FenetreActive.gameObject.SetActive(false);
+        CreationDeck.gameObject.SetActive(true); 
     }
 }
