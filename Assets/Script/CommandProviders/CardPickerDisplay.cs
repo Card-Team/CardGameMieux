@@ -23,6 +23,7 @@ public class CardPickerDisplay : MonoBehaviour
 
     private TextMeshPro _targetText;
     public List<CardRenderer> Pickable { get; } = new List<CardRenderer>();
+    private List<TextMeshPro> texts { get; } = new List<TextMeshPro>();
 
     // Start is called before the first frame update
     void Start()
@@ -53,10 +54,11 @@ public class CardPickerDisplay : MonoBehaviour
         
         float cardWidth = cardRenderers[0].Item1.Width;
 
-        float margin = 0.1f;
+        float margin = 0.4f;
         float toalWidth = (cardWidth + margin) * cardRenderers.Count;
         float inverseScale = 1 / targetPicker.transform.localScale.x;
         var positionZ = targetPicker.transform.position.z + 2;
+        Debug.Log("counting pickable");
         for (var index = 0; index < cardRenderers.Count; index++)
         {
             var (cardRenderer, location) = cardRenderers[index];
@@ -72,12 +74,17 @@ public class CardPickerDisplay : MonoBehaviour
             );
             Pickable.Add(cardRenderer);
             TextMeshPro locPref = Instantiate(locationPrefab, cardContainer.transform);
+            locPref.transform.parent = cardRenderer.transform.GetChild(0);
+            Debug.Log($"CardHeight : {cardRenderer.Height}");
             locPref.transform.localPosition =
-                new Vector3(xpos * inverseScale, -(cardRenderer.Height + 0.2f) * inverseScale);
+                new Vector3(0, -(cardRenderer.Height + 1.3f) );
             locPref.text = location;
+            texts.Add(locPref);
+            Debug.Log("pickable found");
         }
 
         targetPicker.SetActive(true);
+        Debug.Log("picker active");
     }
 
     public void OnSelected(CardRenderer cardRenderer)
@@ -98,10 +105,12 @@ public class CardPickerDisplay : MonoBehaviour
         _originalPositions.Clear();
         _parents.Clear();
         Pickable.Clear();
-        foreach (Transform o in cardContainer.transform)
+        
+        foreach (var t in texts)
         {
-            Destroy(o.gameObject);
+            Destroy(t.gameObject);
         }
+        texts.Clear();
 
         targetPicker.SetActive(false);
 
@@ -162,5 +171,24 @@ public class CardPickerDisplay : MonoBehaviour
             Gizmos.color = Color.green;
             Gizmos.DrawLine(new Vector3(firstX, 0), new Vector3(lastX, 0));
         }
+    }
+
+    public (CardRenderer, string) WithLocation(CardRenderer cardRenderer)
+    {
+        var pile = _unityGame.PileRenderers.Select(p => p.Value)
+            .FirstOrDefault(f => f.cards.Contains(cardRenderer));
+
+        if (pile == null) return (cardRenderer, "Inconnu");
+        string texte = pile.pileType switch
+        {
+            PileType.Deck => "Deck",
+            PileType.Discard => "Défausse",
+            PileType.Hand => "Main",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+        texte += $"[{pile.cards.IndexOf(cardRenderer)}] (" + (UnityGame.LocalPlayer == pile.owner ? "Moi" : "Adv") +
+                 ")";
+
+        return (cardRenderer, texte);
     }
 }

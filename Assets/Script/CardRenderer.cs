@@ -40,6 +40,7 @@ namespace Script
 
 
         private bool _hover = false;
+
         private static readonly int HoverProp = Animator.StringToHash("Hovered");
 
         public bool PreconditionJouable { get; private set; }
@@ -52,6 +53,7 @@ namespace Script
         [SerializeField] private Color paColorQuandAssez;
         [SerializeField] private Color paColorQuandPasAssez;
         private UnityGame _game;
+        private bool _hoverHeight = false;
         [SerializeField] private SpriteRenderer ameliorationImage;
 
         public bool Hover
@@ -69,6 +71,23 @@ namespace Script
                 _hover = value;
             }
         }
+
+
+        public bool HoverHeight
+        {
+            get => _hoverHeight;
+            set
+            {
+                if (_hoverHeight != value)
+                {
+                    _animator.SetBool(HoverHeightProp,value);
+                }
+
+                _hoverHeight = value;
+            }
+        }
+
+        private static readonly int HoverHeightProp = Animator.StringToHash("HoverHeight");
 
         private void Awake()
         {

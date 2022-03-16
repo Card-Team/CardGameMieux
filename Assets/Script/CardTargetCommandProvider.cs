@@ -10,6 +10,8 @@ namespace Script
     {
         private CardPickerDisplay _cardPickerDisplay;
         private UnityGame _unityGame;
+        
+
         private void Start()
         {
             NetworkedGame.RegisterCommandProvider<ChooseCardTargetCommand>(this);
@@ -22,7 +24,7 @@ namespace Script
             Debug.Log("DoAction");
             var infoStruct = (ChooseCardTargetData) InfoStruct;
             _cardPickerDisplay.DisplayPicker(
-                infoStruct.CardList.Select(c => WithLocation(_unityGame.CardRenderers[c])).ToList(),
+                infoStruct.CardList.Select(c => _cardPickerDisplay.WithLocation(_unityGame.CardRenderers[c])).ToList(),
                 infoStruct.TargetName,
                 OnPick
             );
@@ -32,25 +34,6 @@ namespace Script
         {
             var chooseCardTargetCommand = new ChooseCardTargetCommand { CardId = cardRenderer.Card.Id };
             NetworkedGame.DoLocalAction(chooseCardTargetCommand);
-        }
-
-        private (CardRenderer, string) WithLocation(CardRenderer cardRenderer)
-        {
-            var pile = _unityGame.PileRenderers.Select(p => p.Value)
-                .FirstOrDefault(f => f.cards.Contains(cardRenderer));
-
-            if (pile == null) return (cardRenderer, "Inconnu");
-            string texte = pile.pileType switch
-            {
-                PileType.Deck => "Deck",
-                PileType.Discard => "Défausse",
-                PileType.Hand => "Main",
-                _ => throw new ArgumentOutOfRangeException()
-            };
-            texte += $"[{pile.cards.IndexOf(cardRenderer)}] (" + (UnityGame.LocalPlayer == pile.owner ? "Moi" : "Adv") +
-                     ")";
-
-            return (cardRenderer, texte);
         }
     }
 }

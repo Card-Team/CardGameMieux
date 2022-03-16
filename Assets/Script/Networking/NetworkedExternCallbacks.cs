@@ -63,7 +63,13 @@ namespace Script.Networking
 
         public void ExternShowCard(Player player, Card card)
         {
-            _networkedGame.WantLocal<ShowCardFalseCommand>( new ShowCardFalseData() { Card = card});
+            Debug.Log($"show card : {card}");
+            if (UnityGame.IsLocalPlayer(player))
+            {
+                _networkedGame.WantLocal<ShowCardFalseCommand>(new ShowCardFalseData() {Card =  card});
+            }
+
+            _networkedGame.WaitForExternalCommand<ShowCardFalseCommand>();
         }
 
         public Card ExternChooseBetween(Player player, List<Card> cardList)
