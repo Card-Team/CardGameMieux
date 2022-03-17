@@ -7,6 +7,7 @@ using CardGameEngine.EventSystem;
 using CardGameEngine.EventSystem.Events;
 using CardGameEngine.EventSystem.Events.CardEvents;
 using CardGameEngine.EventSystem.Events.CardEvents.PropertyChange;
+using CardGameEngine.GameSystems;
 using Script.Networking;
 using TMPro;
 using UnityEngine;
@@ -80,7 +81,7 @@ namespace Script
             {
                 if (_hoverHeight != value)
                 {
-                    _animator.SetBool(HoverHeightProp,value);
+                    _animator.SetBool(HoverHeightProp, value);
                 }
 
                 _hoverHeight = value;
@@ -102,7 +103,7 @@ namespace Script
             {
                 Game game = new Game(Application.streamingAssetsPath + "/EffectsScripts",
                     new DumbCallbacks(),
-                    new List<string> {scriptToDisplay},
+                    new List<string> { scriptToDisplay },
                     new List<string>());
                 this.Card = game.Player1.Deck[0];
                 Subscribe(game.EventManager);
@@ -149,18 +150,13 @@ namespace Script
         {
         }
 
-        public void RefreshPrecondition()
+        public void RefreshPrecondition(bool hideAll = false)
         {
             if (DisplayMode) return;
-            var cardHolder = _game.RunOnGameThread(g =>
-            {
-                if (g.Player1.Hand.Contains(Card))
-                    return g.Player1;
-                else if (g.Player2.Hand.Contains(Card))
-                    return g.Player2;
-                else return null;
-            });
-            if (UnityGame.IsLocalPlayer(cardHolder))
+
+            Player cardHolder = _game.Game.Player1.Hand.Contains(Card) ? _game.Game.Player1 : _game.Game.Player2;
+
+            if (UnityGame.IsLocalPlayer(cardHolder) && !hideAll)
             {
                 this.PreconditionJouable = _game.RunOnGameThread(g => Card.CanBePlayed(cardHolder));
                 this.AssezDePa = Card.Cost.Value <= UnityGame.LocalGamePlayer.ActionPoints.Value;
@@ -172,7 +168,8 @@ namespace Script
                 this.AssezDePa = true;
                 this.Ameliorable = false;
             }
-            
+            Debug.Log($"refresh precond pour {Card}");
+
             this.ameliorationImage.gameObject.SetActive(this.Ameliorable && !faceCachee);
 
             fond.color = this.PreconditionJouable || faceCachee ? couleurJouable : couleurPasJouable;
@@ -186,8 +183,12 @@ namespace Script
             eventManager.SubscribeToEvent<CardEvent>(e =>
             {
                 // Debug.Log($"CardEvent : {e.GetType()}");
-                if (!Equals(e.Card, Card)) return;
-                SetData();
+                if (Equals(e.Card, Card))
+                {
+                    SetData();
+                    return;
+                }
+
                 RefreshPrecondition();
             }, postEvent: true);
             eventManager.SubscribeToEvent<ActionPointsEditEvent>(e => { RefreshPrecondition(); }, false, true);

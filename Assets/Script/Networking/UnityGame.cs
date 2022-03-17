@@ -26,6 +26,8 @@ namespace Script.Networking
         public GameObject j1;
         public GameObject j2;
 
+        public Game Game => _network.Game;
+        
         public static Owner LocalPlayer { get; private set; }
         public static Player LocalGamePlayer { get; private set; }
 
@@ -169,7 +171,7 @@ namespace Script.Networking
 
         public static bool IsLocalPlayer(Player player)
         {
-            return Equals(UnityGame.LocalGamePlayer, player);
+            return LocalGamePlayer == player;
         }
     }
 }

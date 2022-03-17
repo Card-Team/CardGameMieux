@@ -8,6 +8,10 @@ name = "Sabotage"
 ---@type number
 pa_cost = 3
 
+---@type ChainMode
+chain_mode = ChainMode.StartOrMiddleChain
+
+
 ---@type string
 description = "La carte défausser pour saboter votre ennemi"
 

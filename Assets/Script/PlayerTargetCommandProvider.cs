@@ -39,7 +39,7 @@ namespace Script
             cibleTexte.text = "";
             choosePanel.SetActive(false);
 
-            var ourTurn = Equals(_unityGame.RunOnGameThread(g => g.CurrentPlayer), UnityGame.LocalGamePlayer);
+            var ourTurn = _unityGame.Game.CurrentPlayer == UnityGame.LocalGamePlayer;
             if (ourTurn) _inputManager.EnableThis(InputManager.InputType.Main);
             NetworkedGame.DoLocalAction(new ChoosePlayerTargetCommand(){PlayerId = player.Id});
         }

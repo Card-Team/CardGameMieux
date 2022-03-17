@@ -9,6 +9,9 @@ name = "Pioche Critique"
 ---@type number
 pa_cost = 2
 
+---@type ChainMode
+chain_mode = ChainMode.StartOrMiddleChain
+
 local base_description = "Cette carte te permet d'en piocher une de ton deck"
 description = base_description
 

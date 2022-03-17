@@ -8,6 +8,9 @@ name = "Transfert"
 ---@type number
 pa_cost = 3
 
+---@type ChainMode
+chain_mode = ChainMode.StartOrMiddleChain
+
 ---@type string
 description = "Transfère le niveau de cette carte à une autre"
 

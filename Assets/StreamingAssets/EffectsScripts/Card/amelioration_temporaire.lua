@@ -3,13 +3,17 @@ max_level = 2
 ---@type number
 image_id = 526
 
+---@type ChainMode
+chain_mode = ChainMode.NoChain
+
 ---@type string
 name = "Amélioration temporaire"
 ---@type number
 pa_cost = 2
 
+local base_description ="La carte à améliorer temporairement"
 ---@type string
-description = "La carte à améliorer temporairement"
+description = base_description
 
 ---@param aCard Card
 local function card_filter(aCard)
@@ -61,5 +65,7 @@ end
 function on_level_change(_, new)
 	if new == 2 then
 		This.Description.TryChangeValue("Les 2 cartes à améliorer temporairement")
+	else
+		This.Description.TryChangeValue(base_description)
 	end
 end 

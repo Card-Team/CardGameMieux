@@ -19,6 +19,7 @@ using Script.Debugging;
 using Script.Input;
 using Script.Networking.Commands;
 using Script.Networking.Commands.Extern;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using Random = System.Random;
@@ -48,7 +49,7 @@ namespace Script.Networking
 
 
         private InputManager _inputManager;
-        private NetworkMode acceptFrom = NetworkMode.Server;
+        public NetworkMode AcceptFrom { get; set; } = NetworkMode.Server;
         private MainRenderer _localMainRenderer;
         private Thread _gameProcessThread;
 
@@ -112,7 +113,7 @@ namespace Script.Networking
         {
             Game.EventManager.SubscribeToEvent<EndTurnEvent>(e =>
             {
-                acceptFrom = acceptFrom switch
+                AcceptFrom = AcceptFrom switch
                 {
                     NetworkMode.Client => NetworkMode.Server,
                     NetworkMode.Server => NetworkMode.Client,
@@ -153,6 +154,7 @@ namespace Script.Networking
                         }
                         catch (ThreadInterruptedException)
                         {
+                            Monitor.PulseAll(this);
                             _interrupted = true;
                             Debug.Log("Thread interrompu, on arette");
                             return;
@@ -301,8 +303,8 @@ namespace Script.Networking
         private void ReceiveRemoteAction(GameCommand packet, Connection connection)
         {
             // Debug.Log($"J'ai recu un paket");
-            if ((acceptFrom == NetworkMode.Client && _networkManager.IsClient) ||
-                acceptFrom == NetworkMode.Server && _networkManager.IsServer)
+            if ((AcceptFrom == NetworkMode.Client && _networkManager.IsClient) ||
+                AcceptFrom == NetworkMode.Server && _networkManager.IsServer)
             {
                 Debug.LogError(
                     "On a pas l'air d'etre synchronisé, un paquet de l'autre a été recu mais on en attendait pas");
@@ -342,8 +344,8 @@ namespace Script.Networking
         public void DoLocalAction(GameCommand command)
         {
             // Debug.Log($"Action locale qu'il faut dupliquer");
-            if ((acceptFrom == NetworkMode.Client && _networkManager.IsServer) ||
-                acceptFrom == NetworkMode.Server && _networkManager.IsClient)
+            if ((AcceptFrom == NetworkMode.Client && _networkManager.IsServer) ||
+                AcceptFrom == NetworkMode.Server && _networkManager.IsClient)
             {
                 Debug.LogError("On a pas l'air d'etre synchronisé, on attendait un paquet distant");
                 return;
@@ -359,16 +361,16 @@ namespace Script.Networking
 
         public T WaitForTaskWithPolling<T>(TaskCompletionSource<T> completionSource, bool onGameThread)
         {
-            if (_interrupted)
-            {
-                throw new ThreadInterruptedException();
-            }
 
             // Debug.Log($"On rentre dans WaitForTaskWithPolling {Thread.CurrentThread.Name}");
             lock (this)
             {
                 while (true)
                 {
+                    if (_interrupted)
+                    {
+                        throw new ThreadInterruptedException();
+                    }
                     // Debug.Log($"On pulse all {Thread.CurrentThread.Name}");
                     Monitor.PulseAll(this);
                     switch (completionSource.Task.Status)

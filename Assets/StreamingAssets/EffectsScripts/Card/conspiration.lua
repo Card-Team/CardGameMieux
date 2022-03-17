@@ -3,6 +3,9 @@ max_level = 2
 ---@type number
 image_id = 530
 
+---@type ChainMode
+chain_mode = ChainMode.MiddleChain
+
 ---@type string
 name = "Conspiration"
 ---@type number

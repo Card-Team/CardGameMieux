@@ -8,6 +8,9 @@ name = "Échange"
 ---@type number
 pa_cost = 2
 
+---@type ChainMode
+chain_mode = ChainMode.StartChain
+
 ---@type string
 description = "Echange cette carte avec une carte aléatoire de la main de votre adversaire."
 

@@ -3,13 +3,17 @@ max_level = 4
 ---@type number
 image_id = 523
 
+---@type ChainMode
+chain_mode = ChainMode.StartOrMiddleChain
+
 ---@type string
 name = "Augmentation"
 ---@type number
 pa_cost = 2
 
+local base_description = "(bloqué avant level 4) Augmentation du nombre de PA max de 1"
 ---@type string
-description = "(bloqué avant level 4) Augmentation du nombre de PA max de 1"
+description = base_description
 
 local function card_filter()
 	-- carte choisis aleatoirement depuis ton deck
@@ -37,5 +41,7 @@ end
 function on_level_change(_, new)
 	if new == 4 then
 		This.Description.TryChangeValue("Augmentation du nombre de PA max de 1")
+	else
+		This.Description.TryChangeValue(base_description)
 	end
 end 

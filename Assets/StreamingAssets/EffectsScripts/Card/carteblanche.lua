@@ -4,6 +4,9 @@ max_level = 1
 ---@type number
 image_id = 517
 
+---@type ChainMode
+chain_mode = ChainMode.StartChain
+
 ---@type string
 name = "Carte Blanche"
 ---@type number

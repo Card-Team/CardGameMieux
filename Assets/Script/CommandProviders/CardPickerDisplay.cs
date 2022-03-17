@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Script;
 using Script.Input;
 using Script.Networking;
@@ -18,6 +19,7 @@ public class CardPickerDisplay : MonoBehaviour
     public TextMeshPro locationPrefab;
     public GameObject targetPicker;
     public GameObject cardContainer;
+    public GameObject cancelButton;
 
     public float maxScrollDistance = 3;
 
@@ -38,16 +40,19 @@ public class CardPickerDisplay : MonoBehaviour
     private Dictionary<CardRenderer, Transform> _parents = new Dictionary<CardRenderer, Transform>();
     private UnityGame _unityGame;
     private Action<CardRenderer> _onPickCallback;
+    [CanBeNull] private Action _onCancelCallback;
 
 
-    public void DisplayPicker(IEnumerable<CardRenderer> cardRenderers,string text,Action<CardRenderer> onPick)
+    public void DisplayPicker(IEnumerable<CardRenderer> cardRenderers,string text,Action<CardRenderer> onPick,Action onCancel = null)
     {
-        DisplayPicker(cardRenderers.Select(c => (c,"")).ToList(),text,onPick);
+        DisplayPicker(cardRenderers.Select(c => (c,"")).ToList(),text,onPick,onCancel);
     }
     
-    public void DisplayPicker(List<(CardRenderer,string)> cardRenderers,string text,Action<CardRenderer> onPick)
+    public void DisplayPicker(List<(CardRenderer,string)> cardRenderers,string text,Action<CardRenderer> onPick,Action onCancel = null)
     {
         _onPickCallback = onPick;
+        _onCancelCallback = onCancel;
+        cancelButton.SetActive(_onCancelCallback != null);
         _inputManager.DisableAll();
 
         _targetText.text = text;
@@ -89,15 +94,23 @@ public class CardPickerDisplay : MonoBehaviour
 
     public void OnSelected(CardRenderer cardRenderer)
     {
+        Cleanup();
+
+        _onPickCallback(cardRenderer);
+    }
+
+    private void Cleanup()
+    {
         _inputManager.DisableAll();
+        cancelButton.SetActive(false);
         foreach (var (card, pos) in _originalPositions.Select(x => (x.Key, x.Value)))
         {
             card.transform.parent = _parents[card];
             StartCoroutine(
                 PileRenderer.MoveCardInTime(card, pos, 0.1f, c =>
                 {
-                    var ourTurn = Equals(_unityGame.RunOnGameThread(g => g.CurrentPlayer), UnityGame.LocalGamePlayer);
-                    if(ourTurn) _inputManager.EnableThis(InputManager.InputType.Main);
+                    var ourTurn = _unityGame.Game.CurrentPlayer == UnityGame.LocalGamePlayer;
+                    if (ourTurn) _inputManager.EnableThis(InputManager.InputType.Main);
                 })
             );
         }
@@ -105,18 +118,23 @@ public class CardPickerDisplay : MonoBehaviour
         _originalPositions.Clear();
         _parents.Clear();
         Pickable.Clear();
-        
+
         foreach (var t in texts)
         {
             Destroy(t.gameObject);
         }
+
         texts.Clear();
 
         targetPicker.SetActive(false);
-
-        _onPickCallback(cardRenderer);
     }
 
+    public void OnCancel()
+    {
+        Cleanup();
+        _onCancelCallback?.Invoke();
+    }
+    
     private float GetFirstCardLeft()
     {
         var cardRenderer = Pickable[0];

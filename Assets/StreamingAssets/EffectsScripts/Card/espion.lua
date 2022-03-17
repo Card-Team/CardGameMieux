@@ -8,6 +8,9 @@ name = "Espion"
 ---@type number
 pa_cost = 3
 
+---@type ChainMode
+chain_mode = ChainMode.StartChain
+
 ---@type string
 description = "voir une carte aleatoire de la main de l'adversaire"
 

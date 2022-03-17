@@ -8,6 +8,9 @@ name = "Pistolet"
 ---@type number
 pa_cost = 2
 
+---@type ChainMode
+chain_mode = ChainMode.StartOrMiddleChain
+
 ---@type string
 description = "lvl 1 -> Défausse la carte au plus faible cout de la main de l'adversaire, lvl2 -> défausse celle au plus haut cout"
 

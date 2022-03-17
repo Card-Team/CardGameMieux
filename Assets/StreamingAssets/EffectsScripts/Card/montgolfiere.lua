@@ -10,6 +10,9 @@ name = "Montgolfière"
 ---@type number
 pa_cost = 2
 
+---@type ChainMode
+chain_mode = ChainMode.StartOrMiddleChain
+
 local base_description = "Remonte une carte de 1 place dans le deck."
 description = base_description
 

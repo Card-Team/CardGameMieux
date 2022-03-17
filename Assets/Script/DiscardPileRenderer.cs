@@ -26,7 +26,7 @@ namespace Script
 
         private void OnCardMarkUpgrade(CardMarkUpgradeEvent evt)
         {
-            var cardRenderer = this.cards.FirstOrDefault(cr => Equals(cr.Card, evt.Card));
+            var cardRenderer = this.cards.FirstOrDefault(cr => cr.Card == evt.Card);
             if (cardRenderer != null)
             {
                 var pos = upgradeLocation.transform.localPosition;

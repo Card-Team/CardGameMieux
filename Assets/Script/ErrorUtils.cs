@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using CardGameEngine;
 using CardGameEngine.GameSystems.Effects;
+using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using MoonSharp.Interpreter.Debugging;
 using TMPro;
@@ -33,12 +34,12 @@ namespace Script
 
         private const string ScriptError = "<color=\"red\">[Erreur de script]</color> : ";
 
-        public void PrintError(InterpreterException exc)
+        public void PrintError(InterpreterException exc, [CanBeNull] string sourceContent = null)
         {
-            PrintError(exc, exc.CallStack?.ToList() ?? new List<WatchItem>());
+            PrintError(exc, exc.CallStack?.ToList() ?? new List<WatchItem>(),sourceContent);
         }
 
-        public void PrintError(InterpreterException exception, List<WatchItem> callstack)
+        public void PrintError(InterpreterException exception, List<WatchItem> callstack,[CanBeNull] string source = null)
         {
             var splitted = exception.DecoratedMessage.Split(':').ToList();
             var scriptName = string.Join(":", splitted.GetRange(0, splitted.Count - 2));
@@ -52,7 +53,7 @@ namespace Script
                 if (watchItem.Location is { IsClrLocation: false } && (!watchItem.Name?.StartsWith("<") ?? true))
                 {
                     text += " : " + ColoredSource(scriptName, text.Length - ScriptError.Length - 2, watchItem.Location,
-                        index == 0) + "\n";
+                        index == 0, source ?? File.ReadAllText(Application.streamingAssetsPath + "/EffectsScripts/Card/" + scriptName)) + "\n";
                 }
 
                 textZone.text += text + "\n";
@@ -73,11 +74,8 @@ namespace Script
             DumpEvents();
         }
 
-        private string ColoredSource(string scriptName, int padding, SourceRef watchItemLocation, bool isError)
+        private string ColoredSource(string scriptName, int padding, SourceRef watchItemLocation, bool isError,string scriptContent)
         {
-            var scriptContent =
-                File.ReadAllText(Application.streamingAssetsPath + "/EffectsScripts/Card/" + scriptName);
-            if (scriptContent == null) return "";
 
             bool isMultiLine = watchItemLocation.FromLine != watchItemLocation.ToLine && watchItemLocation.ToChar != 0;
 
@@ -161,7 +159,7 @@ namespace Script
         {
             textZone.text += $"<color=\"red\">[Effet invalide]: {exception.Message}</color>" + "\n";
             if (exception.InnerException != null)
-                PrintError(exception.InnerException);
+                PrintError(exception.InnerException,exception.EffectContent);
             else
                 DumpEvents();
         }

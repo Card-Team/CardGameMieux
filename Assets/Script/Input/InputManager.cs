@@ -39,6 +39,7 @@ namespace Script.Input
                 {
                     EnableThis(_lastInputType.Value);
                 }
+                
             }
         }
 
@@ -57,6 +58,7 @@ namespace Script.Input
         private void OnEndTurn(EndTurnEvent evt)
         {
             DisableAll();
+            _lastInputType = null;
         }
         
 

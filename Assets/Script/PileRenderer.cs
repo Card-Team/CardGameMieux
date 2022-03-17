@@ -113,6 +113,7 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
         var oldPos = cardRenderer.transform.position;
         oldPos.z = -cards.IndexOf(cardRenderer);
         cardRenderer.transform.position = oldPos;
+        cardRenderer.RefreshPrecondition(true);
     }
 
     private void RefreshPile()

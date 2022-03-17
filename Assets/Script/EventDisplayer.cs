@@ -17,8 +17,11 @@ namespace Script
     {
         public TMP_InputField eventPanel;
 
+        private NetworkedGame _networkedGame;
+
         private void Start()
         {
+            _networkedGame = FindObjectOfType<NetworkedGame>();
             eventPanel.gameObject.SetActive(false);
         }
 
@@ -54,12 +57,27 @@ namespace Script
 
             // Bouclage du deck
             eventManager.SubscribeToEvent<DeckLoopEvent>(OnDeckLoop, postEvent: true);
+            
+            eventManager.SubscribeToEvent<ChainingEvent>(OnChainStart);
+            eventManager.SubscribeToEvent<ChainingEvent>(OnChainEnd, postEvent: true);
 
             // Nombre de point d'action
             eventManager.SubscribeToEvent<ActionPointsEditEvent>(OnActionPointsEdit, postEvent: true);
 
             // Nombre max de points d'actions
             eventManager.SubscribeToEvent<MaxActionPointsEditEvent>(OnMaxActionPointsEdit, postEvent: true);
+        }
+        
+        private void OnChainStart(ChainingEvent evt)
+        {
+            WriteEvent(
+                $"{evt.Chainer} chaine ! (niveau de chaine : {_networkedGame.Game.ChainCounter})");
+        }
+
+        private void OnChainEnd(ChainingEvent evt)
+        {
+            WriteEvent(
+                $"{evt.Chainer} termine sa chaine ! (niveau de chaine : {_networkedGame.Game.ChainCounter})");
         }
 
         private void OnMaxActionPointsEdit(MaxActionPointsEditEvent evt)

@@ -8,6 +8,9 @@ name = "Nom"
 ---@type number
 pa_cost = 2
 
+---@type ChainMode
+chain_mode = ChainMode.NoChain
+
 ---@type string
 description = "une description de la carte qui peut changer"
 

@@ -3,6 +3,9 @@ max_level = 1
 ---@type number
 image_id = 709
 
+---@type ChainMode
+chain_mode = ChainMode.NoChain
+
 ---@type string
 name = "chance"
 ---@type number

@@ -9,6 +9,9 @@ name = "Extracteur"
 pa_cost = 1
 --TODO a definir le nombre de cout
 
+---@type ChainMode
+chain_mode = ChainMode.StartOrMiddleChain
+
 ---@type string
 description = "Gagner les points d'action d'une carte de ta main"
 

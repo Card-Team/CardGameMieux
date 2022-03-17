@@ -20,7 +20,7 @@ namespace Script.Networking
         private readonly NetworkedGame _networkedGame;
         private readonly Random _random;
 
-        public NetworkedExternCallbacks(int randomSeed,NetworkedGame _networkedGame)
+        public NetworkedExternCallbacks(int randomSeed, NetworkedGame _networkedGame)
         {
             this._random = new Random(randomSeed);
             this._networkedGame = _networkedGame;
@@ -33,7 +33,8 @@ namespace Script.Networking
             if (UnityGame.IsLocalPlayer(effectOwner))
             {
                 Debug.Log("Want local");
-                _networkedGame.WantLocal<ChooseCardTargetCommand>(new ChooseCardTargetData() {TargetName = targetName,CardList =  cardList});
+                _networkedGame.WantLocal<ChooseCardTargetCommand>(new ChooseCardTargetData()
+                    { TargetName = targetName, CardList = cardList });
             }
 
             var cardCommand = _networkedGame.WaitForExternalCommand<ChooseCardTargetCommand>();
@@ -49,13 +50,14 @@ namespace Script.Networking
         {
             if (UnityGame.IsLocalPlayer(effectOwner))
             {
-                _networkedGame.WantLocal<ChoosePlayerTargetCommand>(new ChoosePlayerTargetData() {TargetName = targetName});
+                _networkedGame.WantLocal<ChoosePlayerTargetCommand>(new ChoosePlayerTargetData()
+                    { TargetName = targetName });
             }
 
-            var command= _networkedGame.WaitForExternalCommand<ChoosePlayerTargetCommand>();
+            var command = _networkedGame.WaitForExternalCommand<ChoosePlayerTargetCommand>();
 
             var player = _networkedGame.ResolvePlayer(command.PlayerId);
-            
+
             Debug.Log("Received player");
 
             return player;
@@ -66,7 +68,7 @@ namespace Script.Networking
             Debug.Log($"show card : {card}");
             if (UnityGame.IsLocalPlayer(player))
             {
-                _networkedGame.WantLocal<ShowCardFalseCommand>(new ShowCardFalseData() {Card =  card});
+                _networkedGame.WantLocal<ShowCardFalseCommand>(new ShowCardFalseData() { Card = card });
             }
 
             _networkedGame.WaitForExternalCommand<ShowCardFalseCommand>();
@@ -76,7 +78,8 @@ namespace Script.Networking
         {
             if (UnityGame.IsLocalPlayer(player))
             {
-                _networkedGame.WantLocal<ChooseBetweenCardsCommand>(new ChooseBetweenCardData() {CardList =  cardList});
+                _networkedGame.WantLocal<ChooseBetweenCardsCommand>(new ChooseBetweenCardData()
+                    { CardList = cardList });
             }
 
             var command = _networkedGame.WaitForExternalCommand<ChooseBetweenCardsCommand>();
@@ -90,7 +93,7 @@ namespace Script.Networking
 
         public void ExternGameEnded(Player winner)
         {
-            _networkedGame.WantLocal<GameEndedFalseCommand>(new GameEndedFalseData(){Winner = winner});
+            _networkedGame.WantLocal<GameEndedFalseCommand>(new GameEndedFalseData() { Winner = winner });
         }
 
         public bool ExternChainOpportunity(Player player)
@@ -99,54 +102,48 @@ namespace Script.Networking
             // meme principe qu'en haut pour un ChainOpportunityAnswerCommnd
             // si il dit non on arette la
             // si il dit oui par contre...
-            
-            
+
+
             // dans CETTE FONCTION il faut boucler comme en haut mais pour attendre le paquet PlayCardCommand
             // ensuite c'est dans CETTE FONCTIOn qu'il est appliqué 
             // ensuite on finit la fonction
             //todo
-            return false;
-            if (UnityGame.IsLocalPlayer(player))
-            {
-                _networkedGame.WantLocal<ChainOpportunityCommand>();
-            }
 
-            var chainCommand = _networkedGame.WaitForExternalCommand<ChainOpportunityCommand>();
 
-            var wantChain = chainCommand.chain;
-            
-            Debug.Log("Received chain answer");
-
-            if (!wantChain)
-            {
-                return false;
-            }
-            
             // la en fait faut attendre pour l'un ou l'autre
             // soit jouer une carte soit fini tour
             // si la carte a un indice négatif on a rien fait
-            
-            if (UnityGame.IsLocalPlayer(player))
-            {
-                _networkedGame.WantLocal<ChainTurnCommand>();
-            }
+
+            //inversion
+            _networkedGame.AcceptFrom = _networkedGame.AcceptFrom == NetworkMode.Server
+                ? NetworkMode.Client
+                : NetworkMode.Server;
+
+
+            _networkedGame.WantLocal<ChainTurnCommand>(new ChainInfo { isLocalChaining = UnityGame.IsLocalPlayer(player) });
 
             var command = _networkedGame.WaitForExternalCommand<ChainTurnCommand>();
 
-            Card played = _networkedGame.ResolveCard(command.CardID);
-            if (played == null)
+            if (command.CardID < 0)
             {
-                //on a annulé
+                //inversion
+                _networkedGame.AcceptFrom = _networkedGame.AcceptFrom == NetworkMode.Server
+                    ? NetworkMode.Client
+                    : NetworkMode.Server;
                 return false;
             }
-            else
-            {
-                // la il faut déclencher l'effet de la carte
 
-                _networkedGame.Game.PlayCard(_networkedGame.Game.AllowedToPlayPlayer, played, false);
-                
-                return true;
-            }
+            Card played = _networkedGame.ResolveCard(command.CardID);
+
+            // la il faut déclencher l'effet de la carte
+
+            _networkedGame.Game.PlayCard(_networkedGame.Game.AllowedToPlayPlayer, played, false);
+
+            //inversion
+            _networkedGame.AcceptFrom = _networkedGame.AcceptFrom == NetworkMode.Server
+                ? NetworkMode.Client
+                : NetworkMode.Server;
+            return true;
             // je crois que ca devrais marcher ?
         }
 

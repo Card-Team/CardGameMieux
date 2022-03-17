@@ -8,6 +8,9 @@ name = "Joker"
 ---@type number
 pa_cost = 2
 
+---@type ChainMode
+chain_mode = ChainMode.NoChain
+
 local base_description = "Cette carte peut copier l'effet d'une carte du deck"
 description = base_description
 

@@ -53,6 +53,16 @@
             Nom de la carte
             </summary>
         </member>
+        <member name="P:CardGameEngine.Cards.Card.EffectId">
+            <summary>
+                Le nom du script de l'effet
+            </summary>
+        </member>
+        <member name="P:CardGameEngine.Cards.Card.ChainMode">
+            <summary>
+                Le mode de chainage de la carte
+            </summary>
+        </member>
         <member name="P:CardGameEngine.Cards.Card.IsVirtual">
             <summary>
             Est-ce que la carte est virtuelle ?
@@ -221,6 +231,36 @@
         <member name="T:CardGameEngine.Cards.CardPiles.NotInPileException">
             <summary>
             Exception lancée lorsque d'une carte essaye d'être sortie d'une pile à laquelle elle n'appartient pas
+            </summary>
+        </member>
+        <member name="T:CardGameEngine.Cards.ChainMode">
+            <summary>
+                Le mode de chainage de la carte
+            </summary>
+        </member>
+        <member name="F:CardGameEngine.Cards.ChainMode.StartChain">
+            <summary>
+                Non chainable, Déclenche une chaine
+            </summary>
+        </member>
+        <member name="F:CardGameEngine.Cards.ChainMode.MiddleChain">
+            <summary>
+                Chainable (continue la chaine), ne Déclenche pas de chaine
+            </summary>
+        </member>
+        <member name="F:CardGameEngine.Cards.ChainMode.StartOrMiddleChain">
+            <summary>
+                Chainable (continue la chaine), Déclenche une chaine
+            </summary>
+        </member>
+        <member name="F:CardGameEngine.Cards.ChainMode.EndChain">
+            <summary>
+                Chainable (termine la chaine), ne déclenche pas de chaine
+            </summary>
+        </member>
+        <member name="F:CardGameEngine.Cards.ChainMode.NoChain">
+            <summary>
+                Non chainable, ne déclenche pas de chaine
             </summary>
         </member>
         <member name="T:CardGameEngine.Cards.Keyword">
@@ -527,6 +567,11 @@
             Évènement annulable correspondant à l'activation d'un mot-clé sur une carte
             </summary>
         </member>
+        <member name="T:CardGameEngine.EventSystem.Events.CardEvents.PropertyChange.CardChainModeChangeEvent">
+            <summary>
+                Évènement annulable correspondant au changement de coût d'une carte
+            </summary>
+        </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.PropertyChange.CardCostChangeEvent">
             <summary>
             Évènement annulable correspondant au changement de coût d'une carte
@@ -668,6 +713,11 @@
         <member name="P:CardGameEngine.Game.AllowedToPlayPlayer">
             <summary>
                 Le joueur qui a le droit de jouer
+            </summary>
+        </member>
+        <member name="P:CardGameEngine.Game.IsInChain">
+            <summary>
+                Est ce que l'on est en train de chainer
             </summary>
         </member>
         <member name="P:CardGameEngine.Game.Player1">

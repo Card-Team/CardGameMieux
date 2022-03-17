@@ -50,6 +50,9 @@ EffectOwner = --[[---@type Player]] {}
 ---@type TargetTypes
 TargetTypes = --[[---@type TargetTypes]]{}
 
+---@type ChainMode
+ChainMode = --[[---@type ChainMode]]{}
+
 ---@type List<Event>
 EventStack = --[[---@type List<Event>]] {}
 

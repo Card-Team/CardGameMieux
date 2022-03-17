@@ -9,6 +9,9 @@ name = "Visionnaire"
 pa_cost = 3
 --TODO a definir le nombre de cout
 
+---@type ChainMode
+chain_mode = ChainMode.StartChain
+
 local base_description = "Cette carte vous permet de voir les 2 premieres cartes de votre deck"
 description = base_description
 

@@ -3,6 +3,10 @@ max_level = 1
 ---@type number
 image_id = 523
 
+---@type ChainMode
+chain_mode = ChainMode.NoChain
+
+
 ---@type string
 name = "Amélioration Débug"
 ---@type number

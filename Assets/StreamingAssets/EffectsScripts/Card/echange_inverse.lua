@@ -8,6 +8,9 @@ name = "Echange inversé"
 ---@type number
 pa_cost = 2
 
+---@type ChainMode
+chain_mode = ChainMode.StartChain
+
 ---@type string
 description = "Echange cette carte avec une carte aléatoire dans votre défausse."
 
