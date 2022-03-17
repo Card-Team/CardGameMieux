@@ -5,6 +5,7 @@ using System.Linq;
 using Script;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LectureCartes : MonoBehaviour
@@ -147,9 +148,6 @@ public class LectureCartes : MonoBehaviour
 
     public void RetourMenu(GameObject kill)
     {
-        var actuel = GameObject.FindObjectOfType<Canvas>(); //recupere la fenetre active
-        actuel.gameObject.SetActive(false);
-        
-        kill.gameObject.SetActive(true);
+        SceneManager.LoadScene("Menu Principal");
     }
 }

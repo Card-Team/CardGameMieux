@@ -15,13 +15,14 @@ public class MenuDeck : MonoBehaviour
     public Button buttonTemplate;
     public Transform ParentDeck;
     public GameObject FenetreActive;
+    public GameObject PanelSurppressionDeck;
+    public TMP_Text NomCardAppuye;
 
     void Start()
     {
         //lire tout les fichier deck 
         DirectoryInfo di = new DirectoryInfo(Application.persistentDataPath);
         FileInfo[] files = di.GetFiles("*.txt");
-        Debug.Log(files);
         //si aucun fichier
         if (files.Length == 0)
         {
@@ -36,6 +37,9 @@ public class MenuDeck : MonoBehaviour
                 Button button = Instantiate(buttonTemplate, ParentDeck, false); //creer et un copie un bouton
                 String file2 = file.Name.Replace(".txt", "");
                 button.name = file2; //donne aux champs texte le nom du bouton
+
+                button.GetComponentInChildren<RemoveDeck>().InterfaceSuppresionDeck = PanelSurppressionDeck;
+                button.GetComponentInChildren<RemoveDeck>().TextCard = NomCardAppuye.text;
                 
                 button.gameObject.SetActive(true);
                 button.GetComponentInChildren<TextMeshProUGUI>().SetText(file2);

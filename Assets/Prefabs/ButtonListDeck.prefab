@@ -93,6 +93,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NomCard: 
+  Croix: {fileID: 0}
 --- !u!114 &7255988269487447471
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,6 +170,7 @@ GameObject:
   - component: {fileID: 652251011861696983}
   - component: {fileID: 3940989558695578458}
   - component: {fileID: 1046767186297163892}
+  - component: {fileID: 1434232172114424143}
   m_Layer: 5
   m_Name: Suppr
   m_TagString: Untagged
@@ -193,8 +195,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 51.229, y: 0.00000032037}
-  m_SizeDelta: {x: 41.87, y: 30.102}
+  m_AnchoredPosition: {x: 61.2242, y: -1.6739}
+  m_SizeDelta: {x: 21.8798, y: 18.5489}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6813434975863505039
 CanvasRenderer:
@@ -244,7 +246,7 @@ Animator:
   m_GameObject: {fileID: 5704536249296167381}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9e77f2247b13bc645aec40bb1c2cfb61, type: 2}
+  m_Controller: {fileID: 9100000, guid: d312f92739dbd624fb77fbc97149824f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -297,6 +299,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1434232172114424143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5704536249296167381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71bf99bd9a8bd2944a109d5119fb5ffb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InterfaceSuppresionDeck: {fileID: 0}
+  Text: {fileID: 0}
+  Oui: {fileID: 0}
+  Non: {fileID: 0}
 --- !u!1 &7975277861301623669
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,7 +350,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 15.69511, y: -4.5115023}
+  m_AnchoredPosition: {x: 2.0051003, y: -4.5115023}
   m_SizeDelta: {x: 17.302, y: 14.9438}
   m_Pivot: {x: 0.6158888, y: 0.19810197}
 --- !u!222 &7926076466936154740
@@ -416,7 +434,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6345021479524774635}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1434232172114424143}
+        m_TargetAssemblyTypeName: RemoveDeck, Assembly-CSharp
+        m_MethodName: RemoveFichierDeckList
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &9027745941608816104
 GameObject:
   m_ObjectHideFlags: 0
