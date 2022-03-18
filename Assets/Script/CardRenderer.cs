@@ -56,6 +56,7 @@ namespace Script
         private UnityGame _game;
         private bool _hoverHeight = false;
         [SerializeField] private SpriteRenderer ameliorationImage;
+        [SerializeField] private SpriteRenderer jouableCalque;
 
         public bool Hover
         {
@@ -171,6 +172,8 @@ namespace Script
             Debug.Log($"refresh precond pour {Card}");
 
             this.ameliorationImage.gameObject.SetActive(this.Ameliorable && !faceCachee);
+            this.jouableCalque.gameObject.SetActive(!this.PreconditionJouable && !faceCachee);
+            
 
             fond.color = this.PreconditionJouable || faceCachee ? couleurJouable : couleurPasJouable;
 

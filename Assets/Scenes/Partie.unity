@@ -4845,7 +4845,7 @@ MonoBehaviour:
   locationPrefab: {fileID: 8869492223007743059, guid: 57de9d5fd7fdcec4197667c884b031ec, type: 3}
   targetPicker: {fileID: 1689893926}
   cardContainer: {fileID: 1631263676}
-  cancelButton: {fileID: 436228203}
+  cancelButton: {fileID: 0}
   maxScrollDistance: 5
 --- !u!4 &1583448120
 Transform:
