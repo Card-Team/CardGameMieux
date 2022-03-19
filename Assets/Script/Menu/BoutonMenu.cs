@@ -24,6 +24,7 @@ public class BoutonMenu : MonoBehaviour
     
     public void AllezDeck()
     {
+        //TODO faire un chargement
         SceneManager.LoadScene("Deck");
     }
     

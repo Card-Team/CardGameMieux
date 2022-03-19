@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,10 +21,9 @@ public class LectureCartes : MonoBehaviour
     public Transform ParentDeck;
     public TMP_Text nbCartes; 
     
-    public void Start()
+    public void Awake()
     {
         NomCartes();
-        
         //si on modifie un deck existant
         //foreach sur le fichier texte du deck choisis
         //dans le foreach on creer la carte
@@ -51,7 +51,7 @@ public class LectureCartes : MonoBehaviour
             //carte
             var cardRenderer = Instantiate(cardTemplate, GameObjectCartes); //Creer un nouveau cardRenderer avec instantiate
             cartes.Add(cardRenderer);
-            cardRenderer.scriptToDisplay = fileSansPath2; //champs pour afficher ce script la
+            cardRenderer.SetScript(fileSansPath2); //champs pour afficher ce script la
             cardRenderer.transform.localPosition = new Vector3(posX, posY, 0);
             tour += 1;
             if (tour % 5 == 0)
@@ -70,7 +70,7 @@ public class LectureCartes : MonoBehaviour
     }
 
     private CardRenderer selectionCarte;
-    public List<string> listeCarteSelectionner = new List<string>();
+    [NonSerialized] public List<string> listeCarteSelectionner = new List<string>();
 
     void Update()
     {
@@ -105,25 +105,24 @@ public class LectureCartes : MonoBehaviour
             if (listeCarteSelectionner.Count(list => first.scriptToDisplay == list)==2)
             {
                 //TODO faire griser la carte non selectionnable
-                first.transform.localScale = Vector3.one;
+                
                 return ;
             }
             //Debug.Log(first.name);
             if (first != selectionCarte && selectionCarte != null)
             {
-                selectionCarte.transform.localScale = Vector3.one;
+                selectionCarte.Hover = false;
             }
 
             if (mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5)
             {
-                first.transform.localScale = new Vector3(1.2f, 1.2f, 1);
+                first.Hover = true;
                 selectionCarte = first;
             }
 
             //clique souris dans le rectangle des cartes du deck et liste inferieur a 12 alors ajout dans la liste  
             if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count < 12 && mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5)
             {
-                nbCartes.SetText(listeCarteSelectionner.Count+"");
                 AjouterCarte(first);
             }
         }
@@ -131,7 +130,8 @@ public class LectureCartes : MonoBehaviour
         {
             if (selectionCarte != null)
             {
-                selectionCarte.transform.localScale = Vector3.one;
+                selectionCarte.Hover = false;
+                selectionCarte = null;
             }
         }
     }
@@ -143,11 +143,13 @@ public class LectureCartes : MonoBehaviour
         b.name = first.Card.Name.Value;
         b.GetComponentInChildren<RemoveCardList>().NomCard = first.scriptToDisplay;
         listeCarteSelectionner.Add(first.scriptToDisplay);
+        nbCartes.SetText(listeCarteSelectionner.Count.ToString());
         //Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);
     }
 
     public void RetourMenu(GameObject kill)
     {
-        SceneManager.LoadScene("Menu Principal");
+        SceneManager.LoadScene("Deck");
+        //SceneManager.LoadScene(kill+"");
     }
 }

@@ -195,8 +195,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 61.2242, y: -1.6739}
-  m_SizeDelta: {x: 21.8798, y: 18.5489}
+  m_AnchoredPosition: {x: 56.2, y: -0.00000053644}
+  m_SizeDelta: {x: 27.3549, y: 21.0957}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6813434975863505039
 CanvasRenderer:
@@ -298,7 +298,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 652251011861696983}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1434232172114424143}
+        m_TargetAssemblyTypeName: RemoveDeck, Assembly-CSharp
+        m_MethodName: RemoveFichierDeckList
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1434232172114424143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,8 +325,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InterfaceSuppresionDeck: {fileID: 0}
   Text: {fileID: 0}
-  Oui: {fileID: 0}
-  Non: {fileID: 0}
+  CardAppuye: 
 --- !u!1 &7975277861301623669
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,8 +361,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2.0051003, y: -4.5115023}
-  m_SizeDelta: {x: 17.302, y: 14.9438}
+  m_AnchoredPosition: {x: 1.7635, y: -3.6723}
+  m_SizeDelta: {x: 15.2173, y: 12.1641}
   m_Pivot: {x: 0.6158888, y: 0.19810197}
 --- !u!222 &7926076466936154740
 CanvasRenderer:

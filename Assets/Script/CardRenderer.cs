@@ -97,20 +97,20 @@ namespace Script
             _game = FindObjectOfType<UnityGame>();
         }
 
+        public void SetScript(String ScriptName)
+        {
+            scriptToDisplay = ScriptName;
+            Game game = new Game(Application.streamingAssetsPath + "/EffectsScripts",
+                new DumbCallbacks(),
+                new List<string> { scriptToDisplay },
+                new List<string>());
+            this.Card = game.Player1.Deck[0];
+            Subscribe(game.EventManager);
+            // game.StartGame();
+        }
         // Start is called before the first frame update
         void Start()
         {
-            if (DisplayMode)
-            {
-                Game game = new Game(Application.streamingAssetsPath + "/EffectsScripts",
-                    new DumbCallbacks(),
-                    new List<string> { scriptToDisplay },
-                    new List<string>());
-                this.Card = game.Player1.Deck[0];
-                Subscribe(game.EventManager);
-                // game.StartGame();
-            }
-
             SetData();
         }
 

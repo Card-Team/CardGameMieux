@@ -16,7 +16,7 @@ public class MenuDeck : MonoBehaviour
     public Transform ParentDeck;
     public GameObject FenetreActive;
     public GameObject PanelSurppressionDeck;
-    public TMP_Text NomCardAppuye;
+    public TMP_Text TextCard;
 
     void Start()
     {
@@ -38,8 +38,10 @@ public class MenuDeck : MonoBehaviour
                 String file2 = file.Name.Replace(".txt", "");
                 button.name = file2; //donne aux champs texte le nom du bouton
 
-                button.GetComponentInChildren<RemoveDeck>().InterfaceSuppresionDeck = PanelSurppressionDeck;
-                button.GetComponentInChildren<RemoveDeck>().TextCard = NomCardAppuye.text;
+                var removeDeck = button.GetComponentInChildren<RemoveDeck>();
+                removeDeck.InterfaceSuppresionDeck = PanelSurppressionDeck;
+                removeDeck.Text = TextCard;
+                removeDeck.CardAppuye = file2;
                 
                 button.gameObject.SetActive(true);
                 button.GetComponentInChildren<TextMeshProUGUI>().SetText(file2);
