@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UIElements.Button;
@@ -26,12 +27,8 @@ public class EnregistrementDeck : MonoBehaviour
 
     IEnumerator OnCoroutine(GameObject panel)
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(4);
         panel.SetActive(false);
-        if (panel == deckEnregistrer)
-        {
-            Debug.Log("SORTIR");
-        }
     }
 
     void Update()
@@ -57,7 +54,7 @@ public class EnregistrementDeck : MonoBehaviour
             StartCoroutine(OnCoroutine(panelNomDeckVide));
         }
         //nom de fichier deja existant
-        else if (File.Exists(nomDeckText))
+        else if (File.Exists(Application.persistentDataPath+@"\"+ nomDeckText))
         {
             //interface de validation pour suppression du fichier deja existant
             panelDeckExistant.SetActive(true);
@@ -86,6 +83,7 @@ public class EnregistrementDeck : MonoBehaviour
         deckEnregistrer.gameObject.SetActive(true);
         panelDeckExistant.gameObject.SetActive(false);
         StartCoroutine(OnCoroutine(deckEnregistrer));
+        deckEnregistrer.gameObject.SetActive(true);
     }
 
     public void CliqueNon()

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Principal;
 using Script;
 using TMPro;
 using UnityEngine;
@@ -20,10 +21,12 @@ public class LectureCartes : MonoBehaviour
     public GameObject ButtonDeck;
     public Transform ParentDeck;
     public TMP_Text nbCartes;
+    public TMP_Text titre;
     public Image bar;
     public TMP_Text charg;
     private Dictionary<String, CardRenderer> ListeCartes = new Dictionary<string, CardRenderer>();
     [NonSerialized] public String DeckAModifier=null;
+    public TMP_InputField NomDeck;
     
     public void ChargerDeck()
     {
@@ -35,6 +38,7 @@ public class LectureCartes : MonoBehaviour
         {
             AjouterCarte(ListeCartes[cardCharger]);
         }
+        NomDeck.text = DeckAModifier;
     }
 
     public IEnumerator NomCartes()
@@ -79,12 +83,13 @@ public class LectureCartes : MonoBehaviour
                 posX += cardRenderer.Width * 1 / GameObjectCartes.transform.localScale.x +
                         1.2f; //Corriger pour l'échelle du Game Object Parent en X
             }
-
+            titre.SetText("Chargement en cours ...");
             float progress = Mathf.Clamp01((float) tour / files.Count);
             bar.fillAmount = progress;
-            charg.SetText(Mathf.RoundToInt(progress * 100) + " %");
+            charg.SetText("<i> Loading "+Mathf.RoundToInt(progress * 100) + " %</i>");
             yield return new WaitForEndOfFrame();
         }
+        titre.gameObject.SetActive(false);
         bar.gameObject.SetActive(false);
         charg.gameObject.SetActive(false);
         ChargerDeck();
@@ -167,6 +172,10 @@ public class LectureCartes : MonoBehaviour
         b.name = first.Card.Name.Value;
         b.GetComponent<RemoveCardList>().NomCard = first.scriptToDisplay;
         listeCarteSelectionner.Add(first.scriptToDisplay);
+        if (listeCarteSelectionner.Count == 12)
+        {
+            nbCartes.color= new Color(0, 204, 102);
+        }
         nbCartes.SetText(listeCarteSelectionner.Count.ToString());
         //Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);
     }

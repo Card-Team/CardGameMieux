@@ -15,8 +15,7 @@ public class RemoveCardList : MonoBehaviour
         FindObjectOfType<LectureCartes>().listeCarteSelectionner.Remove(NomCard);
         int nbCarte = FindObjectOfType<LectureCartes>().listeCarteSelectionner.Count;
         FindObjectOfType<LectureCartes>().nbCartes.SetText(nbCarte+"");
+        FindObjectOfType<LectureCartes>().nbCartes.color= new Color(255, 255, 255);
         Destroy(gameObject);
     }
-
-
 }

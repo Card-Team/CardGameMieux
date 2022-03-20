@@ -11,7 +11,7 @@ public class OuiNonInterfaceSuppression : MonoBehaviour
     public void ButtonOui()
     {
         String path = Application.persistentDataPath + "/" + CarteASupprimer + ".txt";
-        Debug.Log("\n" + @path);
+        //Debug.Log("\n" + @path);
         File.Delete(@path);
         SceneManager.LoadScene("Deck");
     }

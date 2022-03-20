@@ -13,8 +13,9 @@ public class NomButton : MonoBehaviour
     
     public void CliqueButton()
     {
-        //Debug.Log("Deck : " + PlayerPrefs.GetString("NomDeck"));  //afficher la valeur du PlayerPrefs 'NomDeck'
         PlayerPrefs.SetString(Nomdeck,text);                //playerPrefs NomDeck Variables publique
+        //Debug.Log("Deck : " + PlayerPrefs.GetString("NomDeck"));  //afficher la valeur du PlayerPrefs 'NomDeck'
+        //Debug.Log(text);
         var actuel = GameObject.FindObjectOfType<Canvas>(); //recupere la fenetre active
         actuel.gameObject.SetActive(false);                 //la desactiver 
         nouvelfenetre.gameObject.SetActive(true);           //et reactiver la nouvelle donné en parametre

@@ -17,9 +17,11 @@ public class LectureDeck : MonoBehaviour
     public Canvas nouvelfenetre;
     public TMP_Text deckVide;
     public Button allezAuDeck;
+    public ScrollRect ScrollRect;
     void OnEnable()
     {
         LireFichier();
+        ScrollRect.verticalNormalizedPosition=1;
     }
 
     public void LireFichier()
@@ -47,7 +49,9 @@ public class LectureDeck : MonoBehaviour
             NomButton button = Instantiate(buttonTemplate, this.transform, false); //creer et un copie un bouton
             String file2 = file.Name.Replace(".txt", "");
             button.name = file2; //donne aux champs texte le nom du bouton
-            if (button.text == PlayerPrefs.GetString("NomDeck"))
+            button.text = file.Name;
+            //Debug.Log( button.name + " / "+ PlayerPrefs.GetString(NomButton.Nomdeck));
+            if (button.text == PlayerPrefs.GetString(NomButton.Nomdeck))
             {
                 button.transform.SetSiblingIndex(0);        //le mettre a la premiere position
                 button.GetComponent<UnityEngine.UI.Image>().color =  new Color(160f/255f, 160f/255f, 160f/255f);
