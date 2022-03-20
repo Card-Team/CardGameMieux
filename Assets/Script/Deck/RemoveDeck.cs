@@ -17,7 +17,13 @@ public class RemoveDeck : MonoBehaviour
     public void RemoveFichierDeckList()
     {
         InterfaceSuppresionDeck.gameObject.SetActive(true);
-        Text.SetText("Etes vous sur de vouloir supprimer '" + CardAppuye + "' du deck ?");
+        Text.SetText("Etes vous sur de vouloir supprimer le deck '" + CardAppuye +"' ?");
         InterfaceSuppresionDeck.GetComponent<OuiNonInterfaceSuppression>().CarteASupprimer=CardAppuye;
+    }
+    
+    public void ModifierDeck()
+    {
+        FindObjectOfType<LectureCartes>().DeckAModifier=CardAppuye;
+        FindObjectOfType<MenuDeck>().CreerUnDeck();
     }
 }

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class RemoveCardList : MonoBehaviour
 {
     public String NomCard;
-    public void AppuieCardDeckList()
+    public void DeleteCardDeckList()
     {
         //clique sur une carte dans la liste : le supprimer de la liste
         //Debug.Log("carte a supprimer : "+NomCard);
@@ -17,4 +17,6 @@ public class RemoveCardList : MonoBehaviour
         FindObjectOfType<LectureCartes>().nbCartes.SetText(nbCarte+"");
         Destroy(gameObject);
     }
+
+
 }

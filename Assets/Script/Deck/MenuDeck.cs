@@ -4,6 +4,8 @@ using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.GameCenter;
+using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
 
 public class MenuDeck : MonoBehaviour
@@ -59,10 +61,16 @@ public class MenuDeck : MonoBehaviour
         StartCoroutine(ActivDelayFrame());
     }
 
-    IEnumerator ActivDelayFrame()
+    public IEnumerator ActivDelayFrame()
     {
-        yield return new WaitForEndOfFrame();
         FenetreActive.gameObject.SetActive(false);
-        CreationDeck.gameObject.SetActive(true); 
+        yield return FindObjectOfType<LectureCartes>().NomCartes();
+        yield return new WaitForEndOfFrame();
+        CreationDeck.gameObject.SetActive(true);
+    }
+
+    public void ModificationDeck()
+    {
+        
     }
 }

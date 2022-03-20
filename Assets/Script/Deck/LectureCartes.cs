@@ -17,27 +17,38 @@ public class LectureCartes : MonoBehaviour
     List<CardRenderer> cartes = new List<CardRenderer>();
     private float tailleListe;
     public ContactFilter2D _contactFilter2D;
-    public Button ButtonDeck;
+    public GameObject ButtonDeck;
     public Transform ParentDeck;
-    public TMP_Text nbCartes; 
+    public TMP_Text nbCartes;
+    public Image bar;
+    public TMP_Text charg;
+    private Dictionary<String, CardRenderer> ListeCartes = new Dictionary<string, CardRenderer>();
+    [NonSerialized] public String DeckAModifier=null;
     
-    public void Awake()
+    public void ChargerDeck()
     {
-        NomCartes();
-        //si on modifie un deck existant
-        //foreach sur le fichier texte du deck choisis
-        //dans le foreach on creer la carte
+        if (DeckAModifier == null)
+        {
+            return;
+        }
+        foreach (var cardCharger in File.ReadAllLines(Application.persistentDataPath + @"\"+DeckAModifier+".txt"))
+        {
+            AjouterCarte(ListeCartes[cardCharger]);
+        }
     }
 
-    public void NomCartes()
+    public IEnumerator NomCartes()
     {
         //recuperer tout les noms de cartes du jeu qui finnissent en .lua sauf ceux qui commencent par un '_'
         Directory.CreateDirectory(Application.streamingAssetsPath);
         DirectoryInfo di = new DirectoryInfo(Application.streamingAssetsPath + "/EffectsScripts/Card");
         var files = Directory.GetFiles(Application.streamingAssetsPath + "/EffectsScripts/Card", "*.lua",
                 SearchOption.AllDirectories)
-            .Where(s => !(s.StartsWith("_")) && s.EndsWith(".lua") && !(s.Contains("example"))).ToList();
-
+            .Where(s =>
+            {
+                String fileName = Path.GetFileName(s);
+                return !(fileName.StartsWith("_")) && fileName.EndsWith(".lua") && !(fileName.Contains("example"));
+            }).ToList();
         int tour = 0;
         float posY = 0;
         float posX = -0.5f;
@@ -49,8 +60,10 @@ public class LectureCartes : MonoBehaviour
             String fileSansPath2 = fileSansPath1.Replace(".lua", "");
             //Debug.Log(fileSansPath2);
             //carte
-            var cardRenderer = Instantiate(cardTemplate, GameObjectCartes); //Creer un nouveau cardRenderer avec instantiate
+            var cardRenderer =
+                Instantiate(cardTemplate, GameObjectCartes); //Creer un nouveau cardRenderer avec instantiate
             cartes.Add(cardRenderer);
+            ListeCartes[fileSansPath2] = cardRenderer;
             cardRenderer.SetScript(fileSansPath2); //champs pour afficher ce script la
             cardRenderer.transform.localPosition = new Vector3(posX, posY, 0);
             tour += 1;
@@ -66,7 +79,15 @@ public class LectureCartes : MonoBehaviour
                 posX += cardRenderer.Width * 1 / GameObjectCartes.transform.localScale.x +
                         1.2f; //Corriger pour l'échelle du Game Object Parent en X
             }
+
+            float progress = Mathf.Clamp01((float) tour / files.Count);
+            bar.fillAmount = progress;
+            charg.SetText(Mathf.RoundToInt(progress * 100) + " %");
+            yield return new WaitForEndOfFrame();
         }
+        bar.gameObject.SetActive(false);
+        charg.gameObject.SetActive(false);
+        ChargerDeck();
     }
 
     private CardRenderer selectionCarte;
@@ -89,6 +110,7 @@ public class LectureCartes : MonoBehaviour
             {
                 return;
             }
+
             GameObjectCartes.transform.position = pos;
         }
 
@@ -102,12 +124,13 @@ public class LectureCartes : MonoBehaviour
             //boite de colision de la carte en dessous
             var first = proche.First().GetComponentInParent<CardRenderer>();
             //verification que la carte n'a pas ete pris plus de 2 fois sinon ne pas la mettre dans la liste
-            if (listeCarteSelectionner.Count(list => first.scriptToDisplay == list)==2)
+            if (listeCarteSelectionner.Count(list => first.scriptToDisplay == list) == 2)
             {
                 //TODO faire griser la carte non selectionnable
-                
-                return ;
+
+                return;
             }
+
             //Debug.Log(first.name);
             if (first != selectionCarte && selectionCarte != null)
             {
@@ -121,7 +144,8 @@ public class LectureCartes : MonoBehaviour
             }
 
             //clique souris dans le rectangle des cartes du deck et liste inferieur a 12 alors ajout dans la liste  
-            if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count < 12 && mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5)
+            if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count < 12 && mousePos.x > -9 && mousePos.y < 7.8 &&
+                mousePos.y > -9.5)
             {
                 AjouterCarte(first);
             }
@@ -138,10 +162,10 @@ public class LectureCartes : MonoBehaviour
 
     private void AjouterCarte(CardRenderer first)
     {
-        Button b = Instantiate(ButtonDeck, ParentDeck, false);
+        GameObject b = Instantiate(ButtonDeck, ParentDeck, false);
         b.GetComponentInChildren<TextMeshProUGUI>().text = first.Card.Name.Value;
         b.name = first.Card.Name.Value;
-        b.GetComponentInChildren<RemoveCardList>().NomCard = first.scriptToDisplay;
+        b.GetComponent<RemoveCardList>().NomCard = first.scriptToDisplay;
         listeCarteSelectionner.Add(first.scriptToDisplay);
         nbCartes.SetText(listeCarteSelectionner.Count.ToString());
         //Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);
