@@ -27,8 +27,8 @@ public class LectureDeck : MonoBehaviour
     public void LireFichier()
     {
         Directory.CreateDirectory(Application.persistentDataPath);
-        DirectoryInfo di = new DirectoryInfo(Application.persistentDataPath);
-        FileInfo[] files = di.GetFiles("*.txt");
+        DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath);
+        FileInfo[] files = dir.GetFiles("*.txt");
         deckVide.gameObject.SetActive(false);
         allezAuDeck.gameObject.SetActive(false);
         if (files.Length == 0)
