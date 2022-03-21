@@ -30,6 +30,8 @@ namespace Script.Networking
         {
             Debug.Log($"AskForTarget for player {effectOwner.Id}");
             Debug.Log("Network Ask Target");
+            var oldAcceptFrom = _networkedGame.AcceptFrom;
+            _networkedGame.AcceptFrom = UnityGame.GetSide(effectOwner);
             if (UnityGame.IsLocalPlayer(effectOwner))
             {
                 Debug.Log("Want local");
@@ -37,8 +39,11 @@ namespace Script.Networking
                     { TargetName = targetName, CardList = cardList });
             }
 
+            
             var cardCommand = _networkedGame.WaitForExternalCommand<ChooseCardTargetCommand>();
 
+            _networkedGame.AcceptFrom = oldAcceptFrom;
+            
             Card card = _networkedGame.ResolveCard(cardCommand.CardId);
 
             Debug.Log("Received card");
@@ -53,8 +58,11 @@ namespace Script.Networking
                 _networkedGame.WantLocal<ChoosePlayerTargetCommand>(new ChoosePlayerTargetData()
                     { TargetName = targetName });
             }
+            var oldAcceptFrom = _networkedGame.AcceptFrom;
+            _networkedGame.AcceptFrom = UnityGame.GetSide(effectOwner);
 
             var command = _networkedGame.WaitForExternalCommand<ChoosePlayerTargetCommand>();
+            _networkedGame.AcceptFrom = oldAcceptFrom;
 
             var player = _networkedGame.ResolvePlayer(command.PlayerId);
 
@@ -66,12 +74,15 @@ namespace Script.Networking
         public void ExternShowCard(Player player, Card card)
         {
             Debug.Log($"show card : {card}");
+            var oldAcceptFrom = _networkedGame.AcceptFrom;
+            _networkedGame.AcceptFrom = UnityGame.GetSide(player);
             if (UnityGame.IsLocalPlayer(player))
             {
                 _networkedGame.WantLocal<ShowCardFalseCommand>(new ShowCardFalseData() { Card = card });
             }
 
             _networkedGame.WaitForExternalCommand<ShowCardFalseCommand>();
+            _networkedGame.AcceptFrom = oldAcceptFrom;
         }
 
         public Card ExternChooseBetween(Player player, List<Card> cardList)
@@ -82,7 +93,10 @@ namespace Script.Networking
                     { CardList = cardList });
             }
 
+            var oldAcceptFrom = _networkedGame.AcceptFrom;
+            _networkedGame.AcceptFrom = UnityGame.GetSide(player);
             var command = _networkedGame.WaitForExternalCommand<ChooseBetweenCardsCommand>();
+            _networkedGame.AcceptFrom = oldAcceptFrom;
 
             var card = _networkedGame.ResolveCard(command.CardId);
 
@@ -115,9 +129,12 @@ namespace Script.Networking
             // si la carte a un indice négatif on a rien fait
 
             //inversion
-            _networkedGame.AcceptFrom = _networkedGame.AcceptFrom == NetworkMode.Server
-                ? NetworkMode.Client
-                : NetworkMode.Server;
+            Debug.Log($"On accepte {_networkedGame.AcceptFrom}");
+            
+            
+            var oldAcceptFrom = _networkedGame.AcceptFrom;
+            _networkedGame.AcceptFrom = UnityGame.GetSide(player);
+            Debug.Log($"On change vers {_networkedGame.AcceptFrom}");
 
 
             _networkedGame.WantLocal<ChainTurnCommand>(new ChainInfo { isLocalChaining = UnityGame.IsLocalPlayer(player) });
@@ -127,9 +144,7 @@ namespace Script.Networking
             if (command.CardID < 0)
             {
                 //inversion
-                _networkedGame.AcceptFrom = _networkedGame.AcceptFrom == NetworkMode.Server
-                    ? NetworkMode.Client
-                    : NetworkMode.Server;
+                _networkedGame.AcceptFrom = oldAcceptFrom;
                 return false;
             }
 
@@ -140,11 +155,11 @@ namespace Script.Networking
             _networkedGame.Game.PlayCard(_networkedGame.Game.AllowedToPlayPlayer, played, false);
 
             //inversion
-            _networkedGame.AcceptFrom = _networkedGame.AcceptFrom == NetworkMode.Server
-                ? NetworkMode.Client
-                : NetworkMode.Server;
+            _networkedGame.AcceptFrom = oldAcceptFrom;
+            
             return true;
             // je crois que ca devrais marcher ?
+            // ca marche bien
         }
 
         public void DebugPrint(string component, string source, string debugPrint)
@@ -156,7 +171,9 @@ namespace Script.Networking
         {
             // on utilise le seed préchargé
             // je mettrai l'algo stylé plus tard (ou jamais)
-            return _random.Next(a, b);
+            var externalRandomNumber = _random.Next(a, b);
+            Debug.Log($"aléatoire : {a} {b} -> {externalRandomNumber}");
+            return externalRandomNumber;
         }
     }
 }

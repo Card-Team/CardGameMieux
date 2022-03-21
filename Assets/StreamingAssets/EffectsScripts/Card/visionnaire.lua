@@ -12,7 +12,7 @@ pa_cost = 3
 ---@type ChainMode
 chain_mode = ChainMode.StartChain
 
-local base_description = "Cette carte vous permet de voir les 2 premieres cartes de votre deck"
+local base_description = "Cette carte vous permet de voir (précisément) les 2(->3) premieres cartes de votre deck"
 description = base_description
 
 local function cardFilter1()
@@ -65,6 +65,6 @@ function on_level_change(_, new)
 	if (new == 1) then
 		This.Description.TryChangeValue(base_description)
 	else
-		This.Description.TryChangeValue("Niveau 2 cette carte vous permet de voir les 3 premiers cartes du deck")
+		This.Description.TryChangeValue("Cette carte vous permet de voir (précisément) les 3 premiers cartes du deck")
 	end
 end

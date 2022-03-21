@@ -53,7 +53,7 @@ namespace Script
             NetworkedGame.DoLocalAction(chooseBetweenCardsCommand);
         }
 
-        private IEnumerator DestroyLater(List<CardRenderer> cardRenderers)
+        public static IEnumerator DestroyLater(List<CardRenderer> cardRenderers)
         {
             yield return new WaitForSeconds(4);
             foreach (var cardRenderer in cardRenderers)

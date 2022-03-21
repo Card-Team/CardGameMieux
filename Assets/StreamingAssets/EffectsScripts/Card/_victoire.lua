@@ -10,7 +10,7 @@ chain_mode = ChainMode.NoChain
 ---@type string
 name = "Victoire"
 ---@type number
-pa_cost = 1
+pa_cost = 5
 
 ---@type string
 local base_description = "Améliore la carte jusqu'au niveau " .. max_level .. " pour gagner."

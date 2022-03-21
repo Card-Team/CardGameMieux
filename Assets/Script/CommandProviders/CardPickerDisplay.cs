@@ -62,7 +62,7 @@ public class CardPickerDisplay : MonoBehaviour
         float margin = 0.4f;
         float toalWidth = (cardWidth + margin) * cardRenderers.Count;
         float inverseScale = 1 / targetPicker.transform.localScale.x;
-        var positionZ = targetPicker.transform.position.z + 2;
+        var positionZ = targetPicker.transform.position.z + 2;  
         Debug.Log("counting pickable");
         for (var index = 0; index < cardRenderers.Count; index++)
         {
@@ -74,7 +74,7 @@ public class CardPickerDisplay : MonoBehaviour
             float xpos = (cardWidth + margin) * index - toalWidth / 2.0f;
 
             StartCoroutine(
-                PileRenderer.MoveCardInTime(cardRenderer, new Vector3(xpos * inverseScale, 0f, positionZ), 0.1f,
+                PileRenderer.MoveCardInTime(cardRenderer, new Vector3(xpos * inverseScale, 0f, positionZ), 0.2f,
                     c => _inputManager.EnableThis(InputManager.InputType.Targeting))
             );
             Pickable.Add(cardRenderer);
@@ -106,8 +106,10 @@ public class CardPickerDisplay : MonoBehaviour
         foreach (var (card, pos) in _originalPositions.Select(x => (x.Key, x.Value)))
         {
             card.transform.parent = _parents[card];
+            card.HoverHeight = true; // si autre part que la main ,pas selectionnable donc on s'en fiche
+            Debug.Log($"Setting hoverHeight to true for {card}");
             StartCoroutine(
-                PileRenderer.MoveCardInTime(card, pos, 0.1f, c =>
+                PileRenderer.MoveCardInTime(card, pos, 0.2f, c =>
                 {
                     var ourTurn = _unityGame.Game.CurrentPlayer == UnityGame.LocalGamePlayer;
                     if (ourTurn) _inputManager.EnableThis(InputManager.InputType.Main);

@@ -8,12 +8,14 @@ using CardGameEngine.EventSystem;
 using CardGameEngine.EventSystem.Events.CardEvents;
 using Script;
 using Script.Networking;
+using TMPro;
 using UnityEngine;
 
 public class PileRenderer : MonoBehaviour, IEventSubscriber
 {
     public Owner owner;
     public PileType pileType;
+    public TextMeshPro countText;
 
     public bool cartesCachées = true;
 
@@ -50,7 +52,10 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
         };
 
         UnityGame.PileRenderers.Add(CardPile, this);
-
+        if (UnityGame.LocalPlayer != owner)
+        {
+            countText.transform.localRotation = Quaternion.Euler(0,0,180);
+        }
         RefreshPile();
     }
 
@@ -61,6 +66,7 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
         var cardRenderer = UnityGame.CardRenderers[evt.Card];
         cards.Remove(cardRenderer);
         UnityGame.PileRenderers[evt.DestPile].GrabCard(cardRenderer);
+        countText.text = cards.Count.ToString();
     }
 
     private void GrabCard(CardRenderer cardRenderer)
@@ -84,6 +90,7 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
     public static IEnumerator MoveCardInTime(CardRenderer cardRenderer, Vector3 destination, float time
         , Action<CardRenderer> onFinish)
     {
+        cardRenderer.Hover = false;
         var start = (Vector2)cardRenderer.transform.localPosition;
 
         float tempsParcouru = 0;
@@ -111,9 +118,10 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
             cardRenderer.Flip();
         }
         var oldPos = cardRenderer.transform.position;
-        oldPos.z = -cards.IndexOf(cardRenderer);
+        oldPos.z = -cards.Count;
         cardRenderer.transform.position = oldPos;
         cardRenderer.RefreshPrecondition(true);
+        countText.text = cards.Count.ToString();
     }
 
     private void RefreshPile()
@@ -131,6 +139,8 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
             }
             cards.Add(unityCard);
         }
+
+        countText.text = cards.Count.ToString();
     }
 
     public virtual void Subscribe(SyncEventWrapper eventManager)

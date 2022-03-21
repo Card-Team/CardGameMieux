@@ -17,35 +17,26 @@ description = "Transfère le niveau de cette carte à une autre"
 --fonction qui recupere toute les cartes de sa main sauf celle ci est lui demande d'en selectionné une
 ---@param aCard Card
 local function cardFilter(aCard)
-	return EffectOwner.Hand.Contains(aCard)
-			and This ~= aCard and not aCard.IsMaxLevel
+    return EffectOwner.Hand.Contains(aCard)
+            and This ~= aCard and not aCard.IsMaxLevel
 end
 
 ---@type Target[]
 targets = {
-	CreateTarget("Transferer niveau", TargetTypes.Card, false, cardFilter),
+    CreateTarget("Transferer niveau", TargetTypes.Card, false, cardFilter),
 }
 
 function precondition()
-	local tailleMain = #EffectOwner.Hand
-	for i = 1, tailleMain do
-		if ((EffectOwner.Hand[i-1].IsMaxLevel) ~= true 
-		) then
-			return EffectOwner.Hand.Count > 0
-		
-		end
-	end
-	return true
+    return TargetsExists({1})
 end
 
 function do_effect()
-	
-	local card = --[[---@type Card]] AskForTarget(1)--la carte
-	local NiveauTransfert = This.CurrentLevel.Value
-	if(card.CurrentLevel.Value + NiveauTransfert > card.MaxLevel) then --Verifie si l'ajout du niveau ne dépasse pas le niveau maximal
-		card.CurrentLevel.TryChangeValue(card.MaxLevel)
-	else
-		card.CurrentLevel.TryChangeValue(card.CurrentLevel.Value + NiveauTransfert)
-	end
+
+    local card = --[[---@type Card]] AskForTarget(1)--la carte
+    local NiveauTransfert = This.CurrentLevel.Value
+
+    card.CurrentLevel.TryChangeValue(math.min(card.MaxLevel, card.CurrentLevel.Value + NiveauTransfert))
+    This.CurrentLevel.TryChangeValue(1)
+
 end
 

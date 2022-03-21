@@ -5,6 +5,7 @@ using CardGameEngine.EventSystem.Events.GameStateEvents;
 using Script.Networking;
 using Script.Networking.Commands.Extern;
 using TMPro;
+using UnityEngine;
 
 namespace Script
 {
@@ -54,6 +55,7 @@ namespace Script
 
         private void OnCancel()
         {
+            Debug.Log("On peut pas chainer");
             chainWaitText.gameObject.SetActive(false);
             NetworkedGame.DoLocalAction(new ChainTurnCommand() { CardID = -1 });
         }

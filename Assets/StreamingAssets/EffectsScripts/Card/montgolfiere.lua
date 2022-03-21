@@ -13,14 +13,14 @@ pa_cost = 2
 ---@type ChainMode
 chain_mode = ChainMode.StartOrMiddleChain
 
-local base_description = "Remonte une carte de 1 place dans le deck."
+local base_description = "Remonte une carte de 1(->2->3+pioche si en haut) place dans le deck."
 description = base_description
 
 local function card_filter(a_card)
 	return EffectOwner.Deck.Contains(a_card)
 			and
 			(
-					This.CurrentLevel.Value == max_level
+					This.IsMaxLevel
 							or
 							EffectOwner.Deck.IndexOf(a_card) > 0
 			)
@@ -43,9 +43,12 @@ function do_effect()
 	local currentPos = EffectOwner.Deck.IndexOf(theCard)
 	
 	local newPos = currentPos - nb_to_move[This.CurrentLevel.Value]
+	print("newpos : " .. tostring(newPos))
 	if (newPos < 0 and This.CurrentLevel.Value == max_level) then
+		print("pioche")
 		EffectOwner.Deck.MoveTo(EffectOwner.Hand, theCard, 0)
 	else
+		print("paspioche")
 		EffectOwner.Deck.MoveInternal(theCard, math.max(0, newPos))
 	end
 end

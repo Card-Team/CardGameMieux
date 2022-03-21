@@ -39,6 +39,9 @@ function do_effect()
 	end
 end
 
+-- idée 
+-- niv 2 elle défausse en plus d'annuler
+-- et le changement de mode de chainage niv 3
 function on_level_change(old, new)
 	if (new == max_level) then
 		This.Description.TryChangeValue(base_description + "\n Termine la chaine")

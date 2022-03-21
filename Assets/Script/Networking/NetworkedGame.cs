@@ -56,6 +56,7 @@ namespace Script.Networking
 
         private void Awake()
         {
+            _errorUtils = FindObjectOfType<ErrorUtils>();
             _inputManager = FindObjectOfType<InputManager>();
             FindObjectOfType<DebugConsole>().Init();
             _networkManager = GetComponent<NetworkManager>();
@@ -180,6 +181,10 @@ namespace Script.Networking
             {
                 Debug.LogError("Exception dans EventRegistration/GameInit");
                 Debug.LogException(e);
+                if (e is LuaException le)
+                {
+                    _errorUtils.toPrint.Enqueue(le);
+                }
             }
         }
 
@@ -205,13 +210,14 @@ namespace Script.Networking
                 catch (Exception e)
                 {
                     Debug.LogError($"Erreure lors du processing du paquet {curCommand}");
-                    if (e is InterpreterException ie)
+                    if (e is LuaException le)
                     {
-                        FindObjectOfType<ErrorUtils>().PrintError(ie);
+                        _errorUtils.toPrint.Enqueue(le);
                     }
 
                     Debug.LogError(e);
                     _gameCommands.TryDequeue(out _);
+                    _gameProcessThread.Interrupt();
                 }
             }
         }
@@ -233,6 +239,7 @@ namespace Script.Networking
                 {
                     Debug.LogError("Erreure lors d'une action sur le thread de jeu");
                     Debug.LogError(e);
+                    task.SetException(e);
                 }
             }
         }
@@ -306,14 +313,11 @@ namespace Script.Networking
             if ((AcceptFrom == NetworkMode.Client && _networkManager.IsClient) ||
                 AcceptFrom == NetworkMode.Server && _networkManager.IsServer)
             {
-                Debug.LogError(
+                Debug.LogWarning(
                     "On a pas l'air d'etre synchronisé, un paquet de l'autre a été recu mais on en attendait pas");
-                return;
             }
-            else
-            {
-                AddCommandToQueue(packet);
-            }
+
+            AddCommandToQueue(packet);
         }
 
         private void AddCommandToQueue(GameCommand command)
@@ -328,6 +332,11 @@ namespace Script.Networking
                         if (_waitedExternalCommands.TryRemove(command.GetType(), out var value))
                         {
                             value.SetResult(externalCommand);
+                        }
+                        else
+                        {
+                            Debug.Log("Commande arrivée trop vite, en attente");
+                            _tooSoonExternalCommands[command.GetType()] = externalCommand;
                         }
                     }
                 }
@@ -358,10 +367,11 @@ namespace Script.Networking
         }
 
         private volatile bool _interrupted;
+        private ErrorUtils _errorUtils;
+        private Dictionary<Type, ExternalCommand> _tooSoonExternalCommands = new Dictionary<Type, ExternalCommand>();
 
         public T WaitForTaskWithPolling<T>(TaskCompletionSource<T> completionSource, bool onGameThread)
         {
-
             // Debug.Log($"On rentre dans WaitForTaskWithPolling {Thread.CurrentThread.Name}");
             lock (this)
             {
@@ -371,6 +381,7 @@ namespace Script.Networking
                     {
                         throw new ThreadInterruptedException();
                     }
+
                     // Debug.Log($"On pulse all {Thread.CurrentThread.Name}");
                     Monitor.PulseAll(this);
                     switch (completionSource.Task.Status)
@@ -420,6 +431,14 @@ namespace Script.Networking
             if (_waitedExternalCommands.ContainsKey(typeof(T)))
                 throw new InvalidOperationException(
                     $"Il y a déja une attente pour une commande de type {typeof(T)}");
+
+            if (_tooSoonExternalCommands.ContainsKey(typeof(T)))
+            {
+                var elem = _tooSoonExternalCommands[typeof(T)];
+                _tooSoonExternalCommands.Remove(typeof(T));
+                return (T)elem;
+            }
+
             var commandTask = new TaskCompletionSource<ExternalCommand>();
             _waitedExternalCommands[typeof(T)] = commandTask;
 

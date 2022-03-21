@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using CardGameEngine.Cards.CardPiles;
 using CardGameEngine.EventSystem.Events.CardEvents;
@@ -22,6 +23,7 @@ namespace Script
         {
             base.Subscribe(eventManager);
             eventManager.SubscribeToEvent<CardMarkUpgradeEvent>(OnCardMarkUpgrade, false, true);
+            eventManager.SubscribeToEvent<CardUnMarkUpgradeEvent>(OnCardUnMarkUpgrade, false, true);
         }
 
         private void OnCardMarkUpgrade(CardMarkUpgradeEvent evt)
@@ -31,9 +33,34 @@ namespace Script
             {
                 var pos = upgradeLocation.transform.localPosition;
                 pos.z = cardRenderer.transform.localPosition.z;
+
+                IEnumerator Action()
+                {
+                    yield return new WaitForSeconds(0.2f);
+                    yield return MoveCardInTime(cardRenderer, pos, 0.2f, c => { });
+                }
+
                 UnityGame.AddToQueue(
-                    () => MoveCardInTime(cardRenderer, pos, 0.1f, c => { })
-                    , owner);
+                    Action, owner);
+            }
+        }
+        
+        private void OnCardUnMarkUpgrade(CardUnMarkUpgradeEvent evt)
+        {
+            var cardRenderer = this.cards.FirstOrDefault(cr => cr.Card == evt.Card);
+            if (cardRenderer != null)
+            {
+                Vector3 pos = GetNewCardDestination(cardRenderer);
+                pos.z = cardRenderer.transform.localPosition.z;
+
+                IEnumerator Action()
+                {
+                    yield return new WaitForSeconds(0.2f);
+                    yield return MoveCardInTime(cardRenderer, pos, 0.2f, c => { });
+                }
+
+                UnityGame.AddToQueue(
+                    Action, owner);
             }
         }
     }

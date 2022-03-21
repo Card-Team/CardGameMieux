@@ -12,54 +12,75 @@ pa_cost = 2
 ---@type ChainMode
 chain_mode = ChainMode.StartOrMiddleChain
 
-local base_description = "Cette carte te permet d'en piocher une de ton deck"
+local base_description = "Cette carte te permet d'en piocher une de ton deck avec un cout augmenté de 2"
 description = base_description
 
 local function card_filter()
-	local Deck = EffectOwner.Deck
-	return Deck[0]
+    local Deck = EffectOwner.Deck
+    return Deck[0]
 end
 
 ---@type Target[]
 targets = {
-	CreateTarget("La carte piochée", TargetTypes.Card, true, card_filter),
+    CreateTarget("La carte piochée", TargetTypes.Card, true, card_filter),
 }
 
 -- fonction qui renvoie un booléen si la carte peut être jouée ou non
 function precondition()
-	return EffectOwner.Deck.Count >0
+    return EffectOwner.Deck.Count > 0 and (
+            EffectOwner.Hand.LimitSize == nil or
+                    EffectOwner.Hand.Count < EffectOwner.Hand.LimitSize
+    )
 end
 
----@param CardEvent CardPlayEvent
----@param ecouteurs IEventHandler
-local function baisserCout(CardEvent, ecouteurs)
-	local CoutCard = CardEvent.Card.Cost.Value                   --point d'action de l'adversaire
-	CardEvent.Card.Cost.TryChangeValue(math.max(1, CoutCard
-														   ))--commence l'evenement au prochain tour : il baissera ses points d'action apres le prochain tour
-	UnsubscribeTo(ecouteurs)
-end
+---@type Card | nil
+last_card = nil
+---@type number
+last_cost = 0
 
 function do_effect()
-	local carte = --[[---@type Card]] AskForTarget(1)
-	
-	if (This.CurrentLevel == max_level) then
-		local desc = "La carte est jouable et son cout est réduit de 1 "
-		carte.Cost.TryChangeValue(carte.Cost.Value - 1)
-		EffectOwner.Deck.MoveTo(EffectOwner.Hand,carte,1)
-		SubscribeTo(CardPlayEvent, baisserCout, false,
-					true)
-	end
-	if (This.CurrentLevel == 2) then
-		local desc = "La carte est jouable avec son cout initial "
-		EffectOwner.Deck.MoveTo(EffectOwner.Hand,carte,1)
-		SubscribeTo(CardPlayEvent, baisserCout, false,
-					true)
-	
-	else
-		local desc = "La carte est jouable avec un cout augmenté de 1"
-		carte.Cost.TryChangeValue(carte.Cost.Value + 1)
-		EffectOwner.Deck.MoveTo(EffectOwner.Hand,carte,1)
-		SubscribeTo(CardPlayEvent, baisserCout, false,
-					true)
-	end
+    local carte = --[[---@type Card]] AskForTarget(1)
+    print("Carte a bouger :" .. carte.ToString())
+
+    if last_card == carte then
+        print("deux fois sur la meme carte")
+        ---@type Card
+        local last_card = --[[---@type Card]] last_card
+        last_card.Cost.TryChangeValue(last_cost)
+    end
+    
+    local currentCost = carte.Cost.Value
+
+    last_card = carte
+    last_cost = currentCost
+    ---@param playEvent CardPlayEvent
+    ---@param handler IEventHandler
+    local resetCost = function(playEvent, handler)
+        print("resetcost handler")
+        if playEvent.Card == carte then
+            print("inside")
+            carte.Cost.TryChangeValue(currentCost)
+            UnsubscribeTo(handler)
+        end
+    end
+
+    local res = EffectOwner.Deck.MoveTo(EffectOwner.Hand, carte, 0)
+    print("carte bougée : " .. tostring(res))
+    SubscribeTo(T_CardPlayEvent, resetCost, false, true)
+
+    if (This.CurrentLevel.Value == 1) then
+        carte.Cost.TryChangeValue(math.min(currentCost + 2, EffectOwner.MaxActionPoints.Value))
+    elseif (This.CurrentLevel.Value == max_level) then
+        carte.Cost.TryChangeValue(math.max(0, carte.Cost.Value - 1))
+    end
 end
+
+function on_level_change(old, new)
+    if new == 1 then
+        This.Description.TryChangeValue(base_description)
+    elseif new == max_level then
+        This.Description.TryChangeValue("Cette carte te permet d'en piocher une de ton deck avec un cout diminué de 1")
+    else
+        This.Description.TryChangeValue("Cette carte te permet d'en piocher une de ton deck")
+    end
+end 

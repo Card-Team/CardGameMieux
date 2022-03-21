@@ -4,8 +4,6 @@ using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms.GameCenter;
-using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
 
 public class MenuDeck : MonoBehaviour

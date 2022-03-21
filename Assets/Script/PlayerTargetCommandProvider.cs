@@ -42,6 +42,7 @@ namespace Script
             var ourTurn = _unityGame.Game.CurrentPlayer == UnityGame.LocalGamePlayer;
             if (ourTurn) _inputManager.EnableThis(InputManager.InputType.Main);
             NetworkedGame.DoLocalAction(new ChoosePlayerTargetCommand(){PlayerId = player.Id});
+            
         }
         
     }

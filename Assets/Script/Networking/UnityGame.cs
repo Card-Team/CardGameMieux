@@ -65,7 +65,7 @@ namespace Script.Networking
                     IPAddress = IPAddress.IPv6Loopback,
                     Port = 1246
                 };
-                _ownDeck = new List<string> { "pistolet", "carteblanche" ,"affaiblissement","visionnaire","debugamelioration"};
+                _ownDeck = new List<string> { "debugamelioration","pistolet","sacrifice","transfert","pioche_Critique"};
             }
 
             if (_nc.NetworkMode == NetworkMode.Client)
@@ -172,6 +172,11 @@ namespace Script.Networking
         public static bool IsLocalPlayer(Player player)
         {
             return LocalGamePlayer == player;
+        }
+
+        public static NetworkMode GetSide(Player player)
+        {
+            return player.Id == 0 ? NetworkMode.Server : NetworkMode.Client;
         }
     }
 }

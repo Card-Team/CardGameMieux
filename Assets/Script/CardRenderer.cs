@@ -80,11 +80,7 @@ namespace Script
             get => _hoverHeight;
             set
             {
-                if (_hoverHeight != value)
-                {
-                    _animator.SetBool(HoverHeightProp, value);
-                }
-
+                _animator.SetBool(HoverHeightProp, value);
                 _hoverHeight = value;
             }
         }
@@ -108,6 +104,7 @@ namespace Script
             Subscribe(game.EventManager);
             // game.StartGame();
         }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -169,11 +166,12 @@ namespace Script
                 this.AssezDePa = true;
                 this.Ameliorable = false;
             }
-            Debug.Log($"refresh precond pour {Card}");
+
+            // Debug.Log($"refresh precond pour {Card}");
 
             this.ameliorationImage.gameObject.SetActive(this.Ameliorable && !faceCachee);
             this.jouableCalque.gameObject.SetActive(!this.PreconditionJouable && !faceCachee);
-            
+
 
             fond.color = this.PreconditionJouable || faceCachee ? couleurJouable : couleurPasJouable;
 

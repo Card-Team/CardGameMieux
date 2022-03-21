@@ -63,3 +63,9 @@ end
 ---@return string
 function Event.ToString()
 end
+
+--- Retourne un nombre aléatoire entre min et max
+---@param min number le nombre inférieur
+---@param max number le nombre supérieur
+---@return number Le nombre aléatoire entre min et max
+function GetRandomNumber(min,max) end

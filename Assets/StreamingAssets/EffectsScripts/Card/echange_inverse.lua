@@ -17,7 +17,7 @@ description = "Echange cette carte avec une carte aléatoire dans votre défauss
 local function card_filter()
 	-- Verifier quand pas de carte dans la défausse
 	local DiscardPile = EffectOwner.Discard
-	local random = math.random(0, DiscardPile.Count - 1)
+	local random = GetRandomNumber(0,DiscardPile.Count)
 	return DiscardPile[random]
 end
 
@@ -33,9 +33,11 @@ end
 
 function do_effect()
 	local theCard = --[[---@type Card]] AskForTarget(1)
-	-- TODO échanger leur position aussi ( donc pas 0)
-	EffectOwner.Discard.MoveTo(EffectOwner.Hand, theCard, 0)
-	EffectOwner.Hand.MoveTo(EffectOwner.Discard, This, 0)
+
+	local posFirst = EffectOwner.Discard.IndexOf(theCard)
+	local posSec = EffectOwner.Hand.IndexOf(This)
+	EffectOwner.Discard.MoveTo(EffectOwner.Hand, theCard, posSec)
+	EffectOwner.Hand.MoveTo(EffectOwner.Discard, This, posFirst)
 end
 
 

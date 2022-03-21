@@ -18,7 +18,7 @@ description = "voir une carte aleatoire de la main de l'adversaire"
 local function cardFilter()
     -- carte choisis aleatoirement depuis sa main
     local OtherPlayerHand = EffectOwner.OtherPlayer.Hand
-    local random = math.random(0, OtherPlayerHand.Count - 1)
+    local random = GetRandomNumber(0,OtherPlayerHand.Count)
     return OtherPlayerHand[random]
 end
 

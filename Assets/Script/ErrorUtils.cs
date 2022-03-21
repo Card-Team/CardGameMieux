@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +18,8 @@ namespace Script
         public TMP_InputField textZone;
 
         private EventDisplayer _eventDisplayer;
-        
+        public ConcurrentQueue<LuaException> toPrint = new ConcurrentQueue<LuaException>();
+
         private void Start()
         {
             _eventDisplayer = GetComponent<EventDisplayer>();
@@ -29,6 +31,12 @@ namespace Script
             if (UnityEngine.Input.GetKeyDown(KeyCode.RightControl))
             {
                 textZone.gameObject.SetActive(!textZone.gameObject.activeSelf);
+            }
+
+            while (toPrint.TryDequeue(out var res))
+            {
+                PrintError(res);
+                textZone.gameObject.SetActive(true);
             }
         }
 
@@ -53,7 +61,7 @@ namespace Script
                 if (watchItem.Location is { IsClrLocation: false } && (!watchItem.Name?.StartsWith("<") ?? true))
                 {
                     text += " : " + ColoredSource(scriptName, text.Length - ScriptError.Length - 2, watchItem.Location,
-                        index == 0, source ?? File.ReadAllText(Application.streamingAssetsPath + "/EffectsScripts/Card/" + scriptName)) + "\n";
+                        index == 0, source ?? File.ReadAllText(Application.streamingAssetsPath + "/EffectsScripts/Card/" + scriptName + ".lua")) + "\n";
                 }
 
                 textZone.text += text + "\n";
@@ -92,12 +100,12 @@ namespace Script
                 {
                     if (i == watchItemLocation.FromChar)
                     {
-                        accumulator += "[red]";
+                        accumulator += "<color=\"red\">";
                     }
                     else if (watchItemLocation.ToChar == 0 && i == firstLine.Length - 1 ||
                              watchItemLocation.ToChar != 0 && i == watchItemLocation.ToChar)
                     {
-                        accumulator += "[/]";
+                        accumulator += "</color>";
                     }
 
                     accumulator += firstLine[i];
