@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -101,7 +102,8 @@ namespace Script.Networking
                 {
                     //on a les deux, est pret
                     CreateGame();
-                    NetworkGameState = NetworkGameState.READY;
+                    if(NetworkGameState == NetworkGameState.SETTING_UP)
+                        NetworkGameState = NetworkGameState.READY;
                 }
             }
             else if (NetworkGameState == NetworkGameState.READY)
@@ -249,6 +251,23 @@ namespace Script.Networking
             //on va dire que le serveur est j1
             var j1Deck = _networkManager.IsServer ? MyConfiguration!.deck : OtherPlayerConfiguration!.deck;
             var j2Deck = _networkManager.IsClient ? OtherPlayerConfiguration!.deck : MyConfiguration!.deck;
+
+            //verification des decks
+
+
+            if (DeckIsInvalid(MyConfiguration?.deck, "Vous"))
+            {
+                this.NetworkGameState = NetworkGameState.NOT_CONNECTED;
+                return;
+            }
+
+            if (DeckIsInvalid(OtherPlayerConfiguration?.deck, "Adversaire"))
+            {
+                this.NetworkGameState = NetworkGameState.NOT_CONNECTED;
+                return;
+            }
+
+
             try
             {
                 Game = new Game(Application.streamingAssetsPath + "/EffectsScripts/",
@@ -266,7 +285,66 @@ namespace Script.Networking
                     Application.Quit();
                 }
             }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+                ErrorMessage("Une erreure est survenue lors de la création de la partie", "");
+                this.NetworkGameState = NetworkGameState.NOT_CONNECTED;
+            }
         }
+
+        private bool DeckIsInvalid(IReadOnlyCollection<string> deckToCheck, string playerName)
+        {
+            var allCards = Directory.EnumerateFiles(Application.streamingAssetsPath + "/EffectsScripts/Card")
+                .Select(Path.GetFileNameWithoutExtension).ToImmutableHashSet();
+            var invalid = deckToCheck?.FirstOrDefault(c => !allCards.Contains(c));
+            if (invalid != null)
+            {
+                ErrorMessage($"carte invalide : {invalid}", playerName);
+                return true;
+            }
+
+            var forbidden = deckToCheck?.FirstOrDefault(c => c.StartsWith("_"));
+            if (forbidden != null)
+            {
+                ErrorMessage($"carte interdite : {forbidden}", playerName);
+                return true;
+            }
+
+            if (deckToCheck?.Count != 12)
+            {
+                ErrorMessage($"nombre de cartes différent de 12, actuel : {deckToCheck?.Count}", playerName);
+                return true;
+            }
+            
+
+            var frequency = deckToCheck?.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
+            var toomuch = deckToCheck?.FirstOrDefault(c => frequency[c] > 2);
+            if (toomuch != null)
+            {
+                ErrorMessage($"carte présente plus de 2 fois : {toomuch}", playerName);
+                return true;
+            }
+
+            return false;
+        }
+
+        private void ErrorMessage(string errorMessage, string playerName)
+        {
+            errorText.SetText(
+                string.IsNullOrWhiteSpace(playerName)
+                    ? errorMessage
+                    : $"{playerName} : {errorMessage}"
+            );
+            errorText.gameObject.SetActive(true);
+            _inputManager.EnableThis(InputManager.InputType.UI);
+            var unityGame = FindObjectOfType<UnityGame>();
+            unityGame.hostingObject.SetActive(false);
+            unityGame.connectingObject.SetActive(false);
+        }
+
+        public TextMeshProUGUI errorText;
+
 
         // protocole
         // hote -> SetUpGame (son nom, son deck)
