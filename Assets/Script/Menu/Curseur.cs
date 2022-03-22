@@ -20,23 +20,23 @@ public class Curseur : MonoBehaviour
     
     void Start()
     {
-        path = Application.dataPath +"/Images/Menu/curseur";
-        dir = new DirectoryInfo(path);
-        files = dir.GetFiles("*.png");
-        Debug.Log(path);
-
-        
-        if (cursorTexture == null) 
-            Debug.Log("Load Cursor Fail"); 
-        
-        foreach (var file in files)
-        {
-            //Debug.Log(file);
-            // if (PlayerPrefs.HasKey("PlayerPrefCursor"))
-            // {
-            //     Debug.Log("PP Cursor: " + PlayerPrefs.GetString("PlayerPrefCursor"));
-            // }
-        }
+        // path = Application.dataPath +"/Images/Menu/curseur";
+        // dir = new DirectoryInfo(path);
+        // files = dir.GetFiles("*.png");
+        // Debug.Log(path);
+        //
+        //
+        // if (cursorTexture == null) 
+        //     Debug.Log("Load Cursor Fail"); 
+        //
+        // foreach (var file in files)
+        // {
+        //     //Debug.Log(file);
+        //     // if (PlayerPrefs.HasKey("PlayerPrefCursor"))
+        //     // {
+        //     //     Debug.Log("PP Cursor: " + PlayerPrefs.GetString("PlayerPrefCursor"));
+        //     // }
+        // }
     }
     
 
