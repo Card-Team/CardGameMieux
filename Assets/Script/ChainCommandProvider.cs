@@ -13,6 +13,7 @@ namespace Script
     {
         private UnityGame _unityGame;
         private CardPickerDisplay _cardPicker;
+        private MainRenderer _localMainRenderer;
         public TextMeshProUGUI chainWaitText;
 
         private void Start()
@@ -20,10 +21,12 @@ namespace Script
             _unityGame = FindObjectOfType<UnityGame>();
             NetworkedGame.RegisterCommandProvider<ChainTurnCommand>(this);
             _cardPicker = FindObjectOfType<CardPickerDisplay>();
+            _localMainRenderer = FindObjectsOfType<MainRenderer>().First(r => r.owner == UnityGame.LocalPlayer);
         }
 
         protected override void DoAction()
         {
+            _localMainRenderer.UpdatePlayable();
             var info = (ChainInfo)InfoStruct;
             chainWaitText.gameObject.SetActive(!info.isLocalChaining);
             if (!info.isLocalChaining)

@@ -623,6 +623,11 @@
             La cible enregistrée
             </summary>
         </member>
+        <member name="P:CardGameEngine.EventSystem.Events.CardEvents.TargetingEvent.ResolvedTarget">
+            <summary>
+                La cible résolue
+            </summary>
+        </member>
         <member name="T:CardGameEngine.EventSystem.Events.Event">
             <summary>
             Classe abstraite vide représentant les évènements

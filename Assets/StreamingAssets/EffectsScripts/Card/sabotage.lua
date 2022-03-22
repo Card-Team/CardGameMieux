@@ -9,48 +9,68 @@ name = "Sabotage"
 pa_cost = 3
 
 ---@type ChainMode
-chain_mode = ChainMode.StartOrMiddleChain
+chain_mode = ChainMode.MiddleChain
 
 --todo bouc emissaire (parce que j'ai modif conspiration en ca)
 -- (idée de carte : bouc émissaire -> pas jouable, chainable middle, si chainée alors elles intercepte le targeting event et se met dedans)
 ---@type string
-description = "La carte défausser pour saboter votre ennemi"
+description = "Force la carté \"méchante\" jouée par votre adversaire a cibler cette carte-ci"
 
 local function card_filter(aCard)
-	-- carte choisis aleatoirement depuis ton deck
-	return EffectOwner.Hand.Contains(aCard)
-			and This ~= aCard
+    -- carte choisis aleatoirement depuis ton deck
+    return EffectOwner.Hand.Contains(aCard)
+            and This ~= aCard
 end
 
 local function card_filter2(aCard)
-	-- carte choisis aleatoirement depuis ton deck
-	
-	return EffectOwner.OtherPlayer.Discard.Contains(aCard) 
+    -- carte choisis aleatoirement depuis ton deck
+
+    return EffectOwner.OtherPlayer.Discard.Contains(aCard)
 
 end
 
 ---@type Target[]
 targets = {
-	CreateTarget("La carte que l'on veut défausser", TargetTypes.Card, false, card_filter),
-	CreateTarget("la carte de l'ennemie dont on veut enlever le marquage", TargetTypes.Card, false, card_filter2),
 }
 
+should_hijack = false
+
+local function is_last_play_evil()
+    print("isevil")
+    ---@type CardEffectPlayEvent
+    local lastEvt = --[[---@type CardEffectPlayEvent]] EventStack[EventStack.Count - 2]
+    if lastEvt.GetType() ~= T_CardEffectPlayEvent then
+        print("noteffectplay")
+        return false
+    end
+    if EventStack[EventStack.Count - 1].GetType() ~=T_ChainingEvent then
+        print("notchaining")
+        return false
+    end
+    local effectName = lastEvt.Card.EffectId
+    if effectName == "pistolet"
+            or effectName == "echange"
+            or effectName == "espion" then
+        return true
+    end
+    print("not evil")
+    return false
+end
+
 --- fonction qui renvoie un booléen si la carte peut être jouée ou non
-function precondition() 
-	return EffectOwner.Hand.Count > 0 and EffectOwner.OtherPlayer.Discard.Count > 0 and TargetsExists({1,2})
+function precondition()
+    local evc = EventStack.Count >= 3
+    print("precond : EventCount : " .. tostring(evc))
+    return evc and is_last_play_evil()
 end
 
 function do_effect()
-	local DiscardPile = EffectOwner.OtherPlayer.Discard
-	local Hand = EffectOwner.Hand
-	local card1 = (--[[---@type Card]] AskForTarget(1))
-	local card2 = (--[[---@type Card]] AskForTarget(2))
-	
-	if (card1.CurrentLevel == card2.CurrentLevel) then
-		-- lvl2
-		Hand.MoveTo(DiscardPile, card1, 1) --On défausse la carte card1
-		DiscardPile.UnMarkForUpgrade(card2) -- On enlever le marquage de la carte ennemi
-	
-    end
-
+    local thisCard = This
+    ---@param evt TargetingEvent
+    SubscribeTo(T_TargetingEvent, function(evt, hnd)
+        print("hijacking")
+        evt.ResolvedTarget = thisCard
+        UnsubscribeTo(hnd)
+    end, true, false)
+    
 end 

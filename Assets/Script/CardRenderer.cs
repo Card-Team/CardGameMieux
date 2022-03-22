@@ -160,7 +160,7 @@ namespace Script
                 this.AssezDePa = Card.Cost.Value <= UnityGame.LocalGamePlayer.ActionPoints.Value;
                 this.Ameliorable = !Card.IsMaxLevel;
             }
-            else
+            else 
             {
                 this.PreconditionJouable = true;
                 this.AssezDePa = true;

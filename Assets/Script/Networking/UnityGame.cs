@@ -65,7 +65,7 @@ namespace Script.Networking
                     IPAddress = IPAddress.IPv6Loopback,
                     Port = 1246
                 };
-                _ownDeck = new List<string> { "debugamelioration","pistolet","sacrifice","transfert","pioche_Critique"};
+                _ownDeck = new List<string> { "debugamelioration","pistolet","sabotage","anullation","pioche_Critique"};
             }
 
             if (_nc.NetworkMode == NetworkMode.Client)
