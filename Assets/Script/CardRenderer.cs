@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CardGameEngine;
 using CardGameEngine.Cards;
 using CardGameEngine.Cards.CardPiles;
@@ -8,6 +9,7 @@ using CardGameEngine.EventSystem.Events;
 using CardGameEngine.EventSystem.Events.CardEvents;
 using CardGameEngine.EventSystem.Events.CardEvents.PropertyChange;
 using CardGameEngine.GameSystems;
+using MoonSharp.Interpreter;
 using Script.Networking;
 using TMPro;
 using UnityEngine;
@@ -26,7 +28,10 @@ namespace Script
         public SpriteRenderer fond;
 
         public Sprite lvlVert;
-        public Sprite lvlrouge;
+        public Sprite lvlRouge;
+
+        public Sprite fondNormal;
+        public Sprite fondDos;
 
         public string scriptToDisplay;
 
@@ -141,6 +146,7 @@ namespace Script
             niveau.gameObject.SetActive(!faceCachee);
             cout.transform.parent.gameObject.SetActive(!faceCachee);
             illustration.gameObject.SetActive(!faceCachee);
+            fond.sprite = faceCachee ? fondDos : fondNormal;
             RefreshPrecondition();
         }
 
@@ -159,11 +165,23 @@ namespace Script
 
             if (UnityGame.IsLocalPlayer(cardHolder) && !hideAll)
             {
-                this.PreconditionJouable = _game.RunOnGameThread(g => Card.CanBePlayed(cardHolder));
+                this.PreconditionJouable = _game.RunOnGameThread(g =>
+                {
+                    try
+                    {
+                        return Card.CanBePlayed(cardHolder);
+                    }
+                    catch (ScriptRuntimeException e)
+                    {
+                        Debug.LogError($"Erreur lors du CanBePlayed de {Card}");
+                        _game.Network.errorUtils.toPrint.Enqueue(e);
+                        return false;
+                    }
+                });
                 this.AssezDePa = Card.Cost.Value <= UnityGame.LocalGamePlayer.ActionPoints.Value;
                 this.Ameliorable = !Card.IsMaxLevel;
             }
-            else 
+            else
             {
                 this.PreconditionJouable = true;
                 this.AssezDePa = true;
@@ -174,14 +192,14 @@ namespace Script
 
             SetLampVert(this.ameliorationImage, this.Ameliorable && !faceCachee);
             SetLampVert(this.jouableCalque, !this.PreconditionJouable && !faceCachee);
-            
+
 
             this.cout.color = AssezDePa ? paColorQuandAssez : paColorQuandPasAssez;
         }
 
         private void SetLampVert(SpriteRenderer spriteRenderer, bool vert)
         {
-            spriteRenderer.sprite = vert ? lvlVert : lvlrouge;
+            spriteRenderer.sprite = vert ? lvlVert : lvlRouge;
         }
 
 

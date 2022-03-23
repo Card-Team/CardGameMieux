@@ -10,7 +10,7 @@ namespace Script
 {
     public class MainRenderer : PileRenderer
     {
-        private const float Margin = 0.35f;
+        private const float Margin = 0.1f;
         protected void Start()
         {
             base.Awake();

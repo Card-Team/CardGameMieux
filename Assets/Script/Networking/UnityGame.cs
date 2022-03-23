@@ -26,7 +26,7 @@ namespace Script.Networking
         public GameObject j1;
         public GameObject j2;
 
-        public Game Game => _network.Game;
+        public Game Game => Network.Game;
         
         public static Owner LocalPlayer { get; private set; }
         public static Player LocalGamePlayer { get; private set; }
@@ -34,7 +34,7 @@ namespace Script.Networking
         private Queue<Func<IEnumerator>> _player1AnimQueue = new Queue<Func<IEnumerator>>();
         private Queue<Func<IEnumerator>> _player2AnimQueue = new Queue<Func<IEnumerator>>();
         private NetworkConfiguration _nc;
-        private NetworkedGame _network;
+        public NetworkedGame Network;
 
 
 
@@ -85,11 +85,11 @@ namespace Script.Networking
         // Start is called before the first frame update
         void OnEnable()
         {
-            _network = FindObjectOfType<NetworkedGame>();
+            Network = FindObjectOfType<NetworkedGame>();
 
 
-            _network.EventRegistration = GameInit;
-            _network.SetUpNetworkGame(_nc, "Raoult", _ownDeck);
+            Network.EventRegistration = GameInit;
+            Network.SetUpNetworkGame(_nc, "Raoult", _ownDeck);
         }
 
         private void GameInit(Game game)
@@ -139,7 +139,7 @@ namespace Script.Networking
 
         public T RunOnGameThread<T>(Func<Game, T> func)
         {
-            var res = _network.RunOnGameThread(func);
+            var res = Network.RunOnGameThread(func);
             return res;
         }
 

@@ -209,10 +209,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   niveauActuel: 2
   niveauMax: 5
-  couleureNormal: {r: 1, g: 1, b: 1, a: 1}
-  couleureMax: {r: 0, g: 0.07280898, b: 1, a: 1}
-  cercleVide: {fileID: 4425216166683535314, guid: d2a90bed3eb59ad4ca529a0d02a5babe, type: 3}
-  cerclePlein: {fileID: 7326972019238404304, guid: 5f12cb8e77b6f144cb8b3c9c632c90d5, type: 3}
+  vide: {fileID: 21300000, guid: 3119bafffadfb19418f83d2870f501a9, type: 3}
+  plein: {fileID: 21300000, guid: b9ca5f29b05516a4293f37d25617eaf9, type: 3}
+  full: {fileID: 21300000, guid: 025a4396fd57fc643ba854bef3b2fc33, type: 3}
+  ampoule: {fileID: 7326972019238404304, guid: 5f12cb8e77b6f144cb8b3c9c632c90d5, type: 3}
 --- !u!1 &2530034158259581154
 GameObject:
   m_ObjectHideFlags: 0
@@ -859,13 +859,15 @@ MonoBehaviour:
   illustration: {fileID: 2834636338925133721}
   fond: {fileID: 6141916473660608243}
   lvlVert: {fileID: 21300000, guid: b9ca5f29b05516a4293f37d25617eaf9, type: 3}
-  lvlrouge: {fileID: 21300000, guid: 5a068f228478cd0408c5faa528d509c8, type: 3}
+  lvlRouge: {fileID: 21300000, guid: 5a068f228478cd0408c5faa528d509c8, type: 3}
+  fondNormal: {fileID: 21300000, guid: f32a4375b0bec5a408655ed0a85d6e11, type: 3}
+  fondDos: {fileID: 21300000, guid: 870a5fb8550494b4489603d89e8e4276, type: 3}
   scriptToDisplay: 
   imagesCartes: {fileID: 11400000, guid: 0ffff537bac060c42947aea121bbe542, type: 2}
   couleurJouable: {r: 1, g: 1, b: 1, a: 1}
   couleurPasJouable: {r: 1, g: 0.5424528, b: 0.5424528, a: 1}
-  paColorQuandAssez: {r: 0.11792451, g: 1, b: 0.21010081, a: 1}
-  paColorQuandPasAssez: {r: 1, g: 0.07075471, b: 0.07075471, a: 1}
+  paColorQuandAssez: {r: 0.09732112, g: 0.764151, b: 0.16844957, a: 1}
+  paColorQuandPasAssez: {r: 0.745283, g: 0.16522783, b: 0.16522783, a: 1}
   ameliorationImage: {fileID: 164418530524996090}
   jouableCalque: {fileID: 3886060012236718787}
 --- !u!95 &2524075900189256386

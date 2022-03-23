@@ -9,11 +9,12 @@ namespace Script
         public int niveauActuel;
         public int niveauMax;
 
-        public Color couleureNormal;
-        public Color couleureMax;
+        public Sprite vide;
+        public Sprite plein;
+        public Sprite full;
+        
 
-        public SpriteRenderer cercleVide;
-        public SpriteRenderer cerclePlein;
+        public SpriteRenderer ampoule;
 
         void Start()
         {
@@ -29,17 +30,24 @@ namespace Script
                 DestroyImmediate(objectA.gameObject);
             }
 
-            float decalage = cercleVide.bounds.size.x + 0.01f;
+            float decalage = ampoule.bounds.size.x + 0.2f;
             for (int i = 0; i < niveauMax; i++)
             {
                 SpriteRenderer cercle;
-                cercle = Instantiate(i < niveauActuel ? cerclePlein : cercleVide, this.transform);
-                
-                if (i < niveauActuel)
+                cercle = Instantiate(ampoule, this.transform);
+
+                if (niveauActuel == niveauMax)
                 {
-                    cercle.color = niveauActuel == niveauMax ? couleureMax : couleureNormal;
+                    cercle.sprite = full;
+                } else if (i < niveauActuel)
+                {
+                    cercle.sprite = plein;
                 }
-                
+                else
+                {
+                    cercle.sprite = vide;
+                }
+
                 cercle.transform.localPosition = new Vector3(decalage*i - (decalage * (niveauMax - 1))/2,0f);
             } 
         }

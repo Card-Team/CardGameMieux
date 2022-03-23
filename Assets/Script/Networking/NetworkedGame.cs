@@ -57,7 +57,7 @@ namespace Script.Networking
 
         private void Awake()
         {
-            _errorUtils = FindObjectOfType<ErrorUtils>();
+            errorUtils = FindObjectOfType<ErrorUtils>();
             _inputManager = FindObjectOfType<InputManager>();
             FindObjectOfType<DebugConsole>().Init();
             _networkManager = GetComponent<NetworkManager>();
@@ -185,7 +185,7 @@ namespace Script.Networking
                 Debug.LogException(e);
                 if (e is LuaException le)
                 {
-                    _errorUtils.toPrint.Enqueue(le);
+                    errorUtils.toPrint.Enqueue(le);
                 }
             }
         }
@@ -214,7 +214,7 @@ namespace Script.Networking
                     Debug.LogError($"Erreure lors du processing du paquet {curCommand}");
                     if (e is LuaException le)
                     {
-                        _errorUtils.toPrint.Enqueue(le);
+                        errorUtils.toPrint.Enqueue(le);
                     }
 
                     Debug.LogError(e);
@@ -445,7 +445,7 @@ namespace Script.Networking
         }
 
         private volatile bool _interrupted;
-        private ErrorUtils _errorUtils;
+        public ErrorUtils errorUtils;
         private Dictionary<Type, ExternalCommand> _tooSoonExternalCommands = new Dictionary<Type, ExternalCommand>();
 
         public T WaitForTaskWithPolling<T>(TaskCompletionSource<T> completionSource, bool onGameThread)

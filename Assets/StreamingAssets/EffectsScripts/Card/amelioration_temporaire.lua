@@ -18,9 +18,15 @@ description = base_description
 ---@param aCard Card
 local function card_filter(aCard)
 	-- carte choisis aleatoirement depuis ton deck
-	
-	return EffectOwner.Hand.Contains(aCard)
-			and This ~= aCard and not aCard.IsMaxLevel and aCard.CanBePlayed(EffectOwner)
+	local premPart = EffectOwner.Hand.Contains(aCard)
+			and This ~= aCard and not aCard.IsMaxLevel
+	print("premier : " .. tostring(premPart))
+	if not premPart then
+		return false
+	end
+	local secPart = aCard.CanBePlayed(EffectOwner)
+	print("deuxieme : " .. tostring(secPart))
+	return premPart and secPart
 end
 
 ---@type Target[]
@@ -37,6 +43,7 @@ function precondition()
 			return EffectOwner.Hand.Count >= 1 and TargetsExists({1})
 		end
 	end
+	return false
 end
 
 function do_effect()

@@ -71,7 +71,7 @@ public class LectureCartes : MonoBehaviour
             cardRenderer.SetScript(fileSansPath2); //champs pour afficher ce script la
             cardRenderer.transform.localPosition = new Vector3(posX, posY, 0);
             tour += 1;
-            if (tour % 5 == 0)
+            if (tour % 4 == 0)
             {
                 posX = -0.5f;
                 tailleListe += cardRenderer.Height * 1 / GameObjectCartes.transform.localScale.y + 1.5f;

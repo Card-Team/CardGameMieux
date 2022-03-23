@@ -18,7 +18,7 @@ namespace Script
         public TMP_InputField textZone;
 
         private EventDisplayer _eventDisplayer;
-        public ConcurrentQueue<LuaException> toPrint = new ConcurrentQueue<LuaException>();
+        public ConcurrentQueue<Exception> toPrint = new ConcurrentQueue<Exception>();
 
         private void Start()
         {
@@ -35,7 +35,15 @@ namespace Script
 
             while (toPrint.TryDequeue(out var res))
             {
-                PrintError(res);
+                switch (res)
+                {
+                    case LuaException lex:
+                        PrintError(lex);
+                        break;
+                    case InterpreterException iex:
+                        PrintError(iex);
+                        break;
+                }
                 textZone.gameObject.SetActive(true);
             }
         }
