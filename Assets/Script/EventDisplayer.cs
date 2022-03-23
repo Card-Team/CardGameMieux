@@ -181,7 +181,7 @@ namespace Script
 
         private void OnPostCardPlay(CardPlayEvent evt)
         {
-            WriteEvent($"La carte <i>{evt.Card.Name}</i> a fini d'etre jouée");
+            WriteEvent($"La carte <i>{evt.Card.Name}</i> a fini d'être jouée");
         }
 
         private void OnCardLevelChange(CardLevelChangeEvent evt)
@@ -194,7 +194,7 @@ namespace Script
 
             // Niveau baisse
             else
-                WriteEvent($"<i>{evt.Card.Name}</i> est redescendue au <color=\"blue\">niveau {evt.NewValue}</color>");
+                WriteEvent($"<i>{evt.Card.Name}</i> est redescendu au <color=\"blue\">niveau {evt.NewValue}</color>");
         }
     }
 }
