@@ -25,6 +25,9 @@ namespace Script
         public SpriteRenderer illustration;
         public SpriteRenderer fond;
 
+        public Sprite lvlVert;
+        public Sprite lvlrouge;
+
         public string scriptToDisplay;
 
         private bool DisplayMode => scriptToDisplay != string.Empty;
@@ -169,13 +172,16 @@ namespace Script
 
             // Debug.Log($"refresh precond pour {Card}");
 
-            this.ameliorationImage.gameObject.SetActive(this.Ameliorable && !faceCachee);
-            this.jouableCalque.gameObject.SetActive(!this.PreconditionJouable && !faceCachee);
-
-
-            fond.color = this.PreconditionJouable || faceCachee ? couleurJouable : couleurPasJouable;
+            SetLampVert(this.ameliorationImage, this.Ameliorable && !faceCachee);
+            SetLampVert(this.jouableCalque, !this.PreconditionJouable && !faceCachee);
+            
 
             this.cout.color = AssezDePa ? paColorQuandAssez : paColorQuandPasAssez;
+        }
+
+        private void SetLampVert(SpriteRenderer spriteRenderer, bool vert)
+        {
+            spriteRenderer.sprite = vert ? lvlVert : lvlrouge;
         }
 
 
