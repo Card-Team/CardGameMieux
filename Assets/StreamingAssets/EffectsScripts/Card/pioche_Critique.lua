@@ -12,7 +12,7 @@ pa_cost = 2
 ---@type ChainMode
 chain_mode = ChainMode.StartOrMiddleChain
 
-local base_description = "Cette carte te permet d'en piocher une de ton deck avec un cout augmenté de 2"
+local base_description = "Cette carte te permet d'en piocher une de ton deck avec un coût augmenté de 2"
 description = base_description
 
 local function card_filter()
@@ -40,7 +40,7 @@ last_cost = 0
 
 function do_effect()
     local carte = --[[---@type Card]] AskForTarget(1)
-    print("Carte a bouger :" .. carte.ToString())
+    print("Carte à bouger :" .. carte.ToString())
 
     if last_card == carte then
         print("deux fois sur la meme carte")
@@ -79,7 +79,7 @@ function on_level_change(old, new)
     if new == 1 then
         This.Description.TryChangeValue(base_description)
     elseif new == max_level then
-        This.Description.TryChangeValue("Cette carte te permet d'en piocher une de ton deck avec un cout diminué de 1")
+        This.Description.TryChangeValue("Cette carte te permet d'en piocher une de ton deck avec un coût diminué de 1")
     else
         This.Description.TryChangeValue("Cette carte te permet d'en piocher une de ton deck")
     end

@@ -13,7 +13,7 @@ name = "Amélioration Débug"
 pa_cost = 0
 
 ---@type string
-description = "Augement le niveau d'une carte de 5"
+description = "Augment le niveau d'une carte de 5"
 
 ---@param a_card Card
 local function card_filter(a_card)
@@ -22,7 +22,7 @@ end
 
 ---@type Target[]
 targets = {
-	CreateTarget("Carta a augmenter", TargetTypes.Card, false, card_filter),
+	CreateTarget("Carte à augmenter", TargetTypes.Card, false, card_filter),
 }
 
 --- fonction qui renvoie un booléen si la carte peut être jouée ou non

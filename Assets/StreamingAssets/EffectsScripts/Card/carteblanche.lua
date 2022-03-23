@@ -12,7 +12,7 @@ name = "Carte Blanche"
 ---@type number
 pa_cost = 2
 
-local base_description = "Cette carte jouer l'effet d'une carte de ta main"
+local base_description = "Cette carte joue l'effet d'une carte de ta main"
 description = base_description
 
 ---@param a_card Card

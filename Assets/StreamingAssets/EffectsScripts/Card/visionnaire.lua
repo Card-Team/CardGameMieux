@@ -26,9 +26,9 @@ local function cardFilter3()
 end--[[---@type Card]]
 ---@type Target[]
 targets = {
-	CreateTarget("la premiere carte du deck", TargetTypes.Card, true, cardFilter1),
-	CreateTarget("la deuxieme carte du deck", TargetTypes.Card, true, cardFilter2),
-	CreateTarget("la troisieme carte du deck", TargetTypes.Card, true, cardFilter3)
+	CreateTarget("la première carte du deck", TargetTypes.Card, true, cardFilter1),
+	CreateTarget("la deuxième carte du deck", TargetTypes.Card, true, cardFilter2),
+	CreateTarget("la troisième carte du deck", TargetTypes.Card, true, cardFilter3)
 }
 
 --Visionnaire

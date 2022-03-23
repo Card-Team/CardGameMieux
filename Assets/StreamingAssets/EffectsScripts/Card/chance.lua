@@ -12,7 +12,7 @@ name = "chance"
 pa_cost = 2
 
 ---@type string
-description = "Devine une carte de la main du joueur (parmis toutes ses cartes) si c'est la bonne elle va dans sa defausse"
+description = "Devine une carte de la main du joueur (parmis toutes ses cartes) si c'est la bonne elle va dans sa défausse"
 
 
 local function cardFilter()
@@ -24,7 +24,7 @@ end
 ---@type Target[]
 targets = {
 	--cible avec la precondition qui renvoie faux s'il y'a aucune carte dans sa main
-	CreateTarget("Devine une carte de la main du joueurs", TargetTypes.Card, true, cardFilter),
+	CreateTarget("Devine une carte de la main du joueur", TargetTypes.Card, true, cardFilter),
 }
 
 function precondition()

@@ -12,7 +12,7 @@ pa_cost = 3
 chain_mode = ChainMode.StartChain
 
 ---@type string
-description = "voir une carte aleatoire de la main de l'adversaire"
+description = "Voir une carte aléatoire de la main de l'adversaire"
 
 --fonction qui recupere toute les cartes de sa main
 local function cardFilter()

@@ -12,7 +12,7 @@ name = "Conspiration"
 pa_cost = 3
 
 ---@type string
-description = "Annule l'amélioration de la derniere carte adverse "
+description = "Annule l'amélioration de la dernière carte adverse "
 
 local function cardFilter()
 	for card in --[[---@type fun:Card]]EffectOwner.OtherPlayer.Discard do

@@ -12,7 +12,7 @@ pa_cost = 2
 chain_mode = ChainMode.StartOrMiddleChain
 
 ---@type string
-description = "lvl 1 -> Défausse la carte au plus faible cout de la main de l'adversaire, lvl2 -> défausse celle au plus haut cout"
+description = "lvl 1 -> Défausse la carte au plus faible coût de la main de l'adversaire, lvl2 -> défausse celle au plus haut coût"
 
 local function cardFilter()
     local OtherHand = EffectOwner.OtherPlayer.Hand
@@ -44,7 +44,7 @@ end
 
 ---@type Target[]
 targets = {
-    CreateTarget("défausse la carte la plus faible en cout de l'adversaire", TargetTypes.Card, true, cardFilter),
+    CreateTarget("défausse la carte la plus faible en coût de l'adversaire", TargetTypes.Card, true, cardFilter),
 }
 
 function precondition()

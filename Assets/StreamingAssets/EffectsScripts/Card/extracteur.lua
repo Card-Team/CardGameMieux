@@ -23,7 +23,7 @@ end
 
 ---@type Target[]
 targets = {
-	CreateTarget("gagner ses point d'action", TargetTypes.Card, false, cardFilter),
+	CreateTarget("gagner ses points d'action", TargetTypes.Card, false, cardFilter),
 }
 
 --Extracteur  : Carte qui permet au joueur de choisir parmi une de ses cartes en main et d'en gagner le cout en points d'action.

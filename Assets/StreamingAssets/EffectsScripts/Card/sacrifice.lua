@@ -12,7 +12,7 @@ pa_cost = 2
 ---@type ChainMode
 chain_mode = ChainMode.StartChain
 
-local base_description = "Enlever le marquage d'évolution d'une de vos cartes et réduisez le cout d'une carte de votre main"
+local base_description = "Enlever le marquage d'évolution d'une de vos cartes et réduisez le coût d'une carte de votre main"
 description = base_description
 
 local function card_filter(aCard)
@@ -28,7 +28,7 @@ end
 ---@type Target[]
 targets = {
     CreateTarget("la carte dont on veut enlever le marquage", TargetTypes.Card, false, card_filter),
-    CreateTarget("la carte dont il faut réduire le cout", TargetTypes.Card, false, card_filter_main),
+    CreateTarget("la carte dont il faut réduire le coût", TargetTypes.Card, false, card_filter_main),
 }
 
 -- fonction qui renvoie un booléen si la carte peut être jouée ou non

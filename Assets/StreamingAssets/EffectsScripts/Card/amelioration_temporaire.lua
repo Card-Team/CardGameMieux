@@ -25,8 +25,8 @@ end
 
 ---@type Target[]
 targets = {
-	CreateTarget("la premiere carte à améliorer temporairement", TargetTypes.Card, false, card_filter),
-	CreateTarget("la deuxieme carte à améliorer temporairement", TargetTypes.Card, false, card_filter),
+	CreateTarget("la première carte à améliorer temporairement", TargetTypes.Card, false, card_filter),
+	CreateTarget("la deuxième carte à améliorer temporairement", TargetTypes.Card, false, card_filter),
 }
 
 --- fonction qui renvoie un booléen si la carte peut être jouée ou non

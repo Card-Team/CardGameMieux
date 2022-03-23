@@ -13,7 +13,7 @@ name = "affaiblissement"
 pa_cost = 3
 
 ---@type string
-description = "Fait baisser le nombre de PA de l'adversaire du cout de la carte de la main ciblée"
+description = "Fait baisser le nombre de PA de l'adversaire du coût de la carte de la main ciblée"
 
 ---@type Card
 local function card_filter(aCard)
@@ -27,7 +27,7 @@ end
 
 ---@type Target[]
 targets = {
-    CreateTarget("Source du nombre de points d'action a enlever", TargetTypes.Card, false, card_filter),
+    CreateTarget("Source du nombre de points d'action à enlever", TargetTypes.Card, false, card_filter),
     CreateTarget("Joueur cible", TargetTypes.Player, true, picker),
 }
 
