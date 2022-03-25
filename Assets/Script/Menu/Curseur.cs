@@ -7,13 +7,13 @@ using UnityEngine.UI;
 
 public class Curseur : MonoBehaviour
 {
-    public Texture2D cursorTexture;
+    public Texture2D cursorTexture,cursorTexture2;
     public CursorMode cursorMode = CursorMode.Auto;
     public Vector2 hotSpot = Vector2.zero;
     //[SerializeField]
     //public const string PlayerPrefCursor = "PlayerPrefCursor";
     
-    [NonSerialized] public String path;
+    //[NonSerialized] public String path;
     Texture2D texture2D;
     DirectoryInfo dir;
     FileInfo[] files;
@@ -42,17 +42,22 @@ public class Curseur : MonoBehaviour
 
     public void Suivant()
     {
-        Debug.Log("entrer");
-        Texture2D cursorTexture = (Texture2D) Resources.Load(Application.dataPath +"/Images/Menu/curseur/curseur6.png");
+        //Debug.Log("entrer");
+        cursorTexture2 = (Texture2D) Resources.Load("Images/Menu/curseur/curseur6.png");
+        if (cursorTexture2 == null)
+        {
+            Debug.Log("Erreur");
+            return;
+        }
         Debug.Log(Application.dataPath);
-        Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
+        Cursor.SetCursor(cursorTexture2, hotSpot, cursorMode);
         //Debug.Log(cursorTextur.name);
         //PlayerPrefs.SetString(PlayerPrefCursor,cursorTexture.name);   
     }
 
     public void Precedant()
     {
-        Debug.Log("entrer");
+        //Debug.Log("entrer");
         Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
         //Debug.Log(cursorTexture.name);
         //PlayerPrefs.SetString(PlayerPrefCursor,cursorTexture.name); 
