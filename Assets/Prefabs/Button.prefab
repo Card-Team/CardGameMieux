@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 8076232975279567499}
   - component: {fileID: 418906349456475070}
   - component: {fileID: 3250002252946537750}
-  - component: {fileID: 758951771757158202}
-  - component: {fileID: 7420427650622425875}
+  - component: {fileID: 2484250703961925493}
+  - component: {fileID: 8707563673421697212}
+  - component: {fileID: 1936259002354529051}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -78,7 +79,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &758951771757158202
+--- !u!114 &2484250703961925493
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,7 +93,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: 
   nouvelfenetre: {fileID: 0}
---- !u!114 &7420427650622425875
+--- !u!114 &8707563673421697212
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -111,7 +112,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 0
+  m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -136,7 +137,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 758951771757158202}
+      - m_Target: {fileID: 2484250703961925493}
         m_TargetAssemblyTypeName: NomButton, Assembly-CSharp
         m_MethodName: CliqueButton
         m_Mode: 1
@@ -148,6 +149,25 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!95 &1936259002354529051
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 661000327235583154}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 550519b83e023c842b5ba3125a678bfe, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &9027745941608816104
 GameObject:
   m_ObjectHideFlags: 0
