@@ -24,7 +24,7 @@ public class LectureCartes : MonoBehaviour
     public TMP_Text titre;
     public Image bar;
     public TMP_Text charg;
-    private Dictionary<String, CardRenderer> ListeCartes = new Dictionary<string, CardRenderer>();
+    public Dictionary<String, CardRenderer> ListeCartes = new Dictionary<string, CardRenderer>();
     [NonSerialized] public String DeckAModifier=null;
     public TMP_InputField NomDeck;
     
@@ -132,8 +132,6 @@ public class LectureCartes : MonoBehaviour
             //verification que la carte n'a pas ete pris plus de 2 fois sinon ne pas la mettre dans la liste
             if (listeCarteSelectionner.Count(list => first.scriptToDisplay == list) == 2)
             {
-                //TODO faire griser la carte non selectionnable
-
                 return;
             }
 
@@ -179,6 +177,12 @@ public class LectureCartes : MonoBehaviour
         }
         nbCartes.SetText(listeCarteSelectionner.Count.ToString());
         //Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);
+        
+        //si les 2 cartes on ete selectionner
+        if (listeCarteSelectionner.Count(c => c == first.scriptToDisplay) == 2)
+        {
+            first.SetTransparence(0.5f);
+        }
     }
 
     public void RetourMenu(GameObject kill)

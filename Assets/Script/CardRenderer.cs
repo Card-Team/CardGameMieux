@@ -228,5 +228,30 @@ namespace Script
                 SetData();
             }, postEvent: true);
         }
+
+        public void SetTransparence(float pourcentage)
+        {
+            SetTransparence(pourcentage,this.cout);
+            SetTransparence(pourcentage,this.description);
+            SetTransparence(pourcentage,this.nom);
+            SetTransparenceSprite(pourcentage,this.illustration);
+            SetTransparenceSprite(pourcentage,this.fond);
+            SetTransparenceSprite(pourcentage,this.ameliorationImage);
+            SetTransparenceSprite(pourcentage,this.jouableCalque);
+            niveau.fontTransparent(pourcentage);
+        }
+
+        private void SetTransparence(float pourcentage,TextMeshPro text)
+        {
+            var coutColor = text.color;
+            coutColor.a = pourcentage;
+            text.color = coutColor;
+        }
+        private void SetTransparenceSprite(float pourcentage,SpriteRenderer sprite)
+        {
+            var coutColor = sprite.color;
+            coutColor.a = pourcentage;
+            sprite.color = coutColor;
+        }
     }
 }
