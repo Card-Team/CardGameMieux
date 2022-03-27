@@ -95,19 +95,7 @@ public class Parametres : MonoBehaviour
     {
         PlayerPrefs.DeleteAll();
         
-        string[] endings = new string[]{
-            "exe", "x86", "x86_64", "app"
-        };
-        string executablePath = Application.dataPath + "/..";
-        foreach (string file in System.IO.Directory.GetFiles(executablePath)) {
-            foreach (string ending in endings) {
-                if (file.ToLower ().EndsWith ("." + ending)) {
-                    System.Diagnostics.Process.Start (executablePath + file);
-                    Application.Quit ();
-                    return;
-                }
-            }
-             
-        }
+        System.Diagnostics.Process.Start(Application.dataPath.Replace("_Data", ".exe")); //new program
+        Application.Quit();
     }
 }
