@@ -209,7 +209,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 185.68, y: -180}
+  m_AnchoredPosition: {x: 213.82, y: -203.1}
   m_SizeDelta: {x: 107.0576, y: 26.3838}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &37154218
@@ -1235,7 +1235,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 185.68, y: -182.1}
+  m_AnchoredPosition: {x: 213.82, y: -197.53}
   m_SizeDelta: {x: 107.0576, y: 26.3838}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &306636173
@@ -3282,6 +3282,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   errorText: {fileID: 314853301}
+  errorUtils: {fileID: 0}
 --- !u!4 &829417930
 Transform:
   m_ObjectHideFlags: 0
@@ -4587,6 +4588,7 @@ MonoBehaviour:
   cardRenderer: {fileID: 2530034160083761924, guid: f60c7b4a37f753a44b7b4859852ddb3f, type: 3}
   j1: {fileID: 1220338683}
   j2: {fileID: 235228054}
+  Network: {fileID: 0}
   interFaceObject: {fileID: 77691257}
   connectingObject: {fileID: 1880168499}
   hostingObject: {fileID: 502333814}

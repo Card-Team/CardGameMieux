@@ -27,6 +27,7 @@ public class MenuDeck : MonoBehaviour
         if (files.Length == 0)
         {
             CreerDeck.transform.localPosition = new Vector3(0f,0f,0f);
+            CreerDeck.GetComponentInChildren<TMP_Text>().fontSize=35;
             List.gameObject.SetActive(false);
             ModifierDeck.gameObject.SetActive(false);
         }

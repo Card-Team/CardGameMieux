@@ -97,6 +97,7 @@ public class LectureCartes : MonoBehaviour
 
     private CardRenderer selectionCarte;
     [NonSerialized] public List<string> listeCarteSelectionner = new List<string>();
+    public Color NbCartesColor = new Color(0, 204, 102);
 
     void Update()
     {
@@ -174,7 +175,7 @@ public class LectureCartes : MonoBehaviour
         listeCarteSelectionner.Add(first.scriptToDisplay);
         if (listeCarteSelectionner.Count == 12)
         {
-            nbCartes.color= new Color(0, 204, 102);
+            nbCartes.color= NbCartesColor;
         }
         nbCartes.SetText(listeCarteSelectionner.Count.ToString());
         //Debug.Log(listeCarteSelectionner[listeCarteSelectionner.Count-1]);

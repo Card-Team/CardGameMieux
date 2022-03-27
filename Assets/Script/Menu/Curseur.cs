@@ -5,61 +5,43 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class Curseur : MonoBehaviour
 {
-    public Texture2D cursorTexture,cursorTexture2;
+    public List<Texture2D> cursorTexture;
+    public Image image;
     public CursorMode cursorMode = CursorMode.Auto;
     public Vector2 hotSpot = Vector2.zero;
-    //[SerializeField]
-    //public const string PlayerPrefCursor = "PlayerPrefCursor";
-    
-    //[NonSerialized] public String path;
-    Texture2D texture2D;
-    DirectoryInfo dir;
-    FileInfo[] files;
-    
-    void Start()
+    private int curent = 0;
+    public const string PPCurseur = "PlayerPrefsCurseur";
+
+
+    public void Start()
     {
-        // path = Application.dataPath +"/Images/Menu/curseur";
-        // dir = new DirectoryInfo(path);
-        // files = dir.GetFiles("*.png");
-        // Debug.Log(path);
-        //
-        //
-        // if (cursorTexture == null) 
-        //     Debug.Log("Load Cursor Fail"); 
-        //
-        // foreach (var file in files)
-        // {
-        //     //Debug.Log(file);
-        //     // if (PlayerPrefs.HasKey("PlayerPrefCursor"))
-        //     // {
-        //     //     Debug.Log("PP Cursor: " + PlayerPrefs.GetString("PlayerPrefCursor"));
-        //     // }
-        // }
+        curent = PlayerPrefs.GetInt(PPCurseur,0);
+        //Debug.Log("curseur numero : "+nbCursor);
+        Cursor.SetCursor(cursorTexture[curent], hotSpot, cursorMode);
+        image.sprite = Sprite.Create(cursorTexture[curent], new Rect(0, 0, cursorTexture[curent].width, cursorTexture[curent].height), Vector2.zero);
     }
     
-
     public void Suivant()
     {
-        //Debug.Log("entrer");
-        cursorTexture2 = (Texture2D) Resources.Load("Images/Menu/curseur/curseur6.png");
-        if (cursorTexture2 == null)
-        {
-            Debug.Log("Erreur");
-            return;
-        }
-        Debug.Log(Application.dataPath);
-        Cursor.SetCursor(cursorTexture2, hotSpot, cursorMode);
-        //Debug.Log(cursorTextur.name);
-        //PlayerPrefs.SetString(PlayerPrefCursor,cursorTexture.name);   
+        curent++;
+        curent = curent % cursorTexture.Count;
+        Cursor.SetCursor(cursorTexture[curent], hotSpot, cursorMode);
+        image.sprite = Sprite.Create(cursorTexture[curent], new Rect(0, 0, cursorTexture[curent].width, cursorTexture[curent].height), Vector2.zero);
+        PlayerPrefs.SetInt(PPCurseur, curent);
     }
 
     public void Precedant()
     {
-        //Debug.Log("entrer");
-        Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
-        //Debug.Log(cursorTexture.name);
-        //PlayerPrefs.SetString(PlayerPrefCursor,cursorTexture.name); 
+        curent--;
+        if (curent <= 0)
+        {
+            curent = cursorTexture.Count-1;
+        }
+        Cursor.SetCursor(cursorTexture[curent], hotSpot, cursorMode);
+        image.sprite = Sprite.Create(cursorTexture[curent], new Rect(0, 0, cursorTexture[curent].width, cursorTexture[curent].height), Vector2.zero);
+        PlayerPrefs.SetInt(PPCurseur, curent);
     }
 }

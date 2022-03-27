@@ -1303,8 +1303,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -151, y: -14}
-  m_SizeDelta: {x: 179.3094, y: 52.793396}
+  m_AnchoredPosition: {x: -152, y: -17}
+  m_SizeDelta: {x: 334.7046, y: 85.5181}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &228928667
 MonoBehaviour:
@@ -6519,6 +6519,7 @@ MonoBehaviour:
   bar: {fileID: 1601184451}
   charg: {fileID: 1234277689}
   NomDeck: {fileID: 1203875708}
+  NbCartesColor: {r: 0.9433962, g: 0.4605364, b: 0.28835884, a: 1}
 --- !u!1 &1980384446
 GameObject:
   m_ObjectHideFlags: 0
