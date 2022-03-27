@@ -1,7 +1,7 @@
 ﻿---@type number
 max_level = 1
 ---@type number
-image_id = 514
+image_id = 5
 
 ---@type string
 name = "Échange"

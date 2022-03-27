@@ -26,6 +26,7 @@ namespace Script
         public TextMeshPro cout;
         public SpriteRenderer illustration;
         public SpriteRenderer fond;
+        public SpriteRenderer chainage;
 
         public Sprite lvlVert;
         public Sprite lvlRouge;
@@ -94,6 +95,7 @@ namespace Script
         }
 
         private static readonly int HoverHeightProp = Animator.StringToHash("HoverHeight");
+        [SerializeField] private List<Sprite> spriteChainage;
 
         private void Awake()
         {
@@ -110,6 +112,7 @@ namespace Script
                 new List<string>());
             this.Card = game.Player1.Deck[0];
             Subscribe(game.EventManager);
+            RefreshPrecondition(true);
             // game.StartGame();
         }
 
@@ -127,6 +130,7 @@ namespace Script
             SetLevel();
             cout.text = Card.Cost.Value.ToString();
             illustration.sprite = imagesCartes[Card.ImageId.Value];
+            chainage.sprite = spriteChainage[(int)Card.ChainMode.Value];
         }
 
         private void SetLevel()
@@ -159,39 +163,45 @@ namespace Script
 
         public void RefreshPrecondition(bool hideAll = false)
         {
-            if (DisplayMode) return;
 
-            Player cardHolder = _game.Game.Player1.Hand.Contains(Card) ? _game.Game.Player1 : _game.Game.Player2;
-
-            if (UnityGame.IsLocalPlayer(cardHolder) && !hideAll)
+            if (!DisplayMode)
             {
-                this.PreconditionJouable = _game.RunOnGameThread(g =>
+                Player cardHolder = _game.Game.Player1.Hand.Contains(Card) ? _game.Game.Player1 : _game.Game.Player2;
+
+                if (UnityGame.IsLocalPlayer(cardHolder) && !hideAll)
                 {
-                    try
+                    this.PreconditionJouable = _game.RunOnGameThread(g =>
                     {
-                        return Card.CanBePlayed(cardHolder);
-                    }
-                    catch (ScriptRuntimeException e)
-                    {
-                        Debug.LogError($"Erreur lors du CanBePlayed de {Card}");
-                        _game.Network.errorUtils.toPrint.Enqueue(e);
-                        return false;
-                    }
-                });
-                this.AssezDePa = Card.Cost.Value <= UnityGame.LocalGamePlayer.ActionPoints.Value;
-                this.Ameliorable = !Card.IsMaxLevel;
+                        try
+                        {
+                            return Card.CanBePlayed(cardHolder);
+                        }
+                        catch (ScriptRuntimeException e)
+                        {
+                            Debug.LogError($"Erreur lors du CanBePlayed de {Card}");
+                            _game.Network.errorUtils.toPrint.Enqueue(e);
+                            return false;
+                        }
+                    });
+                    this.AssezDePa = Card.Cost.Value <= UnityGame.LocalGamePlayer.ActionPoints.Value;
+
+                }
+                else
+                {
+                    this.PreconditionJouable = true;
+                    this.AssezDePa = true;
+                }
             }
             else
             {
                 this.PreconditionJouable = true;
                 this.AssezDePa = true;
-                this.Ameliorable = false;
             }
 
-            // Debug.Log($"refresh precond pour {Card}");
+            this.Ameliorable = !Card.IsMaxLevel;
 
             SetLampVert(this.ameliorationImage, this.Ameliorable && !faceCachee);
-            SetLampVert(this.jouableCalque, !this.PreconditionJouable && !faceCachee);
+            SetLampVert(this.jouableCalque, this.PreconditionJouable && !faceCachee);
 
 
             this.cout.color = AssezDePa ? paColorQuandAssez : paColorQuandPasAssez;
@@ -231,23 +241,25 @@ namespace Script
 
         public void SetTransparence(float pourcentage)
         {
-            SetTransparence(pourcentage,this.cout);
-            SetTransparence(pourcentage,this.description);
-            SetTransparence(pourcentage,this.nom);
-            SetTransparenceSprite(pourcentage,this.illustration);
-            SetTransparenceSprite(pourcentage,this.fond);
-            SetTransparenceSprite(pourcentage,this.ameliorationImage);
-            SetTransparenceSprite(pourcentage,this.jouableCalque);
+            SetTransparence(pourcentage, this.cout);
+            SetTransparence(pourcentage, this.description);
+            SetTransparence(pourcentage, this.nom);
+            SetTransparenceSprite(pourcentage, this.illustration);
+            SetTransparenceSprite(pourcentage, this.fond);
+            SetTransparenceSprite(pourcentage, this.ameliorationImage);
+            SetTransparenceSprite(pourcentage, this.jouableCalque);
+            SetTransparenceSprite(pourcentage, this.chainage);
             niveau.fontTransparent(pourcentage);
         }
 
-        private void SetTransparence(float pourcentage,TextMeshPro text)
+        private void SetTransparence(float pourcentage, TextMeshPro text)
         {
             var coutColor = text.color;
             coutColor.a = pourcentage;
             text.color = coutColor;
         }
-        private void SetTransparenceSprite(float pourcentage,SpriteRenderer sprite)
+
+        private void SetTransparenceSprite(float pourcentage, SpriteRenderer sprite)
         {
             var coutColor = sprite.color;
             coutColor.a = pourcentage;

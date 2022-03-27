@@ -2,7 +2,7 @@
 max_level = 1
 
 ---@type number
-image_id = 517
+image_id = 4
 
 ---@type ChainMode
 chain_mode = ChainMode.StartChain

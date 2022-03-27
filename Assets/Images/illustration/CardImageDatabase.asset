@@ -13,7 +13,13 @@ MonoBehaviour:
   m_Name: CardImageDatabase
   m_EditorClassIdentifier: 
   images:
-  - id: 519
+  - id: 1
     sprite: {fileID: 21300000, guid: 57a87609c7cd0794e87fefbca702f58d, type: 3}
-  - id: 569
+  - id: 2
     sprite: {fileID: 21300000, guid: bab5cfe1068fdc14a83d7614261c95d6, type: 3}
+  - id: 3
+    sprite: {fileID: 21300000, guid: fae73d38e67962140a6eab0d01aa9583, type: 3}
+  - id: 4
+    sprite: {fileID: 21300000, guid: 15353c67fd3424c47b4b4fb146425bfd, type: 3}
+  - id: 5
+    sprite: {fileID: 21300000, guid: f219c523c4dafa04c8ca484de6489efc, type: 3}

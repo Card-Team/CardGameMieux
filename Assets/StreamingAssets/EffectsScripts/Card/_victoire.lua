@@ -1,7 +1,7 @@
 ﻿---@type number
 max_level = 6 --TODO-- A définir
 ---@type number
-image_id = 519
+image_id = 1
 
 ---@type ChainMode
 chain_mode = ChainMode.NoChain

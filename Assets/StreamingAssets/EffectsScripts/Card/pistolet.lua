@@ -1,7 +1,7 @@
 ﻿---@type number
 max_level = 2
 ---@type number
-image_id = 569
+image_id = 2
 
 ---@type string
 name = "Pistolet"

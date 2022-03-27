@@ -134,7 +134,7 @@ namespace Script.Networking
         public GameObject interFaceObject;
         public GameObject connectingObject;
         public GameObject hostingObject;
-        public static readonly Vector3 CardScale = new Vector3(0.40f, 0.40f, 1);
+        public static readonly Vector3 CardScale = new Vector3(0.30f, 0.30f, 1);
 
 
         public T RunOnGameThread<T>(Func<Game, T> func)
