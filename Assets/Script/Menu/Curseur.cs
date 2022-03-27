@@ -26,7 +26,7 @@ public class Curseur : MonoBehaviour
         image.sprite = Sprite.Create(cursorTexture[curent], new Rect(0, 0, cursorTexture[curent].width, cursorTexture[curent].height), Vector2.zero);
 
         int bordures = PlayerPrefs.GetInt(PPBordures,0);
-        Debug.Log(bordures);
+        //Debug.Log(bordures);
         if(bordures==0){
             Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
             ToggleBordures.SetIsOnWithoutNotify(false);
