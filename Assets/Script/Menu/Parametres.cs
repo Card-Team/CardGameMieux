@@ -15,6 +15,7 @@ public class Parametres : MonoBehaviour
     public GameObject panelReinitialisation;
     public GameObject slider;
     public const string PPVolume = "PlayerPrefsVolume";
+    public const string PPBordures = "PlayerPrefsBordures";
     public GameObject mute;
 
     public void Start()
@@ -74,6 +75,20 @@ public class Parametres : MonoBehaviour
         PlayerPrefs.SetInt(PPVolume, vol);
     }
 
+    public void BordureChange(bool change)
+    {
+        if (change)
+        {
+            //full screen 
+            Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+            PlayerPrefs.SetInt(PPBordures,1);
+        }
+        else
+        {
+            Screen.fullScreenMode = FullScreenMode.Windowed;
+            PlayerPrefs.SetInt(PPBordures,0);
+        }
+    }
     public void SetResolution(int resolutionIndex)
     {
         //Debug.Log(resolutionIndex);

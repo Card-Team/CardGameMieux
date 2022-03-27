@@ -10,6 +10,10 @@ public class Audio : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (FindObjectsOfType<Audio>().Length >1)
+        {
+            DestroyImmediate(this.gameObject);
+        }
         int vol = PlayerPrefs.GetInt(PPVolume,50);
         audioSource.GetComponent<AudioSource>().volume = vol/100f;
         audioSource.Play();

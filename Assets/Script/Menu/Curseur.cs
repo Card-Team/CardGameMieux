@@ -14,6 +14,8 @@ public class Curseur : MonoBehaviour
     public Vector2 hotSpot = Vector2.zero;
     private int curent = 0;
     public const string PPCurseur = "PlayerPrefsCurseur";
+    public Toggle ToggleBordures;
+    public const string PPBordures = "PlayerPrefsBordures";
 
 
     public void Start()
@@ -22,6 +24,18 @@ public class Curseur : MonoBehaviour
         //Debug.Log("curseur numero : "+nbCursor);
         Cursor.SetCursor(cursorTexture[curent], hotSpot, cursorMode);
         image.sprite = Sprite.Create(cursorTexture[curent], new Rect(0, 0, cursorTexture[curent].width, cursorTexture[curent].height), Vector2.zero);
+
+        int bordures = PlayerPrefs.GetInt(PPBordures,0);
+        Debug.Log(bordures);
+        if(bordures==0){
+            Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+            ToggleBordures.SetIsOnWithoutNotify(false);
+        }
+        else
+        {
+            Screen.fullScreenMode = FullScreenMode.Windowed;
+            ToggleBordures.SetIsOnWithoutNotify(true);
+        }
     }
     
     public void Suivant()
