@@ -1,9 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Sockets;
 using Script.Networking;
 using TMPro;
 using UnityEngine;
@@ -12,38 +10,31 @@ using UnityEngine.UI;
 
 public class Heberger : MonoBehaviour
 {
-    public TMP_InputField port;
     public const string PortH = "PortHebergement";
+    public TMP_InputField port;
     public GameObject panelHeberger;
     public TMP_Text compteur;
     public TMP_Text textErreur;
     public Loading loading;
     public Image erreurConnexion;
 
-    void Start()
+    private void Start()
     {
         if (PlayerPrefs.HasKey(PortH) && !PortH.Equals("."))
-        {
             //mettre le port depuis le PlayerPrefs enregistré
-            port.text = (PlayerPrefs.GetString("PortHebergement"));
-        }
+            port.text = PlayerPrefs.GetString("PortHebergement");
         else
-        {
             Debug.Log("Port jamais rentrer ou Vide");
-        }
     }
 
-    IEnumerator OnCoroutine(int i)
+    private IEnumerator OnCoroutine(int i)
     {
         while (i >= 0)
         {
             //compteur de 1 seconde
             yield return new WaitForSeconds(1f);
             compteur.SetText("" + i--);
-            if (i < 10)
-            {
-                compteur.color = Color.red;
-            }
+            if (i < 10) compteur.color = Color.red;
 
             if (i < 0)
             {
@@ -60,7 +51,7 @@ public class Heberger : MonoBehaviour
     public void Herberger()
     {
         var portText = port.text;
-        
+
         var deck = PlayerPrefs.GetString(NomButton.Nomdeck);
         var deckFile = Directory.EnumerateFiles(Application.persistentDataPath, "*.txt")
             .First(f => f.EndsWith(deck));

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 namespace Script
@@ -14,51 +13,50 @@ namespace Script
         public Sprite vide;
         public Sprite plein;
         public Sprite full;
-        private float transparence=1;
-        private List<SpriteRenderer> ListSpriteRender = new List<SpriteRenderer>();
-        
+
 
         public SpriteRenderer ampoule;
+        private readonly List<SpriteRenderer> ListSpriteRender = new List<SpriteRenderer>();
+        private float transparence = 1;
 
-        void Start()
+        private void Start()
         {
             RefreshCercle();
         }
 
+        // Update is called once per frame
+        private void Update()
+        {
+        }
+
         public void RefreshCercle()
         {
-        
-            for (var i = this.transform.childCount - 1; i >= 0; i--)
+            for (var i = transform.childCount - 1; i >= 0; i--)
             {
-                var objectA = this.transform.GetChild(i);
+                var objectA = transform.GetChild(i);
                 ListSpriteRender.Remove(objectA.GetComponent<SpriteRenderer>());
                 DestroyImmediate(objectA.gameObject);
             }
 
-            float decalage = ampoule.bounds.size.x + 0.2f;
-            for (int i = 0; i < niveauMax; i++)
+            var decalage = ampoule.bounds.size.x + 0.2f;
+            for (var i = 0; i < niveauMax; i++)
             {
                 SpriteRenderer cercle;
-                cercle = Instantiate(ampoule, this.transform);
+                cercle = Instantiate(ampoule, transform);
                 var coutColor = cercle.color;
                 coutColor.a = transparence;
                 cercle.color = coutColor;
                 ListSpriteRender.Add(cercle);
 
                 if (niveauActuel == niveauMax)
-                {
                     cercle.sprite = full;
-                } else if (i < niveauActuel)
-                {
+                else if (i < niveauActuel)
                     cercle.sprite = plein;
-                }
                 else
-                {
                     cercle.sprite = vide;
-                }
 
-                cercle.transform.localPosition = new Vector3(decalage*i - (decalage * (niveauMax - 1))/2,0f);
-            } 
+                cercle.transform.localPosition = new Vector3(decalage * i - decalage * (niveauMax - 1) / 2, 0f);
+            }
         }
 
         public void fontTransparent(float pourcentage)
@@ -70,11 +68,6 @@ namespace Script
                 coutColor.a = pourcentage;
                 list.color = coutColor;
             }
-        }
-        // Update is called once per frame
-        void Update()
-        {
-        
         }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Script.Networking;
@@ -10,6 +9,9 @@ namespace Script
     public class CardChooseBetweenCommandProvider : CommandProviderBehaviour
     {
         public CardRenderer cardRendererPrefab;
+        private CardPickerDisplay _cardPickerDisplay;
+
+        private readonly List<CardRenderer> _cards = new List<CardRenderer>();
 
         private void Start()
         {
@@ -17,12 +19,9 @@ namespace Script
             _cardPickerDisplay = FindObjectOfType<CardPickerDisplay>();
         }
 
-        private List<CardRenderer> _cards = new List<CardRenderer>();
-        private CardPickerDisplay _cardPickerDisplay;
-
         protected override void DoAction()
         {
-            var data = (ChooseBetweenCardData)this.InfoStruct;
+            var data = (ChooseBetweenCardData) InfoStruct;
 
             foreach (var card in data.CardList)
             {
@@ -45,7 +44,7 @@ namespace Script
             StartCoroutine(DestroyLater(new List<CardRenderer>(_cards)));
 
             _cards.Clear();
-            var chooseBetweenCardsCommand = new ChooseBetweenCardsCommand()
+            var chooseBetweenCardsCommand = new ChooseBetweenCardsCommand
             {
                 CardId = obj.Card.Id
             };
@@ -55,10 +54,7 @@ namespace Script
         public static IEnumerator DestroyLater(List<CardRenderer> cardRenderers)
         {
             yield return new WaitForSeconds(4);
-            foreach (var cardRenderer in cardRenderers)
-            {
-                Destroy(cardRenderer);
-            }
+            foreach (var cardRenderer in cardRenderers) Destroy(cardRenderer);
         }
     }
 }

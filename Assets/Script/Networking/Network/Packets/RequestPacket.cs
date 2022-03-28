@@ -1,7 +1,9 @@
 ﻿namespace Network.Packets
 {
     /// <summary>
-    /// Represents a request packet.
+    ///     Represents a request packet.
     /// </summary>
-    public class RequestPacket : Packet { }
+    public class RequestPacket : Packet
+    {
+    }
 }

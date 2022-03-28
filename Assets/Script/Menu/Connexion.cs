@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -12,9 +10,9 @@ using UnityEngine.UI;
 
 public class Connexion : MonoBehaviour
 {
-    [SerializeField]
-    public const string Ip = "Ip";
-    public const string PortC="PortConnexion";
+    [SerializeField] public const string Ip = "Ip";
+
+    public const string PortC = "PortConnexion";
     public TMP_InputField ip1;
     public TMP_InputField ip2;
     public TMP_InputField ip3;
@@ -24,21 +22,19 @@ public class Connexion : MonoBehaviour
     public TMP_Text textErreur;
     public Loading loading;
     public Image erreurConnexion;
+
     public void Start()
     {
-        if(PlayerPrefs.HasKey(Ip) && PlayerPrefs.HasKey(PortC) && (!Ip.Equals("....")) && (!PortC.Equals(".")))
+        if (PlayerPrefs.HasKey(Ip) && PlayerPrefs.HasKey(PortC) && !Ip.Equals("....") && !PortC.Equals("."))
         {
             //Debug.Log("PlayerPrefs IP : "+PlayerPrefs.GetString("Ip")+"\nPlayerPrefs Port : "+PlayerPrefs.GetString("Port"));
             //mettre l'IP depuis le PlayerPrefs enregistré
-            Char[] mychar = {'.'};
-            String[] name = PlayerPrefs.GetString("Ip").Split(mychar);
-            TMP_InputField[] tabIp = {ip1,ip2,ip3,ip4};
-            for (int i = 0; i < name.Length; i++)
-            {
-                tabIp[i].text = name[i];
-            }
+            char[] mychar = {'.'};
+            var name = PlayerPrefs.GetString("Ip").Split(mychar);
+            TMP_InputField[] tabIp = {ip1, ip2, ip3, ip4};
+            for (var i = 0; i < name.Length; i++) tabIp[i].text = name[i];
             //mettre le port depuis le PlayerPrefs enregistré
-            port.text=(PlayerPrefs.GetString("PortConnexion"));
+            port.text = PlayerPrefs.GetString("PortConnexion");
         }
         else
         {
@@ -46,7 +42,7 @@ public class Connexion : MonoBehaviour
         }
     }
 
-    IEnumerator OnCoroutine()
+    private IEnumerator OnCoroutine()
     {
         //SI LA CONNEXION NE MARCHE PAS !
         yield return new WaitForSeconds(3f);
@@ -59,7 +55,7 @@ public class Connexion : MonoBehaviour
 
     public void AfficheIP()
     {
-        Debug.Log("Ip : " + ip1.text + "." + ip2.text + "." + ip3.text + "." + ip4.text+"\nPort : "+port.text);
+        Debug.Log("Ip : " + ip1.text + "." + ip2.text + "." + ip3.text + "." + ip4.text + "\nPort : " + port.text);
     }
 
     public void Rejoindre()
@@ -67,7 +63,7 @@ public class Connexion : MonoBehaviour
         var ip1Text = ip1.text + "." + ip2.text + "." + ip3.text + "." + ip4.text;
         var portText = port.text;
         var deck = PlayerPrefs.GetString(NomButton.Nomdeck);
-        var deckFile =  Directory.EnumerateFiles(Application.persistentDataPath,"*.txt")
+        var deckFile = Directory.EnumerateFiles(Application.persistentDataPath, "*.txt")
             .First(f => f.EndsWith(deck));
         var cartes = File.ReadLines(deckFile);
 
@@ -78,12 +74,12 @@ public class Connexion : MonoBehaviour
         gameSettingsContainer.IPAddress = IPAddress.Parse(ip1Text);
         gameSettingsContainer.playerDeck = cartes;
         gameSettingsContainer.NetworkMode = NetworkMode.Client;
-        
-        PlayerPrefs.SetString(Ip,ip1Text.Trim());                //playerPrefs IP
-        PlayerPrefs.SetString(PortC,portText.Trim());                //playerPrefs port
+
+        PlayerPrefs.SetString(Ip, ip1Text.Trim()); //playerPrefs IP
+        PlayerPrefs.SetString(PortC, portText.Trim()); //playerPrefs port
         SceneManager.LoadScene("Scenes/Partie");
-        
     }
+
     public void AppuieConnexion()
     {
         panelConnexion.SetActive(true);
@@ -93,7 +89,7 @@ public class Connexion : MonoBehaviour
         loading.Avancer = true;
         StartCoroutine(OnCoroutine());
     }
-    
+
     public void RetourConnexion()
     {
         // StopAllCoroutines();

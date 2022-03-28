@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using CardGameEngine.Cards;
 using CardGameEngine.EventSystem.Events.GameStateEvents;
@@ -11,10 +10,10 @@ namespace Script
 {
     public class ChainCommandProvider : CommandProviderBehaviour, IEventSubscriber
     {
-        private UnityGame _unityGame;
+        public TextMeshProUGUI chainWaitText;
         private CardPickerDisplay _cardPicker;
         private MainRenderer _localMainRenderer;
-        public TextMeshProUGUI chainWaitText;
+        private UnityGame _unityGame;
 
         private void Start()
         {
@@ -24,15 +23,17 @@ namespace Script
             _localMainRenderer = FindObjectsOfType<MainRenderer>().First(r => r.owner == UnityGame.LocalPlayer);
         }
 
+        public void Subscribe(SyncEventWrapper eventManager)
+        {
+            eventManager.SubscribeToEvent<ChainingEvent>(OnChainEnd, postEvent: true);
+        }
+
         protected override void DoAction()
         {
             _localMainRenderer.UpdatePlayable();
-            var info = (ChainInfo)InfoStruct;
+            var info = (ChainInfo) InfoStruct;
             chainWaitText.gameObject.SetActive(!info.isLocalChaining);
-            if (!info.isLocalChaining)
-            {
-                return;
-            }
+            if (!info.isLocalChaining) return;
 
             var available = UnityGame.LocalGamePlayer.Hand
                 .Where(c => c.ChainMode.Value == ChainMode.MiddleChain
@@ -60,18 +61,13 @@ namespace Script
         {
             Debug.Log("On peut pas chainer");
             chainWaitText.gameObject.SetActive(false);
-            NetworkedGame.DoLocalAction(new ChainTurnCommand() { CardId = -1 });
+            NetworkedGame.DoLocalAction(new ChainTurnCommand {CardId = -1});
         }
 
         private void OnPick(CardRenderer obj)
         {
             chainWaitText.gameObject.SetActive(false);
-            NetworkedGame.DoLocalAction(new ChainTurnCommand() { CardId = obj.Card.Id });
-        }
-
-        public void Subscribe(SyncEventWrapper eventManager)
-        {
-            eventManager.SubscribeToEvent<ChainingEvent>(OnChainEnd, postEvent: true);
+            NetworkedGame.DoLocalAction(new ChainTurnCommand {CardId = obj.Card.Id});
         }
 
         private void OnChainEnd(ChainingEvent evt)

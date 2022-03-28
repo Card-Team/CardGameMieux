@@ -1,10 +1,6 @@
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
-using CardGameEngine;
 using CardGameEngine.Cards;
 using CardGameEngine.GameSystems;
-using Script.Networking.Commands;
 using Script.Networking.Commands.Extern;
 using UnityEngine;
 using Random = System.Random;
@@ -22,7 +18,7 @@ namespace Script.Networking
 
         public NetworkedExternCallbacks(int randomSeed, NetworkedGame _networkedGame)
         {
-            this._random = new Random(randomSeed);
+            _random = new Random(randomSeed);
             this._networkedGame = _networkedGame;
         }
 
@@ -33,18 +29,16 @@ namespace Script.Networking
             var oldAcceptFrom = _networkedGame.AcceptFrom;
             _networkedGame.AcceptFrom = UnityGame.GetSide(effectOwner);
             if (UnityGame.IsLocalPlayer(effectOwner))
-            {
                 // Debug.Log("Want local");
-                _networkedGame.WantLocal<ChooseCardTargetCommand>(new ChooseCardTargetData()
-                    { TargetName = targetName, CardList = cardList });
-            }
+                _networkedGame.WantLocal<ChooseCardTargetCommand>(new ChooseCardTargetData
+                    {TargetName = targetName, CardList = cardList});
 
-            
+
             var cardCommand = _networkedGame.WaitForExternalCommand<ChooseCardTargetCommand>();
 
             _networkedGame.AcceptFrom = oldAcceptFrom;
-            
-            Card card = _networkedGame.ResolveCard(cardCommand.CardId);
+
+            var card = _networkedGame.ResolveCard(cardCommand.CardId);
 
             Debug.Log("Received card");
 
@@ -54,10 +48,8 @@ namespace Script.Networking
         public Player ExternPlayerAskForTarget(Player effectOwner, string targetName)
         {
             if (UnityGame.IsLocalPlayer(effectOwner))
-            {
-                _networkedGame.WantLocal<ChoosePlayerTargetCommand>(new ChoosePlayerTargetData()
-                    { TargetName = targetName });
-            }
+                _networkedGame.WantLocal<ChoosePlayerTargetCommand>(
+                    new ChoosePlayerTargetData {TargetName = targetName});
             var oldAcceptFrom = _networkedGame.AcceptFrom;
             _networkedGame.AcceptFrom = UnityGame.GetSide(effectOwner);
 
@@ -77,9 +69,7 @@ namespace Script.Networking
             var oldAcceptFrom = _networkedGame.AcceptFrom;
             _networkedGame.AcceptFrom = UnityGame.GetSide(player);
             if (UnityGame.IsLocalPlayer(player))
-            {
-                _networkedGame.WantLocal<ShowCardFalseCommand>(new ShowCardFalseData() { Card = card });
-            }
+                _networkedGame.WantLocal<ShowCardFalseCommand>(new ShowCardFalseData {Card = card});
 
             _networkedGame.WaitForExternalCommand<ShowCardFalseCommand>();
             _networkedGame.AcceptFrom = oldAcceptFrom;
@@ -88,10 +78,7 @@ namespace Script.Networking
         public Card ExternChooseBetween(Player player, List<Card> cardList)
         {
             if (UnityGame.IsLocalPlayer(player))
-            {
-                _networkedGame.WantLocal<ChooseBetweenCardsCommand>(new ChooseBetweenCardData()
-                    { CardList = cardList });
-            }
+                _networkedGame.WantLocal<ChooseBetweenCardsCommand>(new ChooseBetweenCardData {CardList = cardList});
 
             var oldAcceptFrom = _networkedGame.AcceptFrom;
             _networkedGame.AcceptFrom = UnityGame.GetSide(player);
@@ -107,7 +94,7 @@ namespace Script.Networking
 
         public void ExternGameEnded(Player winner)
         {
-            _networkedGame.WantLocal<GameEndedFalseCommand>(new GameEndedFalseData() { Winner = winner });
+            _networkedGame.WantLocal<GameEndedFalseCommand>(new GameEndedFalseData {Winner = winner});
         }
 
         public bool ExternChainOpportunity(Player player)
@@ -130,14 +117,15 @@ namespace Script.Networking
 
             //inversion
             // Debug.Log($"On accepte {_networkedGame.AcceptFrom}");
-            
-            
+
+
             var oldAcceptFrom = _networkedGame.AcceptFrom;
             _networkedGame.AcceptFrom = UnityGame.GetSide(player);
             // Debug.Log($"On change vers {_networkedGame.AcceptFrom}");
 
 
-            _networkedGame.WantLocal<ChainTurnCommand>(new ChainInfo { isLocalChaining = UnityGame.IsLocalPlayer(player) });
+            _networkedGame.WantLocal<ChainTurnCommand>(
+                new ChainInfo {isLocalChaining = UnityGame.IsLocalPlayer(player)});
 
             var command = _networkedGame.WaitForExternalCommand<ChainTurnCommand>();
 
@@ -148,7 +136,7 @@ namespace Script.Networking
                 return false;
             }
 
-            Card played = _networkedGame.ResolveCard(command.CardId);
+            var played = _networkedGame.ResolveCard(command.CardId);
 
             // la il faut déclencher l'effet de la carte
 
@@ -156,7 +144,7 @@ namespace Script.Networking
 
             //inversion
             _networkedGame.AcceptFrom = oldAcceptFrom;
-            
+
             return true;
             // je crois que ca devrais marcher ?
             // ca marche bien

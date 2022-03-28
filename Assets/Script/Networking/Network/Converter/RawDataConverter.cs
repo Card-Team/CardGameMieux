@@ -1,22 +1,23 @@
-﻿using Network.Packets;
-using System;
+﻿using System;
 using System.Text;
+using Network.Packets;
 
 namespace Network.Converter
 {
     /// <summary>
-    /// Converts raw primitive type values into a <see cref="RawData"/> packet that can be sent across the network, and vice versa.
+    ///     Converts raw primitive type values into a <see cref="RawData" /> packet that can be sent across the network, and
+    ///     vice versa.
     /// </summary>
     public static class RawDataConverter
     {
         #region Serialisation
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="bool"/> value.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="bool" /> value.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromBoolean(string key, bool value)
         {
             return new RawData(key, GetBytes(value));
@@ -25,44 +26,44 @@ namespace Network.Converter
         #region Unsigned Integer Conversion
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="byte"/> value.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="byte" /> value.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromUInt8(string key, byte value)
         {
-            return new RawData(key, new[] { value });
+            return new RawData(key, new[] {value});
         }
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="ushort"/> value.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="ushort" /> value.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromUInt16(string key, ushort value)
         {
             return new RawData(key, GetBytes(value));
         }
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="uint"/> value.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="uint" /> value.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromUInt32(string key, uint value)
         {
             return new RawData(key, GetBytes(value));
         }
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="ulong"/> value.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="ulong" /> value.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromUInt64(string key, ulong value)
         {
             return new RawData(key, GetBytes(value));
@@ -73,44 +74,44 @@ namespace Network.Converter
         #region Signed Integer Conversion
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="sbyte"/> value.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="sbyte" /> value.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromInt8(string key, sbyte value)
         {
-            return new RawData(key, new[] { (byte)value });
+            return new RawData(key, new[] {(byte) value});
         }
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="short"/> value.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="short" /> value.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromInt16(string key, short value)
         {
             return new RawData(key, GetBytes(value));
         }
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="int"/> value.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="int" /> value.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromInt32(string key, int value)
         {
             return new RawData(key, GetBytes(value));
         }
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="long"/> value.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="long" /> value.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromInt64(string key, long value)
         {
             return new RawData(key, GetBytes(value));
@@ -123,34 +124,37 @@ namespace Network.Converter
         #region Unicode Encoding
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="string"/> value, using the <see cref="Encoding.BigEndianUnicode"/> encoding.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="string" /> value, using the
+        ///     <see cref="Encoding.BigEndianUnicode" /> encoding.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromUTF16_BigEndian_String(string key, string value)
         {
             return new RawData(key, Encoding.BigEndianUnicode.GetBytes(value));
         }
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="string"/> value, using the <see cref="Encoding.Unicode"/> (little endian) encoding.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="string" /> value, using the
+        ///     <see cref="Encoding.Unicode" /> (little endian) encoding.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromUTF16_LittleEndian_String(string key, string value)
         {
             return new RawData(key, Encoding.Unicode.GetBytes(value));
         }
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="string"/> value, using the <see cref="Encoding.Unicode"/> encoding. Identical to
-        /// <see cref="FromUTF16_LittleEndian_String"/> method.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="string" /> value, using the
+        ///     <see cref="Encoding.Unicode" /> encoding. Identical to
+        ///     <see cref="FromUTF16_LittleEndian_String" /> method.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromUnicodeString(string key, string value)
         {
             return new RawData(key, Encoding.Unicode.GetBytes(value));
@@ -161,33 +165,36 @@ namespace Network.Converter
         #region UTFXXX Encoding
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="string"/> value, using the <see cref="Encoding.UTF32"/> encoding.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="string" /> value, using the
+        ///     <see cref="Encoding.UTF32" /> encoding.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromUTF32String(string key, string value)
         {
             return new RawData(key, Encoding.UTF32.GetBytes(value));
         }
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="string"/> value, using the <see cref="Encoding.UTF8"/> encoding.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="string" /> value, using the
+        ///     <see cref="Encoding.UTF8" /> encoding.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromUTF8String(string key, string value)
         {
             return new RawData(key, Encoding.UTF8.GetBytes(value));
         }
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="string"/> value, using the <see cref="Encoding.UTF7"/> encoding.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="string" /> value, using the
+        ///     <see cref="Encoding.UTF7" /> encoding.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromUTF7String(string key, string value)
         {
             return new RawData(key, Encoding.UTF7.GetBytes(value));
@@ -196,22 +203,23 @@ namespace Network.Converter
         #endregion UTFXXX Encoding
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="string"/> value, using the <see cref="Encoding.ASCII"/> encoding.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="string" /> value, using the
+        ///     <see cref="Encoding.ASCII" /> encoding.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromASCIIString(string key, string value)
         {
             return new RawData(key, Encoding.ASCII.GetBytes(value));
         }
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="char"/> value.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="char" /> value.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromChar(string key, char value)
         {
             return new RawData(key, GetBytes(value));
@@ -222,22 +230,22 @@ namespace Network.Converter
         #region Floating Point Conversion
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="float"/> value.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="float" /> value.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromSingle(string key, float value)
         {
             return new RawData(key, GetBytes(value));
         }
 
         /// <summary>
-        /// Returns a <see cref="RawData"/> holding the given <see cref="double"/> value.
+        ///     Returns a <see cref="RawData" /> holding the given <see cref="double" /> value.
         /// </summary>
-        /// <param name="key">The key to use for the <see cref="RawData"/> packet.</param>
+        /// <param name="key">The key to use for the <see cref="RawData" /> packet.</param>
         /// <param name="value">The primitive value to send.</param>
-        /// <returns>A <see cref="RawData"/> packet holding the given primitive, with the given key.</returns>
+        /// <returns>A <see cref="RawData" /> packet holding the given primitive, with the given key.</returns>
         public static RawData FromDouble(string key, double value)
         {
             return new RawData(key, GetBytes(value));
@@ -246,7 +254,7 @@ namespace Network.Converter
         #endregion Floating Point Conversion
 
         /// <summary>
-        /// Converts the given value into bytes and returns them.
+        ///     Converts the given value into bytes and returns them.
         /// </summary>
         /// <param name="value">The value to convert into bytes.</param>
         /// <returns>The byte array of the serialised value.</returns>
@@ -260,9 +268,9 @@ namespace Network.Converter
         #region Deserialisation
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="bool"/> and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="bool" /> and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static bool ToBoolean(RawData rawData)
         {
@@ -272,9 +280,9 @@ namespace Network.Converter
         #region Unsigned Integer Conversion
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="byte"/> and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="byte" /> and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static byte ToUInt8(RawData rawData)
         {
@@ -282,9 +290,9 @@ namespace Network.Converter
         }
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="ushort"/> and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="ushort" /> and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static ushort ToUInt16(RawData rawData)
         {
@@ -292,9 +300,9 @@ namespace Network.Converter
         }
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="uint"/> and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="uint" /> and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static uint ToUInt32(RawData rawData)
         {
@@ -302,9 +310,9 @@ namespace Network.Converter
         }
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="ulong"/> and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="ulong" /> and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static ulong ToUInt64(RawData rawData)
         {
@@ -316,19 +324,19 @@ namespace Network.Converter
         #region Signed Integer Conversion
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="sbyte"/> and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="sbyte" /> and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static sbyte ToInt8(RawData rawData)
         {
-            return (sbyte)rawData.Data[0];
+            return (sbyte) rawData.Data[0];
         }
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="short"/> and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="short" /> and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static short ToInt16(RawData rawData)
         {
@@ -336,9 +344,9 @@ namespace Network.Converter
         }
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="int"/> and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="int" /> and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static int ToInt32(RawData rawData)
         {
@@ -346,9 +354,9 @@ namespace Network.Converter
         }
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="long"/> and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="long" /> and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static long ToInt64(RawData rawData)
         {
@@ -362,9 +370,10 @@ namespace Network.Converter
         #region Unicode Encoding
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="string"/> using the <see cref="Encoding.BigEndianUnicode"/> encoding, and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="string" /> using the
+        ///     <see cref="Encoding.BigEndianUnicode" /> encoding, and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static string ToUTF16_BigEndian_String(RawData rawData)
         {
@@ -372,9 +381,10 @@ namespace Network.Converter
         }
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="string"/> using the <see cref="Encoding.Unicode"/> (little endian) encoding, and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="string" /> using the
+        ///     <see cref="Encoding.Unicode" /> (little endian) encoding, and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static string ToUTF16_LittleEndian_String(RawData rawData)
         {
@@ -382,11 +392,12 @@ namespace Network.Converter
         }
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="string"/> using the <see cref="Encoding.Unicode"/> (little endian) encoding, and
-        /// returns it. Identical to the <see cref="ToUTF16_LittleEndian_String"/>
-        /// method.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="string" /> using the
+        ///     <see cref="Encoding.Unicode" /> (little endian) encoding, and
+        ///     returns it. Identical to the <see cref="ToUTF16_LittleEndian_String" />
+        ///     method.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static string ToUnicodeString(RawData rawData)
         {
@@ -398,9 +409,10 @@ namespace Network.Converter
         #region UTFXXX Encoding
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="string"/> using the <see cref="Encoding.UTF32"/> encoding, and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="string" /> using the <see cref="Encoding.UTF32" />
+        ///     encoding, and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static string ToUTF32String(RawData rawData)
         {
@@ -408,9 +420,10 @@ namespace Network.Converter
         }
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="string"/> using the <see cref="Encoding.UTF8"/> encoding, and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="string" /> using the <see cref="Encoding.UTF8" />
+        ///     encoding, and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static string ToUTF8String(RawData rawData)
         {
@@ -418,9 +431,10 @@ namespace Network.Converter
         }
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="string"/> using the <see cref="Encoding.UTF7"/> encoding, and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="string" /> using the <see cref="Encoding.UTF7" />
+        ///     encoding, and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static string ToUTF7String(RawData rawData)
         {
@@ -430,9 +444,10 @@ namespace Network.Converter
         #endregion UTFXXX Encoding
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="string"/> using the <see cref="Encoding.ASCII"/> encoding, and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="string" /> using the <see cref="Encoding.ASCII" />
+        ///     encoding, and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static string ToASCIIString(RawData rawData)
         {
@@ -440,9 +455,9 @@ namespace Network.Converter
         }
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="char"/> and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="char" /> and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static char ToChar(RawData rawData)
         {
@@ -454,9 +469,9 @@ namespace Network.Converter
         #region Floating Point Conversion
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="float"/> and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="float" /> and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static float ToSingle(RawData rawData)
         {
@@ -464,9 +479,9 @@ namespace Network.Converter
         }
 
         /// <summary>
-        /// Converts the <see cref="RawData.Data"/> array into a <see cref="double"/> and returns it.
+        ///     Converts the <see cref="RawData.Data" /> array into a <see cref="double" /> and returns it.
         /// </summary>
-        /// <param name="rawData">The <see cref="RawData"/> packet whose data to deserialise.</param>
+        /// <param name="rawData">The <see cref="RawData" /> packet whose data to deserialise.</param>
         /// <returns>The deserialised value.</returns>
         public static double ToDouble(RawData rawData)
         {

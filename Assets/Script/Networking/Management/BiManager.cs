@@ -2,8 +2,6 @@ using System;
 using System.IO;
 using System.Text;
 using Network;
-using Network.Enums;
-using Network.Interfaces;
 using UnityEngine;
 
 namespace Script.Networking.Management
@@ -12,6 +10,15 @@ namespace Script.Networking.Management
     {
         protected readonly NetworkConfiguration _networkConfiguration;
         protected readonly Action _onOtherSideConnect;
+        private ConnectionState _connectionState;
+
+        protected Connection Other;
+
+        protected BiManager(NetworkConfiguration networkConfiguration, Action onOtherSideConnect)
+        {
+            _networkConfiguration = networkConfiguration;
+            _onOtherSideConnect = onOtherSideConnect;
+        }
 
         public ConnectionState ConnectionState
         {
@@ -23,17 +30,24 @@ namespace Script.Networking.Management
             }
         }
 
-        protected Connection Other;
-        private ConnectionState _connectionState;
-
-        protected BiManager(NetworkConfiguration networkConfiguration, Action onOtherSideConnect)
+        protected Stream GetDebugLogStream()
         {
-            _networkConfiguration = networkConfiguration;
-            _onOtherSideConnect = onOtherSideConnect;
+            return new DebugLogStream();
         }
-        
+
         private class DebugLogStream : Stream
         {
+            public override bool CanRead => false;
+            public override bool CanSeek => false;
+            public override bool CanWrite => true;
+            public override long Length => 0;
+
+            public override long Position
+            {
+                get => 0;
+                set => throw new InvalidOperationException();
+            }
+
             public override void Flush()
             {
                 //empty
@@ -60,23 +74,6 @@ namespace Script.Networking.Management
             {
                 Debug.Log(Encoding.UTF8.GetString(buffer));
             }
-
-            public override bool CanRead => false;
-            public override bool CanSeek => false;
-            public override bool CanWrite => true;
-            public override long Length => 0;
-            public override long Position
-            {
-                get => 0;
-                set => throw new InvalidOperationException();
-            }
         }
-
-        protected Stream GetDebugLogStream()
-        {
-            return new DebugLogStream();
-        }
-
-        
     }
 }

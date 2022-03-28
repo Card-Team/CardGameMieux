@@ -1,24 +1,29 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using CardGameEngine.EventSystem;
 using CardGameEngine.EventSystem.Events.GameStateEvents;
 using Script.Networking;
-using Script.Networking.Commands;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Script.Input
 {
     public class InputManager : MonoBehaviour, IEventSubscriber
     {
-        public ContactFilter2D cardFilter;
+        public enum InputType
+        {
+            Main,
+            Targeting,
+            UI
+        }
 
-        public PlayerActions PlayerActions;
+        public ContactFilter2D cardFilter;
+        public volatile bool playFinished;
+        private InputType? _currentInputType;
+
+        private InputType? _lastInputType;
 
         private PlayerActions.IMainActions _myTurnInputManager;
         private PlayerActions.ITargetingActions _targetingActions;
-        public volatile bool playFinished;
+
+        public PlayerActions PlayerActions;
 
         private void Awake()
         {
@@ -35,11 +40,7 @@ namespace Script.Input
             if (playFinished)
             {
                 playFinished = false;
-                if (_lastInputType != null)
-                {
-                    EnableThis(_lastInputType.Value);
-                }
-                
+                if (_lastInputType != null) EnableThis(_lastInputType.Value);
             }
         }
 
@@ -60,14 +61,11 @@ namespace Script.Input
             DisableAll();
             _lastInputType = null;
         }
-        
+
 
         private void OnStartTurn(StartTurnEvent evt)
         {
-            if (Equals(evt.Player, UnityGame.LocalGamePlayer))
-            {
-                EnableThis(InputType.Main);
-            }
+            if (Equals(evt.Player, UnityGame.LocalGamePlayer)) EnableThis(InputType.Main);
         }
 
         public void DisableAll()
@@ -77,16 +75,6 @@ namespace Script.Input
             _currentInputType = null;
             PlayerActions.Disable();
         }
-
-        public enum InputType
-        {
-            Main,
-            Targeting,
-            UI
-        }
-
-        private InputType? _lastInputType;
-        private InputType? _currentInputType;
 
         public void EnableThis(InputType actions)
         {

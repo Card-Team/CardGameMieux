@@ -3,8 +3,10 @@
 namespace Network.Packets
 {
     /// <summary>
-    /// Acknowledgement packet for the <see cref="EstablishUdpResponse"/> packet.
+    ///     Acknowledgement packet for the <see cref="EstablishUdpResponse" /> packet.
     /// </summary>
     [PacketType(5)]
-    internal class EstablishUdpResponseACK : Packet { }
+    internal class EstablishUdpResponseACK : Packet
+    {
+    }
 }

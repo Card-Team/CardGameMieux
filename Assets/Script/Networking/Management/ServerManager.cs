@@ -1,11 +1,11 @@
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using Network;
 using Network.Enums;
 using Script.Networking.Management.EstablishmentPackets;
 using UnityEngine;
 using Random = System.Random;
-using Task = System.Threading.Tasks.Task;
 
 namespace Script.Networking.Management
 {
@@ -15,12 +15,12 @@ namespace Script.Networking.Management
 
         private int? ResumeToken;
 
-        public Connection Client => Other;
-
         public ServerManager(NetworkConfiguration networkConfiguration, Action onOtherSideConnect) : base(
             networkConfiguration, onOtherSideConnect)
         {
         }
+
+        public Connection Client => Other;
 
         public void Host()
         {
@@ -31,12 +31,8 @@ namespace Script.Networking.Management
             _serverConnectionContainer.ConnectionEstablished += OnClientConnect;
             _serverConnectionContainer.ConnectionLost += OnClientLost;
             _serverConnectionContainer.AllowUDPConnections = false;
-            
-            Task.Run(async () =>
-            {
-                await _serverConnectionContainer.Start();
-            });
 
+            Task.Run(async () => { await _serverConnectionContainer.Start(); });
         }
 
         private void OnClientLost(Connection connection, ConnectionType connectionType, CloseReason closeReason)
@@ -60,14 +56,14 @@ namespace Script.Networking.Management
             Debug.Log("Received connection request");
             if (ConnectionState != ConnectionState.ESTABLISHMENT)
             {
-                Debug.LogError("Received request while not in establishment");  
+                Debug.LogError("Received request while not in establishment");
                 return;
             }
 
             if (ResumeToken == null)
             {
                 ResumeToken = new Random().Next(16000);
-                Other.Send(new ConnectionAcceptation(packet) { ResumeToken = ResumeToken.Value });
+                Other.Send(new ConnectionAcceptation(packet) {ResumeToken = ResumeToken.Value});
                 ConnectionState = ConnectionState.CONNECTED;
                 Debug.Log("First time connection");
             }
@@ -75,7 +71,7 @@ namespace Script.Networking.Management
             {
                 if (ResumeToken == packet.ResumeToken)
                 {
-                    Other.Send(new ConnectionAcceptation(packet) { ResumeToken = ResumeToken.Value });
+                    Other.Send(new ConnectionAcceptation(packet) {ResumeToken = ResumeToken.Value});
                     ConnectionState = ConnectionState.CONNECTED;
                     Debug.Log("resumed connection");
                 }

@@ -13,10 +13,11 @@ namespace Script.Networking
         public ConcurrentQueue<(TaskCompletionSource<bool>, Action)> eventHandlers =
             new ConcurrentQueue<(TaskCompletionSource<bool>, Action)>();
 
-        public SyncEventWrapper SyncEventWrapper;
+        public NetworkedGame networkedGame;
 
         public EventManager EventManager;
-        public NetworkedGame networkedGame;
+
+        public SyncEventWrapper SyncEventWrapper;
 
         private void Awake()
         {
@@ -31,21 +32,6 @@ namespace Script.Networking
             };
         }
 
-        public void WaitForEventCalled<T>(Event evt, EventManager.OnEvent<T> onEvent)
-            where T : Event
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            eventHandlers.Enqueue((tcs, () => onEvent((T)evt)));
-            try
-            {
-                networkedGame.WaitForTaskWithPolling(tcs, true);
-            }
-            catch (ThreadInterruptedException)
-            {
-                Debug.Log("Thread interrompu, on arette d'attendre l'event");
-            }
-        }
-
         private void Update()
         {
             if (eventHandlers.TryDequeue(out var elem))
@@ -57,6 +43,21 @@ namespace Script.Networking
                 {
                     Monitor.PulseAll(networkedGame);
                 }
+            }
+        }
+
+        public void WaitForEventCalled<T>(Event evt, EventManager.OnEvent<T> onEvent)
+            where T : Event
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            eventHandlers.Enqueue((tcs, () => onEvent((T) evt)));
+            try
+            {
+                networkedGame.WaitForTaskWithPolling(tcs, true);
+            }
+            catch (ThreadInterruptedException)
+            {
+                Debug.Log("Thread interrompu, on arette d'attendre l'event");
             }
         }
     }

@@ -17,10 +17,11 @@ namespace Script
 {
     public class ErrorUtils : MonoBehaviour
     {
+        private const string ScriptError = "<color=\"red\">[Erreur de script]</color> : ";
         public TMP_InputField textZone;
+        public ConcurrentQueue<Exception> toPrint = new ConcurrentQueue<Exception>();
 
         private EventDisplayer _eventDisplayer;
-        public ConcurrentQueue<Exception> toPrint = new ConcurrentQueue<Exception>();
 
         private void Start()
         {
@@ -31,9 +32,7 @@ namespace Script
         private void Update()
         {
             if (UnityEngine.Input.GetKeyDown(KeyCode.RightControl))
-            {
                 textZone.gameObject.SetActive(!textZone.gameObject.activeSelf);
-            }
 
             while (toPrint.TryDequeue(out var res))
             {
@@ -43,18 +42,16 @@ namespace Script
                     InterpreterException iex => PrintError(iex),
                     _ => null
                 };
-                
+
                 SentrySdk.CaptureException(res, s =>
                 {
-                    s.AddBreadcrumb(message:content ?? string.Empty,category:"lua_error");
-                    s.AddBreadcrumb(res.GetType().Name,"exception_type");
+                    s.AddBreadcrumb(content ?? string.Empty, "lua_error");
+                    s.AddBreadcrumb(res.GetType().Name, "exception_type");
                 });
                 textZone.text = content;
                 textZone.gameObject.SetActive(true);
             }
         }
-
-        private const string ScriptError = "<color=\"red\">[Erreur de script]</color> : ";
 
         public string PrintError(InterpreterException exc, [CanBeNull] string sourceContent = null)
         {
@@ -74,13 +71,11 @@ namespace Script
                 var watchItem = callstack[index];
                 var text =
                     $"[Erreur de script] : Dans <color=\"blue\">{watchItem.Name}</color> <u>{FormatSourceLocation(watchItem.Location)}</u>";
-                if (watchItem.Location is { IsClrLocation: false } && (!watchItem.Name?.StartsWith("<") ?? true))
-                {
+                if (watchItem.Location is {IsClrLocation: false} && (!watchItem.Name?.StartsWith("<") ?? true))
                     text += " : " + ColoredSource(scriptName, text.Length - ScriptError.Length - 2, watchItem.Location,
                         index == 0,
                         source ?? File.ReadAllText(Application.streamingAssetsPath + "/EffectsScripts/Card/" +
                                                    scriptName + ".lua")) + "\n";
-                }
 
                 errorText.Append(text + "\n");
             }
@@ -104,11 +99,11 @@ namespace Script
         private string ColoredSource(string scriptName, int padding, SourceRef watchItemLocation, bool isError,
             string scriptContent)
         {
-            bool isMultiLine = watchItemLocation.FromLine != watchItemLocation.ToLine && watchItemLocation.ToChar != 0;
+            var isMultiLine = watchItemLocation.FromLine != watchItemLocation.ToLine && watchItemLocation.ToChar != 0;
 
             var strings = scriptContent.Split('\n');
-            string firstLine = strings[watchItemLocation.FromLine - 1];
-            string lastLine = strings[watchItemLocation.ToLine - 1];
+            var firstLine = strings[watchItemLocation.FromLine - 1];
+            var lastLine = strings[watchItemLocation.ToLine - 1];
 
             var accumulator = "";
 
@@ -118,61 +113,40 @@ namespace Script
                 for (var i = 0; i < firstLine.Length; i++)
                 {
                     if (i == watchItemLocation.FromChar)
-                    {
                         accumulator += "<color=\"red\">";
-                    }
                     else if (watchItemLocation.ToChar == 0 && i == firstLine.Length - 1 ||
                              watchItemLocation.ToChar != 0 && i == watchItemLocation.ToChar)
-                    {
                         accumulator += "</color>";
-                    }
 
                     accumulator += firstLine[i];
                 }
 
                 return accumulator;
             }
-            else
-            {
-                accumulator += "|";
-                foreach (var t in firstLine)
-                {
-                    accumulator += t;
-                }
 
-                accumulator += "\n";
+            accumulator += "|";
+            foreach (var t in firstLine) accumulator += t;
 
-                accumulator += ScriptError;
-                for (var i = 0; i < padding; i++)
-                {
-                    accumulator += " ";
-                }
+            accumulator += "\n";
 
-                accumulator += "\n|";
-                accumulator += "...\n";
+            accumulator += ScriptError;
+            for (var i = 0; i < padding; i++) accumulator += " ";
 
-                accumulator += ScriptError;
-                for (var i = 0; i < padding; i++)
-                {
-                    accumulator += " ";
-                }
+            accumulator += "\n|";
+            accumulator += "...\n";
 
-                accumulator += "\n|";
-                foreach (var t in lastLine)
-                {
-                    accumulator += t;
-                }
+            accumulator += ScriptError;
+            for (var i = 0; i < padding; i++) accumulator += " ";
 
-                return accumulator;
-            }
+            accumulator += "\n|";
+            foreach (var t in lastLine) accumulator += t;
+
+            return accumulator;
         }
 
         private string FormatSourceLocation(SourceRef location)
         {
-            if (location == null)
-            {
-                return "";
-            }
+            if (location == null) return "";
 
             return $"({location.FromLine},{location.FromChar})-({location.ToLine},{location.ToChar})";
         }

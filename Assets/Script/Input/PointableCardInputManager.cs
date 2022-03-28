@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Script.Networking;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,14 +7,13 @@ namespace Script.Input
 {
     public abstract class PointableCardInputManager : MonoBehaviour
     {
+        protected CardRenderer HoveredCard;
         protected InputManager InputManager;
 
         private void Awake()
         {
             InputManager = FindObjectOfType<InputManager>();
         }
-
-        protected CardRenderer HoveredCard;
 
         public void OnPointCard(InputAction.CallbackContext context)
         {

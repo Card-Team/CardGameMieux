@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using CardGameEngine.EventSystem;
 using CardGameEngine.EventSystem.Events;
 using CardGameEngine.EventSystem.Events.CardEvents;
 using CardGameEngine.EventSystem.Events.CardEvents.PropertyChange;
@@ -10,8 +8,7 @@ using Script.Networking;
 using Sentry;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
-using Event = UnityEngine.Event;
+using Event = CardGameEngine.EventSystem.Events.Event;
 
 namespace Script
 {
@@ -20,6 +17,8 @@ namespace Script
         public TMP_InputField eventPanel;
 
         private NetworkedGame _networkedGame;
+
+        public List<string> Events { get; } = new List<string>();
 
         private void Start()
         {
@@ -30,12 +29,8 @@ namespace Script
         private void Update()
         {
             if (UnityEngine.Input.GetKeyDown(KeyCode.RightControl))
-            {
                 eventPanel.gameObject.SetActive(!eventPanel.gameObject.activeSelf);
-            }
         }
-
-        public List<string> Events { get; } = new List<string>();
 
         public void Subscribe(SyncEventWrapper eventManager)
         {
@@ -59,7 +54,7 @@ namespace Script
 
             // Bouclage du deck
             eventManager.SubscribeToEvent<DeckLoopEvent>(OnDeckLoop, postEvent: true);
-            
+
             eventManager.SubscribeToEvent<ChainingEvent>(OnChainStart);
             eventManager.SubscribeToEvent<ChainingEvent>(OnChainEnd, postEvent: true);
 
@@ -69,7 +64,7 @@ namespace Script
             // Nombre max de points d'actions
             eventManager.SubscribeToEvent<MaxActionPointsEditEvent>(OnMaxActionPointsEdit, postEvent: true);
         }
-        
+
         private void OnChainStart(ChainingEvent evt)
         {
             WriteEvent<ChainingEvent>(
@@ -117,14 +112,13 @@ namespace Script
 
         private void OnCardChangePile(CardMovePileEvent evt)
         {
-            List<Player> players = new List<Player>
+            var players = new List<Player>
             {
                 UnityGame.LocalGamePlayer,
                 UnityGame.LocalGamePlayer.OtherPlayer
             };
 
             foreach (var player in players)
-            {
                 // Main → Défausse = Défausser/Améliorer
                 if (evt.SourcePile == player.Hand && evt.DestPile == player.Discard)
                     WriteEvent<CardMovePileEvent>(
@@ -139,7 +133,6 @@ namespace Script
                     else
                         // L'adversaire pioche
                         WriteEvent<CardMovePileEvent>($"<b>{GetPlayerName(player)}</b> vient de piocher une carte");
-            }
         }
 
         private void OnCardPlay(CardPlayEvent evt)
@@ -160,16 +153,18 @@ namespace Script
         {
             var virtualString = evt.Card.IsVirtual ? " <color=\"blue\">Virtuelle</color>" : "";
             if (evt.Cancelled)
-                WriteEvent<CardEffectPlayEvent>($"L'effet de <i>{evt.Card.Name}</i>{virtualString} <color=\"red\"> a été annulé</color>");
+                WriteEvent<CardEffectPlayEvent>(
+                    $"L'effet de <i>{evt.Card.Name}</i>{virtualString} <color=\"red\"> a été annulé</color>");
 
-            WriteEvent<CardEffectPlayEvent>($"L'effet de <i>{evt.Card.Name}</i>{virtualString} a terminé son execution");
+            WriteEvent<CardEffectPlayEvent>(
+                $"L'effet de <i>{evt.Card.Name}</i>{virtualString} a terminé son execution");
         }
 
-        private void WriteEvent<T>(string evt) where T: CardGameEngine.EventSystem.Events.Event
+        private void WriteEvent<T>(string evt) where T : Event
         {
             Events.Add(evt);
             eventPanel.text += evt + "\n";
-            SentrySdk.AddBreadcrumb(evt,"evenements",typeof(T).Name);
+            SentrySdk.AddBreadcrumb(evt, "evenements", typeof(T).Name);
         }
 
         public string DumpEvents()
@@ -197,7 +192,8 @@ namespace Script
 
             // Niveau baisse
             else
-                WriteEvent<CardLevelChangeEvent>($"<i>{evt.Card.Name}</i> est redescendu au <color=\"blue\">niveau {evt.NewValue}</color>");
+                WriteEvent<CardLevelChangeEvent>(
+                    $"<i>{evt.Card.Name}</i> est redescendu au <color=\"blue\">niveau {evt.NewValue}</color>");
         }
     }
 }

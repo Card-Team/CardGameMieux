@@ -20,8 +20,8 @@ namespace Script.Networking
 
     public class ChooseCardTargetData : ExternData
     {
-        public string TargetName;
         public List<Card> CardList;
+        public string TargetName;
     }
 
     public class ChooseBetweenCardData : ExternData

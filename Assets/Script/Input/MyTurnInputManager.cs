@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Script.Networking;
 using Script.Networking.Commands;
@@ -9,8 +8,9 @@ namespace Script.Input
 {
     public class MyTurnInputManager : PointableCardInputManager, PlayerActions.IMainActions
     {
-        private MainRenderer _mainRenderer;
         private NetworkedGame _game;
+        private MainRenderer _mainRenderer;
+
         private void Start()
         {
             _game = FindObjectOfType<NetworkedGame>();
@@ -20,7 +20,6 @@ namespace Script.Input
         public void OnCardPlay(InputAction.CallbackContext context)
         {
             if (context.performed)
-            {
                 if (HoveredCard != null)
                 {
                     if (HoveredCard.PreconditionJouable && HoveredCard.AssezDePa)
@@ -30,8 +29,7 @@ namespace Script.Input
                         HoveredCard = null;
                         InputManager.DisableAll();
                         _game.DoLocalAction(
-                            new PlayCardCommand((int)UnityGame.LocalPlayer, carte.Card.Id, false));
-                        
+                            new PlayCardCommand((int) UnityGame.LocalPlayer, carte.Card.Id, false));
                     }
                     else
                     {
@@ -39,14 +37,12 @@ namespace Script.Input
                             "tentative de jouage d'une carte qui peut pas etre jouée actuellement (précondition fausse)");
                     }
                 }
-            }
         }
 
         public void OnCardUpgrade(InputAction.CallbackContext context)
         {
             //upgrade de carte
             if (context.performed)
-            {
                 if (HoveredCard != null)
                 {
                     if (HoveredCard.Card.CurrentLevel.Value < HoveredCard.Card.MaxLevel && HoveredCard.AssezDePa)
@@ -56,23 +52,14 @@ namespace Script.Input
                         HoveredCard = null;
                         InputManager.DisableAll();
                         _game.DoLocalAction(
-                            new PlayCardCommand((int)UnityGame.LocalPlayer, card.Card.Id, true));
-                        
-                    }
-                    else
-                    {
-                        // Debug.Log("on tente d'upgrade une carte max ou pas assez de PA");
+                            new PlayCardCommand((int) UnityGame.LocalPlayer, card.Card.Id, true));
                     }
                 }
-            }
         }
 
         public void OnEndTurn(InputAction.CallbackContext callbackContext)
         {
-            if (callbackContext.performed)
-            {
-                _game.DoLocalAction(new EndTurnCommand());
-            }
+            if (callbackContext.performed) _game.DoLocalAction(new EndTurnCommand());
         }
 
         public override bool IsPointable(CardRenderer r)

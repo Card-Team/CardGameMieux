@@ -36,7 +36,7 @@ namespace Script
             return false;
         }
 
-        public void DebugPrint(string @from, string source, string debugPrint)
+        public void DebugPrint(string from, string source, string debugPrint)
         {
             //empty
         }

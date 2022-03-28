@@ -1,8 +1,5 @@
-using System.Threading;
-using System.Threading.Tasks;
 using CardGameEngine.EventSystem;
-using UnityEngine;
-using Event = CardGameEngine.EventSystem.Events.Event;
+using CardGameEngine.EventSystem.Events;
 
 namespace Script.Networking
 {
@@ -35,7 +32,7 @@ namespace Script.Networking
 
             public void HandleEvent(Event evt)
             {
-                _syncEventsManager.WaitForEventCalled(evt,_evt);
+                _syncEventsManager.WaitForEventCalled(evt, _evt);
             }
         }
     }

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CardGameEngine;
@@ -15,14 +14,12 @@ using CardGameEngine.GameSystems.Effects;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using Network;
-using Network.Packets;
 using Script.Debugging;
 using Script.Input;
 using Script.Networking.Commands;
 using Script.Networking.Commands.Extern;
 using Sentry;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using Random = System.Random;
 
@@ -30,30 +27,44 @@ namespace Script.Networking
 {
     public partial class NetworkedGame : MonoBehaviour
     {
-        public Game Game { get; private set; }
+        public TextMeshProUGUI errorText;
+        public ErrorUtils errorUtils;
 
-        private NetworkManager _networkManager;
+        public readonly ConcurrentQueue<(TaskCompletionSource<bool> actionTask, Action action)> GameThreadQueue =
+            new ConcurrentQueue<(TaskCompletionSource<bool> actionTask, Action action)>();
 
-        public NetworkGameState NetworkGameState { get; private set; }
-
-        public Action<Game> EventRegistration;
-
-        private ConcurrentDictionary<Type, CommandProviderBehaviour> _commandProviderBehaviours =
+        private readonly ConcurrentDictionary<Type, CommandProviderBehaviour> _commandProviderBehaviours =
             new ConcurrentDictionary<Type, CommandProviderBehaviour>();
 
-        private ConcurrentDictionary<Type, TaskCompletionSource<ExternalCommand>> _waitedExternalCommands =
-            new ConcurrentDictionary<Type, TaskCompletionSource<ExternalCommand>>();
-
-        private int _randomSeed;
-
-        [CanBeNull] public SetUpGameCommand MyConfiguration { get; private set; }
-        [CanBeNull] public SetUpGameCommand OtherPlayerConfiguration { get; private set; }
+        private readonly ConcurrentQueue<GameCommand> _gameCommands = new ConcurrentQueue<GameCommand>();
+        private Thread _gameProcessThread;
 
 
         private InputManager _inputManager;
-        public NetworkMode AcceptFrom { get; set; } = NetworkMode.Server;
+
+        private volatile bool _interrupted;
         private MainRenderer _localMainRenderer;
-        private Thread _gameProcessThread;
+
+        private NetworkManager _networkManager;
+
+        private int _randomSeed;
+
+        private readonly Dictionary<Type, ExternalCommand> _tooSoonExternalCommands =
+            new Dictionary<Type, ExternalCommand>();
+
+        private UnityGame _unityGame;
+
+        private readonly ConcurrentDictionary<Type, TaskCompletionSource<ExternalCommand>> _waitedExternalCommands =
+            new ConcurrentDictionary<Type, TaskCompletionSource<ExternalCommand>>();
+
+        public Action<Game> EventRegistration;
+        public Game Game { get; private set; }
+
+        public NetworkGameState NetworkGameState { get; private set; }
+
+        [CanBeNull] public SetUpGameCommand MyConfiguration { get; private set; }
+        [CanBeNull] public SetUpGameCommand OtherPlayerConfiguration { get; private set; }
+        public NetworkMode AcceptFrom { get; set; } = NetworkMode.Server;
 
 
         private void Awake()
@@ -63,6 +74,35 @@ namespace Script.Networking
             _inputManager = FindObjectOfType<InputManager>();
             FindObjectOfType<DebugConsole>().Init();
             _networkManager = GetComponent<NetworkManager>();
+        }
+
+        private void Update()
+        {
+            if (NetworkGameState == NetworkGameState.SETTING_UP) // donc il a pas la notre
+            {
+                if (OtherPlayerConfiguration != null && _networkManager.IsClient)
+                    //si on est le client qui vient de recevoir du serv, on lui balance
+                    _networkManager.Send(MyConfiguration);
+
+                if (OtherPlayerConfiguration != null && MyConfiguration != null)
+                {
+                    //on a les deux, est pret
+                    CreateGame();
+                    if (NetworkGameState == NetworkGameState.SETTING_UP)
+                        NetworkGameState = NetworkGameState.READY;
+                }
+            }
+            else if (NetworkGameState == NetworkGameState.READY)
+            {
+                StartGame();
+            }
+        }
+
+        private void OnDisable()
+        {
+            NetworkGameState = NetworkGameState.NOT_CONNECTED;
+            _gameProcessThread?.Interrupt();
+            _interrupted = true;
         }
 
         public void SetUpNetworkGame(NetworkConfiguration networkConfiguration, string ownName, List<string> ownDeck)
@@ -88,30 +128,6 @@ namespace Script.Networking
 
             Debug.Log("Set up recu");
             OtherPlayerConfiguration = packet;
-        }
-
-        private void Update()
-        {
-            if (NetworkGameState == NetworkGameState.SETTING_UP) // donc il a pas la notre
-            {
-                if (OtherPlayerConfiguration != null && _networkManager.IsClient)
-                {
-                    //si on est le client qui vient de recevoir du serv, on lui balance
-                    _networkManager.Send(MyConfiguration);
-                }
-
-                if (OtherPlayerConfiguration != null && MyConfiguration != null)
-                {
-                    //on a les deux, est pret
-                    CreateGame();
-                    if(NetworkGameState == NetworkGameState.SETTING_UP)
-                        NetworkGameState = NetworkGameState.READY;
-                }
-            }
-            else if (NetworkGameState == NetworkGameState.READY)
-            {
-                StartGame();
-            }
         }
 
         private void StartGame()
@@ -185,50 +201,31 @@ namespace Script.Networking
             {
                 Debug.LogError("Exception dans EventRegistration/GameInit");
                 Debug.LogException(e);
-                SentrySdk.AddBreadcrumb($"Appel de EventRegistration/GameInit");
-                if (e is LuaException le)
-                {
-                    errorUtils.toPrint.Enqueue(le);
-                }
+                SentrySdk.AddBreadcrumb("Appel de EventRegistration/GameInit");
+                if (e is LuaException le) errorUtils.toPrint.Enqueue(le);
             }
         }
-
-        private ConcurrentQueue<GameCommand> _gameCommands = new ConcurrentQueue<GameCommand>();
 
         private void ProcessGameCommands()
         {
             foreach (var curCommand in _gameCommands)
-            {
                 // Debug.Log("on process le packet");
                 try
                 {
                     if (ProcessAction(curCommand))
-                    {
                         //si on a process on enleve
                         _gameCommands.TryDequeue(out _);
-                    }
-                    else
-                    {
-                        //si on a pas ce qu'il faut pour process on attend
-                    }
                 }
                 catch (Exception e)
                 {
                     Debug.LogError($"Erreure lors du processing du paquet {curCommand}");
-                    if (e is LuaException le)
-                    {
-                        errorUtils.toPrint.Enqueue(le);
-                    }
+                    if (e is LuaException le) errorUtils.toPrint.Enqueue(le);
 
                     Debug.LogError(e);
                     _gameCommands.TryDequeue(out _);
                     _gameProcessThread.Interrupt();
                 }
-            }
         }
-
-        public readonly ConcurrentQueue<(TaskCompletionSource<bool> actionTask, Action action)> GameThreadQueue =
-            new ConcurrentQueue<(TaskCompletionSource<bool> actionTask, Action action)>();
 
         private void ProcessGameThreadActions()
         {
@@ -268,26 +265,28 @@ namespace Script.Networking
 
             if (DeckIsInvalid(MyConfiguration?.deck, "Vous"))
             {
-                this.NetworkGameState = NetworkGameState.NOT_CONNECTED;
+                NetworkGameState = NetworkGameState.NOT_CONNECTED;
                 return;
             }
 
             if (DeckIsInvalid(OtherPlayerConfiguration?.deck, "Adversaire"))
             {
-                this.NetworkGameState = NetworkGameState.NOT_CONNECTED;
+                NetworkGameState = NetworkGameState.NOT_CONNECTED;
                 return;
             }
 
             SentrySdk.StartSession();
             SentrySdk.ConfigureScope(s =>
             {
-                s.Contexts["Game"] = new GameScope()
+                s.Contexts["Game"] = new GameScope
                 {
                     J1Deck = j1Deck,
                     J2Deck = j2Deck,
-                    CurrentSide = _networkManager.IsClient ? NetworkMode.Client.ToString() : NetworkMode.Server.ToString(),
-                    CurrentPlayer = (int)(UnityGame.LocalPlayer) + 1,
-                    RandomSeed = _randomSeed,
+                    CurrentSide = _networkManager.IsClient
+                        ? NetworkMode.Client.ToString()
+                        : NetworkMode.Server.ToString(),
+                    CurrentPlayer = (int) UnityGame.LocalPlayer + 1,
+                    RandomSeed = _randomSeed
                 };
             });
             try
@@ -312,18 +311,9 @@ namespace Script.Networking
             {
                 Debug.LogError(e);
                 ErrorMessage("Une erreure est survenue lors de la création de la partie", "");
-                this.NetworkGameState = NetworkGameState.NOT_CONNECTED;
+                NetworkGameState = NetworkGameState.NOT_CONNECTED;
                 SentrySdk.CaptureException(e);
             }
-        }
-
-        private class GameScope
-        {
-            public List<string> J1Deck { get; set; }
-            public List<string> J2Deck { get; set; }
-            public string CurrentSide { get; set; }
-            public int CurrentPlayer { get; set; }
-            public int RandomSeed { get; set; }
         }
 
         private bool DeckIsInvalid(IReadOnlyCollection<string> deckToCheck, string playerName)
@@ -349,7 +339,7 @@ namespace Script.Networking
                 ErrorMessage($"nombre de cartes différent de 12, actuel : {deckToCheck?.Count}", playerName);
                 return true;
             }
-            
+
 
             var frequency = deckToCheck?.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
             var toomuch = deckToCheck?.FirstOrDefault(c => frequency[c] > 2);
@@ -376,8 +366,6 @@ namespace Script.Networking
             unityGame.connectingObject.SetActive(false);
         }
 
-        public TextMeshProUGUI errorText;
-
 
         // protocole
         // hote -> SetUpGame (son nom, son deck)
@@ -391,14 +379,14 @@ namespace Script.Networking
                 return;
             }
 
-            MyConfiguration = new SetUpGameCommand() { name = ownName, deck = ownDeck };
+            MyConfiguration = new SetUpGameCommand {name = ownName, deck = ownDeck};
 
             if (_networkManager.IsServer)
             {
                 MyConfiguration.randomSeed = new Random().Next();
                 _randomSeed = MyConfiguration.randomSeed;
                 _networkManager.Send(
-                    new SetUpGameCommand() { name = ownName, deck = ownDeck, randomSeed = _randomSeed });
+                    new SetUpGameCommand {name = ownName, deck = ownDeck, randomSeed = _randomSeed});
             }
         }
 
@@ -421,15 +409,14 @@ namespace Script.Networking
         private void ReceiveRemoteAction(GameCommand packet, Connection connection)
         {
             // Debug.Log($"J'ai recu un paket");
-            if ((AcceptFrom == NetworkMode.Client && _networkManager.IsClient) ||
+            if (AcceptFrom == NetworkMode.Client && _networkManager.IsClient ||
                 AcceptFrom == NetworkMode.Server && _networkManager.IsServer)
-            {
                 Debug.LogWarning(
                     "On a pas l'air d'etre synchronisé, un paquet de l'autre a été recu mais on en attendait pas");
-            }
 
             AddCommandToQueue(packet);
-            SentrySdk.AddBreadcrumb($"Action Distante : {packet.GetType()}","actions",packet.GetType().Name,packet.ToDict(_unityGame));
+            SentrySdk.AddBreadcrumb($"Action Distante : {packet.GetType()}", "actions", packet.GetType().Name,
+                packet.ToDict(_unityGame));
         }
 
         private void AddCommandToQueue(GameCommand command)
@@ -437,7 +424,6 @@ namespace Script.Networking
             lock (this)
             {
                 if (command is ExternalCommand externalCommand)
-                {
                     //on verifie les attendeurs
                     lock (this)
                     {
@@ -451,11 +437,8 @@ namespace Script.Networking
                             _tooSoonExternalCommands[command.GetType()] = externalCommand;
                         }
                     }
-                }
                 else
-                {
                     _gameCommands.Enqueue(command);
-                }
 
                 Monitor.PulseAll(this);
             }
@@ -465,24 +448,18 @@ namespace Script.Networking
         public void DoLocalAction(GameCommand command)
         {
             // Debug.Log($"Action locale qu'il faut dupliquer");
-            if ((AcceptFrom == NetworkMode.Client && _networkManager.IsServer) ||
+            if (AcceptFrom == NetworkMode.Client && _networkManager.IsServer ||
                 AcceptFrom == NetworkMode.Server && _networkManager.IsClient)
             {
                 Debug.LogWarning("On a pas l'air d'etre synchronisé, on attendait un paquet distant");
                 return;
             }
-            else
-            {
-                SentrySdk.AddBreadcrumb($"Action Locale : {command.GetType()}","actions",command.GetType().Name,command.ToDict(_unityGame));
-                AddCommandToQueue(command);
-                _networkManager.Send(command);
-            }
-        }
 
-        private volatile bool _interrupted;
-        public ErrorUtils errorUtils;
-        private Dictionary<Type, ExternalCommand> _tooSoonExternalCommands = new Dictionary<Type, ExternalCommand>();
-         private UnityGame _unityGame;
+            SentrySdk.AddBreadcrumb($"Action Locale : {command.GetType()}", "actions", command.GetType().Name,
+                command.ToDict(_unityGame));
+            AddCommandToQueue(command);
+            _networkManager.Send(command);
+        }
 
         public T WaitForTaskWithPolling<T>(TaskCompletionSource<T> completionSource, bool onGameThread)
         {
@@ -491,10 +468,7 @@ namespace Script.Networking
             {
                 while (true)
                 {
-                    if (_interrupted)
-                    {
-                        throw new ThreadInterruptedException();
-                    }
+                    if (_interrupted) throw new ThreadInterruptedException();
 
                     // Debug.Log($"On pulse all {Thread.CurrentThread.Name}");
                     Monitor.PulseAll(this);
@@ -509,10 +483,8 @@ namespace Script.Networking
                         case TaskStatus.WaitingToRun:
                             // Debug.Log($"la tache est pas finie {Thread.CurrentThread.Name}");
                             if (onGameThread)
-                            {
                                 // Debug.Log($"GameThread, on process {Thread.CurrentThread.Name}");
                                 ProcessGameThreadActions();
-                            }
 
                             // Debug.Log($"Dodo {Thread.CurrentThread.Name}");
                             try
@@ -550,13 +522,13 @@ namespace Script.Networking
             {
                 var elem = _tooSoonExternalCommands[typeof(T)];
                 _tooSoonExternalCommands.Remove(typeof(T));
-                return (T)elem;
+                return (T) elem;
             }
 
             var commandTask = new TaskCompletionSource<ExternalCommand>();
             _waitedExternalCommands[typeof(T)] = commandTask;
 
-            return (T)WaitForTaskWithPolling(commandTask, true);
+            return (T) WaitForTaskWithPolling(commandTask, true);
         }
 
         public T RunOnGameThread<T>(Func<Game, T> action)
@@ -578,17 +550,10 @@ namespace Script.Networking
         public Player ResolvePlayer(int playerId)
         {
             if (Game.Player1.Id == playerId)
-            {
                 return Game.Player1;
-            }
-            else if (Game.Player2.Id == playerId)
-            {
+            if (Game.Player2.Id == playerId)
                 return Game.Player2;
-            }
-            else
-            {
-                throw new InvalidOperationException($"Playerid {playerId} does not exist");
-            }
+            throw new InvalidOperationException($"Playerid {playerId} does not exist");
         }
 
         public void WantLocal<T>([CanBeNull] ExternData externStruct = null) where T : GameCommand
@@ -605,11 +570,13 @@ namespace Script.Networking
             _commandProviderBehaviours[typeof(T)] = cpb;
         }
 
-        private void OnDisable()
+        private class GameScope
         {
-            NetworkGameState = NetworkGameState.NOT_CONNECTED;
-            _gameProcessThread?.Interrupt();
-            _interrupted = true;
+            public List<string> J1Deck { get; set; }
+            public List<string> J2Deck { get; set; }
+            public string CurrentSide { get; set; }
+            public int CurrentPlayer { get; set; }
+            public int RandomSeed { get; set; }
         }
     }
 }

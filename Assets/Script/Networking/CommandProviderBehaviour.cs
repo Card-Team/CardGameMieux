@@ -1,13 +1,12 @@
 using System;
-using Script.Networking.Commands.Extern;
 using UnityEngine;
 
 namespace Script.Networking
 {
     public abstract class CommandProviderBehaviour : MonoBehaviour
     {
-        [NonSerialized] public volatile bool IsNeeded;
         public object InfoStruct;
+        [NonSerialized] public volatile bool IsNeeded;
         protected NetworkedGame NetworkedGame;
 
         private void Awake()

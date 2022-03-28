@@ -1,65 +1,31 @@
-﻿using Network.Enums;
-using Network.Extensions;
-using Network.Packets;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Network.Enums;
+using Network.Extensions;
+using Network.Packets;
 
 namespace Network
 {
     /// <summary>
-    /// Builds upon the <see cref="Connection"/> class, implementing UDP and allowing for messages to be conveniently
-    /// sent without a large serialisation header.
+    ///     Builds upon the <see cref="Connection" /> class, implementing UDP and allowing for messages to be conveniently
+    ///     sent without a large serialisation header.
     /// </summary>
     public class UdpConnection : Connection
     {
-        #region Variables
-
-        /// <summary>
-        /// The <see cref="UdpClient"/> for this <see cref="TcpConnection"/> instance.
-        /// </summary>
-        private readonly UdpClient client;
-
-        /// <summary>
-        /// The <see cref="Socket"/> for this <see cref="TcpConnection"/> instance.
-        /// </summary>
-        private readonly Socket socket;
-
-        /// <summary>
-        /// The local endpoint for the <see cref="client"/>.
-        /// </summary>
-        private IPEndPoint localEndPoint;
-
-        /// <summary>
-        /// The remote endpoint for the <see cref="client" />
-        /// </summary>
-        private IPEndPoint remoteEndPoint;
-
-        /// <summary>
-        /// Stopwatch to measure the RTT for ping packets.
-        /// </summary>
-        private readonly Stopwatch rttStopWatch = new Stopwatch();
-
-        /// <summary>
-        /// Cache of all received bytes.
-        /// </summary>
-        private readonly List<byte> receivedBytes = new List<byte>();
-
-        #endregion Variables
-
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UdpConnection"/> class.
+        ///     Initializes a new instance of the <see cref="UdpConnection" /> class.
         /// </summary>
         /// <param name="localEndPoint">The local end point.</param>
         /// <param name="remoteEndPoint">The remote end point.</param>
-        /// <param name="writeLock">Whether the <see cref="UdpConnection"/> will have a write lock.</param>
-        /// <param name="skipInitializationProcess">Whether to skip the call to <see cref="Connection.Init()"/>.</param>
-        internal UdpConnection(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint, bool writeLock = false, bool skipInitializationProcess = false)
-            : base()
+        /// <param name="writeLock">Whether the <see cref="UdpConnection" /> will have a write lock.</param>
+        /// <param name="skipInitializationProcess">Whether to skip the call to <see cref="Connection.Init()" />.</param>
+        internal UdpConnection(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint, bool writeLock = false,
+            bool skipInitializationProcess = false)
         {
             this.remoteEndPoint = remoteEndPoint;
             this.localEndPoint = localEndPoint;
@@ -90,13 +56,47 @@ namespace Network
 
         #endregion Constructors
 
+        #region Variables
+
+        /// <summary>
+        ///     The <see cref="UdpClient" /> for this <see cref="TcpConnection" /> instance.
+        /// </summary>
+        private readonly UdpClient client;
+
+        /// <summary>
+        ///     The <see cref="Socket" /> for this <see cref="TcpConnection" /> instance.
+        /// </summary>
+        private readonly Socket socket;
+
+        /// <summary>
+        ///     The local endpoint for the <see cref="client" />.
+        /// </summary>
+        private readonly IPEndPoint localEndPoint;
+
+        /// <summary>
+        ///     The remote endpoint for the <see cref="client" />
+        /// </summary>
+        private readonly IPEndPoint remoteEndPoint;
+
+        /// <summary>
+        ///     Stopwatch to measure the RTT for ping packets.
+        /// </summary>
+        private readonly Stopwatch rttStopWatch = new Stopwatch();
+
+        /// <summary>
+        ///     Cache of all received bytes.
+        /// </summary>
+        private readonly List<byte> receivedBytes = new List<byte>();
+
+        #endregion Variables
+
         #region Properties
 
         /// <inheritdoc />
         public override IPEndPoint IPLocalEndPoint => localEndPoint;
 
         /// <summary>
-        /// The local <see cref="EndPoint"/> for the <see cref="socket"/>.
+        ///     The local <see cref="EndPoint" /> for the <see cref="socket" />.
         /// </summary>
         public EndPoint LocalEndPoint => localEndPoint;
 
@@ -104,58 +104,70 @@ namespace Network
         public override IPEndPoint IPRemoteEndPoint => remoteEndPoint;
 
         /// <summary>
-        /// The remote <see cref="EndPoint"/> for the <see cref="socket"/>.
+        ///     The remote <see cref="EndPoint" /> for the <see cref="socket" />.
         /// </summary>
         public EndPoint RemoteEndPoint => remoteEndPoint;
 
         /// <inheritdoc />
-        public override bool DualMode { get { return socket.DualMode; } set { socket.DualMode = value; } }
+        public override bool DualMode
+        {
+            get => socket.DualMode;
+            set => socket.DualMode = value;
+        }
 
         /// <inheritdoc />
-        public override bool Fragment { get { return !socket.DontFragment; } set { socket.DontFragment = !value; } }
+        public override bool Fragment
+        {
+            get => !socket.DontFragment;
+            set => socket.DontFragment = !value;
+        }
 
         /// <inheritdoc />
         public override int HopLimit
         {
-            get { return (int)socket.GetSocketOption(SocketOptionLevel.Udp, SocketOptionName.HopLimit); }
-            set { socket.SetSocketOption(SocketOptionLevel.Udp, SocketOptionName.HopLimit, value); }
+            get => (int) socket.GetSocketOption(SocketOptionLevel.Udp, SocketOptionName.HopLimit);
+            set => socket.SetSocketOption(SocketOptionLevel.Udp, SocketOptionName.HopLimit, value);
         }
 
         /// <inheritdoc />
         public override bool IsRoutingEnabled
         {
-            get { return !(bool)socket.GetSocketOption(SocketOptionLevel.Udp, SocketOptionName.DontRoute); }
-            set { socket.SetSocketOption(SocketOptionLevel.Udp, SocketOptionName.DontRoute, !value); }
+            get => !(bool) socket.GetSocketOption(SocketOptionLevel.Udp, SocketOptionName.DontRoute);
+            set => socket.SetSocketOption(SocketOptionLevel.Udp, SocketOptionName.DontRoute, !value);
         }
 
         /// <inheritdoc />
         public override bool NoDelay
         {
-            get { return client.Client.NoDelay; }
-            set { client.Client.NoDelay = value; }
+            get => client.Client.NoDelay;
+            set => client.Client.NoDelay = value;
         }
 
         /// <inheritdoc />
-        public override short TTL { get { return socket.Ttl; } set { socket.Ttl = value; } }
+        public override short TTL
+        {
+            get => socket.Ttl;
+            set => socket.Ttl = value;
+        }
 
         /// <inheritdoc />
         public override bool UseLoopback
         {
-            get { return (bool)socket.GetSocketOption(SocketOptionLevel.Udp, SocketOptionName.UseLoopback); }
-            set { socket.SetSocketOption(SocketOptionLevel.Udp, SocketOptionName.UseLoopback, value); }
+            get => (bool) socket.GetSocketOption(SocketOptionLevel.Udp, SocketOptionName.UseLoopback);
+            set => socket.SetSocketOption(SocketOptionLevel.Udp, SocketOptionName.UseLoopback, value);
         }
 
         /// <summary>
-        /// Whether a checksum should be created for each UDP packet sent.
+        ///     Whether a checksum should be created for each UDP packet sent.
         /// </summary>
         public bool IsChecksumEnabled
         {
-            get { return (int)socket.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoChecksum) == 0; }
-            set { socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoChecksum, value ? 0 : -1); }
+            get => (int) socket.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoChecksum) == 0;
+            set => socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoChecksum, value ? 0 : -1);
         }
 
         /// <summary>
-        /// Whether the connection has a write lock in place.
+        ///     Whether the connection has a write lock in place.
         /// </summary>
         internal bool AcknowledgePending { get; set; }
 
@@ -164,8 +176,8 @@ namespace Network
         #region Methods
 
         /// <summary>
-        /// Resets the <see cref="rttStopWatch"/> and sends a new <see cref="UDPPingRequest"/> packet, so that the RTT can
-        /// be measured. The RTT will be placed in the <see cref="Connection.RTT"/> property.
+        ///     Resets the <see cref="rttStopWatch" /> and sends a new <see cref="UDPPingRequest" /> packet, so that the RTT can
+        ///     be measured. The RTT will be placed in the <see cref="Connection.RTT" /> property.
         /// </summary>
         public void MeasureRTT()
         {
@@ -174,7 +186,7 @@ namespace Network
         }
 
         /// <summary>
-        /// Handler for <see cref="UDPPingResponse"/> packets.
+        ///     Handler for <see cref="UDPPingResponse" /> packets.
         /// </summary>
         /// <param name="response">The response packet received.</param>
         /// <param name="connection">The connection that sent the response.</param>
@@ -206,12 +218,12 @@ namespace Network
                 // https://referencesource.microsoft.com/#System/net/System/Net/Sockets/UDPClient.cs,57ff640dfcb1cbf0
                 // UdpClient.cs (695) 20.10.2019
                 // the reference does fuck up our localEndPoint. Hence, we need to create a buffer...
-                IPEndPoint buffer = new IPEndPoint(localEndPoint.Address, localEndPoint.Port);
+                var buffer = new IPEndPoint(localEndPoint.Address, localEndPoint.Port);
                 receivedBytes.AddRange(client.Receive(ref buffer).GetEnumerator().ToList<byte>());
                 Thread.Sleep(IntPerformance);
             }
 
-            byte[] data = new byte[amount];
+            var data = new byte[amount];
             receivedBytes.CopyTo(0, data, 0, data.Length);
             receivedBytes.RemoveRange(0, data.Length);
             return data;
@@ -229,12 +241,15 @@ namespace Network
         /// <inheritdoc />
         protected override void HandleUnknownPacket()
         {
-            Logger.Log($"Connection can't handle the received packet. No listener defined.", LogLevel.Warning);
+            Logger.Log("Connection can't handle the received packet. No listener defined.", LogLevel.Warning);
             //Ignore an unkown packet, we could have lost the AddPacketTypeRequest.
         }
 
         /// <inheritdoc />
-        protected override void CloseHandler(CloseReason closeReason) => Close(closeReason, true);
+        protected override void CloseHandler(CloseReason closeReason)
+        {
+            Close(closeReason, true);
+        }
 
         /// <inheritdoc />
         protected override void CloseSocket()
@@ -242,6 +257,7 @@ namespace Network
             socket.Close();
             client.Close();
         }
+
         #endregion Methods
     }
 }

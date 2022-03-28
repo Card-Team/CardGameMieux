@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using CardGameEngine;
 using CardGameEngine.Cards;
 using CardGameEngine.Cards.CardPiles;
-using CardGameEngine.EventSystem;
 using CardGameEngine.EventSystem.Events.CardEvents;
 using Script;
 using Script.Networking;
@@ -30,13 +29,18 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
+    }
+
+    public virtual void Subscribe(SyncEventWrapper eventManager)
+    {
+        eventManager.SubscribeToEvent<CardMovePileEvent>(OnCardMovePile, false, true);
     }
 
     public void GrabPile(Game game)
     {
-        var player = this.owner switch
+        var player = owner switch
         {
             Owner.Player1 => game.Player1,
             Owner.Player2 => game.Player2,
@@ -52,17 +56,14 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
         };
 
         UnityGame.PileRenderers.Add(CardPile, this);
-        if (UnityGame.LocalPlayer != owner)
-        {
-            countText.transform.localRotation = Quaternion.Euler(0,0,180);
-        }
+        if (UnityGame.LocalPlayer != owner) countText.transform.localRotation = Quaternion.Euler(0, 0, 180);
         RefreshPile();
     }
 
     protected virtual void OnCardMovePile(CardMovePileEvent evt)
     {
         if (evt.SourcePile != CardPile) return;
-        
+
         var cardRenderer = UnityGame.CardRenderers[evt.Card];
         cards.Remove(cardRenderer);
         UnityGame.PileRenderers[evt.DestPile].GrabCard(cardRenderer);
@@ -76,13 +77,12 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
         var destination = GetNewCardDestination(cardRenderer);
         cards.Add(cardRenderer);
 
-        UnityGame.AddToQueue(() => MoveCardAnimation(cardRenderer,destination), owner);
+        UnityGame.AddToQueue(() => MoveCardAnimation(cardRenderer, destination), owner);
     }
 
     private IEnumerator MoveCardAnimation(CardRenderer cardRenderer, Vector2 destination)
     {
-
-        yield return MoveCardInTime(cardRenderer, destination, 0.2f,OnCardArrived);
+        yield return MoveCardInTime(cardRenderer, destination, 0.2f, OnCardArrived);
 
         ;
     }
@@ -91,13 +91,13 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
         , Action<CardRenderer> onFinish)
     {
         cardRenderer.Hover = false;
-        var start = (Vector2)cardRenderer.transform.localPosition;
+        var start = (Vector2) cardRenderer.transform.localPosition;
 
         float tempsParcouru = 0;
 
         while (tempsParcouru < time)
         {
-            cardRenderer.transform.localPosition = Vector3.Lerp(start, destination, (tempsParcouru / time));
+            cardRenderer.transform.localPosition = Vector3.Lerp(start, destination, tempsParcouru / time);
             tempsParcouru += Time.deltaTime;
             yield return null;
         }
@@ -113,10 +113,7 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
 
     protected virtual void OnCardArrived(CardRenderer cardRenderer)
     {
-        if (cartesCachées != cardRenderer.faceCachee)
-        {
-            cardRenderer.Flip();
-        }
+        if (cartesCachées != cardRenderer.faceCachee) cardRenderer.Flip();
         var oldPos = cardRenderer.transform.position;
         oldPos.z = -cards.Count;
         cardRenderer.transform.position = oldPos;
@@ -133,20 +130,11 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
             unityCardTransform.parent = transform;
             unityCardTransform.localPosition = Vector3.zero;
             unityCard.gameObject.SetActive(true);
-            if (cartesCachées != unityCard.faceCachee)
-            {
-                unityCard.Flip();
-            }
+            if (cartesCachées != unityCard.faceCachee) unityCard.Flip();
             cards.Add(unityCard);
         }
 
         countText.text = cards.Count.ToString();
-    }
-
-    public virtual void Subscribe(SyncEventWrapper eventManager)
-    {
-        
-        eventManager.SubscribeToEvent<CardMovePileEvent>(OnCardMovePile, false, true);
     }
 }
 

@@ -1,11 +1,12 @@
-﻿using Network.Attributes;
-using System;
+﻿using System;
 using System.Reflection;
+using Network.Attributes;
 
 namespace Network.Packets
 {
     /// <summary>
-    /// Instructs the paired <see cref="Connection"/> to add all the <see cref="Type"/>s in the given <see cref="Assembly"/>.
+    ///     Instructs the paired <see cref="Connection" /> to add all the <see cref="Type" />s in the given
+    ///     <see cref="Assembly" />.
     /// </summary>
     [PacketType(6)]
     internal class AddPacketTypeRequest : RequestPacket
@@ -13,7 +14,7 @@ namespace Network.Packets
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AddPacketTypeRequest"/> class.
+        ///     Initializes a new instance of the <see cref="AddPacketTypeRequest" /> class.
         /// </summary>
         /// <param name="assemblyName">Name of the assembly to add.</param>
         internal AddPacketTypeRequest(string assemblyName)
@@ -26,7 +27,7 @@ namespace Network.Packets
         #region Properties
 
         /// <summary>
-        /// The name of the <see cref="Assembly"/> that should be added.
+        ///     The name of the <see cref="Assembly" /> that should be added.
         /// </summary>
         public string AssemblyName { get; set; }
 

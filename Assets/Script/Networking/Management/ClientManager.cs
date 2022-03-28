@@ -1,10 +1,7 @@
 using System;
 using System.Reflection;
-using JetBrains.Annotations;
 using Network;
 using Network.Enums;
-using Network.Interfaces;
-using Network.Packets;
 using Script.Networking.Management.EstablishmentPackets;
 using UnityEngine;
 
@@ -14,17 +11,17 @@ namespace Script.Networking.Management
     {
         private ClientConnectionContainer _clientConnectionContainer;
 
-        private int? _resumeToken; // jeton donné par le serveur en début de connection et permet de se reco en continuant
-        // si on donne pas ca il va penser qu'on est un random
-        
-        
-
-        public Connection Server => Other;
+        private int?
+            _resumeToken; // jeton donné par le serveur en début de connection et permet de se reco en continuant
 
         public ClientManager(NetworkConfiguration networkConfiguration, Action onOtherSideConnect) : base(
             networkConfiguration, onOtherSideConnect)
         {
         }
+        // si on donne pas ca il va penser qu'on est un random
+
+
+        public Connection Server => Other;
         //tout les callbacks sont sur un autre thread
         // faut un lien pour pouvoir appeler les composants sur le thread principal
         // normalement c'est bon ?
@@ -38,7 +35,7 @@ namespace Script.Networking.Management
             _clientConnectionContainer.ConnectionEstablished += OnClientConnect;
             _clientConnectionContainer.ConnectionLost += OnConnectionLost;
             _clientConnectionContainer.AutoReconnect = true;
-            
+
             _clientConnectionContainer.Initialize();
         }
 
@@ -55,11 +52,11 @@ namespace Script.Networking.Management
             server.LogIntoStream(GetDebugLogStream());
             server.EnableLogging = true;
             Other = server;
-            
-            server.RegisterPacketHandler<ConnectionAcceptation>(ConnectionAcceptation,this);
+
+            server.RegisterPacketHandler<ConnectionAcceptation>(ConnectionAcceptation, this);
 
             ConnectionState = ConnectionState.ESTABLISHMENT;
-            
+
             _clientConnectionContainer.Send(new ConnectionRequest {ResumeToken = _resumeToken});
         }
 
@@ -71,11 +68,12 @@ namespace Script.Networking.Management
                 Debug.LogError("Received acceptation while not in establishment");
                 return;
             }
+
             _resumeToken = packet.ResumeToken;
             _onOtherSideConnect();
             ConnectionState = ConnectionState.CONNECTED;
         }
-        
+
 
         public void Stop()
         {

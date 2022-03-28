@@ -14,11 +14,11 @@ namespace Script.Networking
 
         #endregion
 
+        private readonly bool networkinSetUp = false;
+
         public bool IsServer { get; private set; }
 
         public bool IsClient => !IsServer;
-
-        private bool networkinSetUp = false;
 
         public bool IsConnected => _networkConfiguration.NetworkMode switch
         {
@@ -31,6 +31,22 @@ namespace Script.Networking
         private ClientManager ClientManager { get; set; }
 
         private ServerManager ServerManager { get; set; }
+
+        private void OnDestroy()
+        {
+            // on coupe la co 
+            switch (_networkConfiguration.NetworkMode)
+            {
+                case NetworkMode.Client:
+                    ClientManager.Stop();
+                    break;
+                case NetworkMode.Server:
+                    ServerManager.Stop();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
 
         public void SetupNetworking(NetworkConfiguration otherSideConnect, Action onOtherSideConnect)
@@ -92,22 +108,6 @@ namespace Script.Networking
                     break;
                 case NetworkMode.Server:
                     ServerManager.Client.RegisterStaticPacketHandler(onPacket);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private void OnDestroy()
-        {
-            // on coupe la co 
-            switch (_networkConfiguration.NetworkMode)
-            {
-                case NetworkMode.Client:
-                    ClientManager.Stop();
-                    break;
-                case NetworkMode.Server:
-                    ServerManager.Stop();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

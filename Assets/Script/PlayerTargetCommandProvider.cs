@@ -1,4 +1,3 @@
-using System;
 using Script.Input;
 using Script.Networking;
 using Script.Networking.Commands.Extern;
@@ -27,7 +26,7 @@ namespace Script
         {
             Debug.Log("do action player target");
             _inputManager.EnableThis(InputManager.InputType.UI);
-            var data = (ChoosePlayerTargetData)this.InfoStruct;
+            var data = (ChoosePlayerTargetData) InfoStruct;
             cibleTexte.text = data.TargetName;
             choosePanel.SetActive(true);
         }
@@ -41,9 +40,7 @@ namespace Script
 
             var ourTurn = _unityGame.Game.CurrentPlayer == UnityGame.LocalGamePlayer;
             if (ourTurn) _inputManager.EnableThis(InputManager.InputType.Main);
-            NetworkedGame.DoLocalAction(new ChoosePlayerTargetCommand(){PlayerId = player.Id});
-            
+            NetworkedGame.DoLocalAction(new ChoosePlayerTargetCommand {PlayerId = player.Id});
         }
-        
     }
 }

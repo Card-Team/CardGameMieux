@@ -3,7 +3,7 @@
 namespace Network.Packets
 {
     /// <summary>
-    /// Sends a raw, primitive value across a network.
+    ///     Sends a raw, primitive value across a network.
     /// </summary>
     [PacketType(10)]
     public class RawData : Packet
@@ -11,9 +11,9 @@ namespace Network.Packets
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RawData"/> class.
+        ///     Initializes a new instance of the <see cref="RawData" /> class.
         /// </summary>
-        /// <param name="key">The key that <see cref="RawData"/> packet handlers are registered with.</param>
+        /// <param name="key">The key that <see cref="RawData" /> packet handlers are registered with.</param>
         /// <param name="data">The serialised primitive value.</param>
         internal RawData(string key, byte[] data)
         {
@@ -26,12 +26,12 @@ namespace Network.Packets
         #region Properties
 
         /// <summary>
-        /// The key both connections are able to register <see cref="RawData"/> packet handlers to.
+        ///     The key both connections are able to register <see cref="RawData" /> packet handlers to.
         /// </summary>
         public string Key { get; set; }
 
         /// <summary>
-        /// The serialised primitive value.
+        ///     The serialised primitive value.
         /// </summary>
         public byte[] Data { get; set; }
 

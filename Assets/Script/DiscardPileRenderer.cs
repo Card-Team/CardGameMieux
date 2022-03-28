@@ -11,7 +11,7 @@ namespace Script
     {
         public Transform upgradeLocation;
 
-        private DiscardPile DPile => (DiscardPile)CardPile;
+        private DiscardPile DPile => (DiscardPile) CardPile;
 
         protected override Vector2 GetNewCardDestination(CardRenderer cardRenderer)
         {
@@ -28,7 +28,7 @@ namespace Script
 
         private void OnCardMarkUpgrade(CardMarkUpgradeEvent evt)
         {
-            var cardRenderer = this.cards.FirstOrDefault(cr => cr.Card == evt.Card);
+            var cardRenderer = cards.FirstOrDefault(cr => cr.Card == evt.Card);
             if (cardRenderer != null)
             {
                 var pos = upgradeLocation.transform.localPosition;
@@ -44,10 +44,10 @@ namespace Script
                     Action, owner);
             }
         }
-        
+
         private void OnCardUnMarkUpgrade(CardUnMarkUpgradeEvent evt)
         {
-            var cardRenderer = this.cards.FirstOrDefault(cr => cr.Card == evt.Card);
+            var cardRenderer = cards.FirstOrDefault(cr => cr.Card == evt.Card);
             if (cardRenderer != null)
             {
                 Vector3 pos = GetNewCardDestination(cardRenderer);

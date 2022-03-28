@@ -1,10 +1,5 @@
-using CardGameEngine.EventSystem;
-using Script.Input;
 using Script.Networking.Commands;
-using Script.Networking.Commands.Extern;
 using Sentry;
-using UnityEngine;
-using Event = CardGameEngine.EventSystem.Events.Event;
 
 namespace Script.Networking
 {
@@ -14,7 +9,8 @@ namespace Script.Networking
 
         private bool ProcessAction(GameCommand curCommand)
         {
-            SentrySdk.AddBreadcrumb($"Calcul d'action : {curCommand.GetType()}","calcul_action",curCommand.GetType().Name,curCommand.ToDict(_unityGame));
+            SentrySdk.AddBreadcrumb($"Calcul d'action : {curCommand.GetType()}", "calcul_action",
+                curCommand.GetType().Name, curCommand.ToDict(_unityGame));
             // ici on fait les appels sur Game comme il faut
             // normalement que endturn et playcard quoi
             if (curCommand is PlayCardCommand playCardCommand)
@@ -23,12 +19,14 @@ namespace Script.Networking
                     playCardCommand.Upgrade);
                 _inputManager.playFinished = true;
                 return true;
-            } else if (curCommand is EndTurnCommand endTurnCommand)
+            }
+
+            if (curCommand is EndTurnCommand endTurnCommand)
             {
                 Game.EndPlayerTurn();
                 return true;
             }
-            
+
 
             return false;
         }

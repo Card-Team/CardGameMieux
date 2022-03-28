@@ -3,7 +3,7 @@
 namespace Network.Packets
 {
     /// <summary>
-    /// Establishes a UDP connection with the paired <see cref="Connection"/>.
+    ///     Establishes a UDP connection with the paired <see cref="Connection" />.
     /// </summary>
     [PacketType(3)]
     internal class EstablishUdpRequest : RequestPacket
@@ -11,7 +11,7 @@ namespace Network.Packets
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EstablishUdpRequest"/> class.
+        ///     Initializes a new instance of the <see cref="EstablishUdpRequest" /> class.
         /// </summary>
         /// <param name="udpPort">The port to use for UDP communication.</param>
         internal EstablishUdpRequest(int udpPort)
@@ -24,7 +24,7 @@ namespace Network.Packets
         #region Properties
 
         /// <summary>
-        /// The port that the UDP connection should use.
+        ///     The port that the UDP connection should use.
         /// </summary>
         public int UdpPort { get; set; }
 

@@ -1,26 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using CardGameEngine;
 using CardGameEngine.Cards;
-using CardGameEngine.Cards.CardPiles;
 using CardGameEngine.EventSystem;
 using CardGameEngine.EventSystem.Events;
 using CardGameEngine.EventSystem.Events.CardEvents;
-using CardGameEngine.EventSystem.Events.CardEvents.PropertyChange;
-using CardGameEngine.GameSystems;
 using MoonSharp.Interpreter;
 using Script.Networking;
 using Sentry;
 using TMPro;
 using UnityEngine;
-using Event = CardGameEngine.EventSystem.Events.Event;
 
 namespace Script
 {
     public class CardRenderer : MonoBehaviour, IEventSubscriber
     {
-        public Card Card;
+        private static readonly int HoverProp = Animator.StringToHash("Hovered");
+
+        private static readonly int HoverHeightProp = Animator.StringToHash("HoverHeight");
         public TextMeshPro nom;
         public TextMeshPro description;
         public AffichageNiveau niveau;
@@ -37,36 +34,36 @@ namespace Script
 
         public string scriptToDisplay;
 
-        private bool DisplayMode => scriptToDisplay != string.Empty;
-
-
-        [NonSerialized] public bool faceCachee = false;
-
         [SerializeField] private CardImageDatabase imagesCartes;
-
-        private Animator _animator;
-
-        public float Width => fond.bounds.size.x;
-        public float Height => fond.bounds.size.y;
-
-
-        private bool _hover = false;
-
-        private static readonly int HoverProp = Animator.StringToHash("Hovered");
-
-        public bool PreconditionJouable { get; private set; }
-        public bool AssezDePa { get; private set; }
-        public bool Ameliorable { get; private set; }
 
         [SerializeField] private Color couleurJouable;
         [SerializeField] private Color couleurPasJouable;
 
         [SerializeField] private Color paColorQuandAssez;
         [SerializeField] private Color paColorQuandPasAssez;
-        private UnityGame _game;
-        private bool _hoverHeight = false;
         [SerializeField] private SpriteRenderer ameliorationImage;
         [SerializeField] private SpriteRenderer jouableCalque;
+        [SerializeField] private List<Sprite> spriteChainage;
+
+        private Animator _animator;
+        private UnityGame _game;
+
+
+        private bool _hover;
+        private bool _hoverHeight;
+        public Card Card;
+
+
+        [NonSerialized] public bool faceCachee;
+
+        private bool DisplayMode => scriptToDisplay != string.Empty;
+
+        public float Width => fond.bounds.size.x;
+        public float Height => fond.bounds.size.y;
+
+        public bool PreconditionJouable { get; private set; }
+        public bool AssezDePa { get; private set; }
+        public bool Ameliorable { get; private set; }
 
         public bool Hover
         {
@@ -95,32 +92,53 @@ namespace Script
             }
         }
 
-        private static readonly int HoverHeightProp = Animator.StringToHash("HoverHeight");
-        [SerializeField] private List<Sprite> spriteChainage;
-
         private void Awake()
         {
             _animator = GetComponent<Animator>();
             _game = FindObjectOfType<UnityGame>();
         }
 
-        public void SetScript(String ScriptName)
+        // Start is called before the first frame update
+        private void Start()
+        {
+            SetData();
+        }
+
+        //void 
+
+        // Update is called once per frame
+        private void Update()
+        {
+        }
+
+
+        public void Subscribe(SyncEventWrapper eventManager)
+        {
+            eventManager.SubscribeToEvent<CardEvent>(e =>
+            {
+                // Debug.Log($"CardEvent : {e.GetType()}");
+                if (Equals(e.Card, Card))
+                {
+                    SetData();
+                    return;
+                }
+
+                RefreshPrecondition();
+            }, postEvent: true);
+            eventManager.SubscribeToEvent<ActionPointsEditEvent>(e => { RefreshPrecondition(); }, false, true);
+        }
+
+        public void SetScript(string ScriptName)
         {
             scriptToDisplay = ScriptName;
-            Game game = new Game(Application.streamingAssetsPath + "/EffectsScripts",
+            var game = new Game(Application.streamingAssetsPath + "/EffectsScripts",
                 new DumbCallbacks(),
-                new List<string> { scriptToDisplay },
+                new List<string> {scriptToDisplay},
                 new List<string>());
-            this.Card = game.Player1.Deck[0];
+            Card = game.Player1.Deck[0];
             Subscribe(game.EventManager);
             RefreshPrecondition(true);
             // game.StartGame();
-        }
-
-        // Start is called before the first frame update
-        void Start()
-        {
-            SetData();
         }
 
         private void SetData()
@@ -131,7 +149,7 @@ namespace Script
             SetLevel();
             cout.text = Card.Cost.Value.ToString();
             illustration.sprite = imagesCartes[Card.ImageId.Value];
-            chainage.sprite = spriteChainage[(int)Card.ChainMode.Value];
+            chainage.sprite = spriteChainage[(int) Card.ChainMode.Value];
         }
 
         private void SetLevel()
@@ -158,23 +176,15 @@ namespace Script
             RefreshPrecondition();
         }
 
-        //void 
-
-        // Update is called once per frame
-        void Update()
-        {
-        }
-
         public void RefreshPrecondition(bool hideAll = false)
         {
-
             if (!DisplayMode)
             {
-                Player cardHolder = _game.Game.Player1.Hand.Contains(Card) ? _game.Game.Player1 : _game.Game.Player2;
+                var cardHolder = _game.Game.Player1.Hand.Contains(Card) ? _game.Game.Player1 : _game.Game.Player2;
 
                 if (UnityGame.IsLocalPlayer(cardHolder) && !hideAll)
                 {
-                    this.PreconditionJouable = _game.RunOnGameThread(g =>
+                    PreconditionJouable = _game.RunOnGameThread(g =>
                     {
                         try
                         {
@@ -188,50 +198,32 @@ namespace Script
                             return false;
                         }
                     });
-                    this.AssezDePa = Card.Cost.Value <= UnityGame.LocalGamePlayer.ActionPoints.Value;
-
+                    AssezDePa = Card.Cost.Value <= UnityGame.LocalGamePlayer.ActionPoints.Value;
                 }
                 else
                 {
-                    this.PreconditionJouable = true;
-                    this.AssezDePa = true;
+                    PreconditionJouable = true;
+                    AssezDePa = true;
                 }
             }
             else
             {
-                this.PreconditionJouable = true;
-                this.AssezDePa = true;
+                PreconditionJouable = true;
+                AssezDePa = true;
             }
 
-            this.Ameliorable = !Card.IsMaxLevel;
+            Ameliorable = !Card.IsMaxLevel;
 
-            SetLampVert(this.ameliorationImage, this.Ameliorable && !faceCachee);
-            SetLampVert(this.jouableCalque, this.PreconditionJouable && !faceCachee);
+            SetLampVert(ameliorationImage, Ameliorable && !faceCachee);
+            SetLampVert(jouableCalque, PreconditionJouable && !faceCachee);
 
 
-            this.cout.color = AssezDePa ? paColorQuandAssez : paColorQuandPasAssez;
+            cout.color = AssezDePa ? paColorQuandAssez : paColorQuandPasAssez;
         }
 
         private void SetLampVert(SpriteRenderer spriteRenderer, bool vert)
         {
             spriteRenderer.sprite = vert ? lvlVert : lvlRouge;
-        }
-
-
-        public void Subscribe(SyncEventWrapper eventManager)
-        {
-            eventManager.SubscribeToEvent<CardEvent>(e =>
-            {
-                // Debug.Log($"CardEvent : {e.GetType()}");
-                if (Equals(e.Card, Card))
-                {
-                    SetData();
-                    return;
-                }
-
-                RefreshPrecondition();
-            }, postEvent: true);
-            eventManager.SubscribeToEvent<ActionPointsEditEvent>(e => { RefreshPrecondition(); }, false, true);
         }
 
         private void Subscribe(EventManager eventManager)
@@ -246,14 +238,14 @@ namespace Script
 
         public void SetTransparence(float pourcentage)
         {
-            SetTransparence(pourcentage, this.cout);
-            SetTransparence(pourcentage, this.description);
-            SetTransparence(pourcentage, this.nom);
-            SetTransparenceSprite(pourcentage, this.illustration);
-            SetTransparenceSprite(pourcentage, this.fond);
-            SetTransparenceSprite(pourcentage, this.ameliorationImage);
-            SetTransparenceSprite(pourcentage, this.jouableCalque);
-            SetTransparenceSprite(pourcentage, this.chainage);
+            SetTransparence(pourcentage, cout);
+            SetTransparence(pourcentage, description);
+            SetTransparence(pourcentage, nom);
+            SetTransparenceSprite(pourcentage, illustration);
+            SetTransparenceSprite(pourcentage, fond);
+            SetTransparenceSprite(pourcentage, ameliorationImage);
+            SetTransparenceSprite(pourcentage, jouableCalque);
+            SetTransparenceSprite(pourcentage, chainage);
             niveau.fontTransparent(pourcentage);
         }
 

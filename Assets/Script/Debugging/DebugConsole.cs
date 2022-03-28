@@ -6,9 +6,22 @@ namespace Script.Debugging
     public class DebugConsole : MonoBehaviour
     {
         //#if !UNITY_EDITOR
-        static string myLog = "";
+        private static string myLog = "";
         private string output;
         private string stack;
+
+        private void OnDisable()
+        {
+            Application.logMessageReceivedThreaded -= Log;
+        }
+
+        private void OnGUI()
+        {
+            //if (!Application.isEditor) //Do not display in editor ( or you can use the UNITY_EDITOR macro to also disable the rest)
+            {
+                myLog = GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height - 10), myLog);
+            }
+        }
 
 
         public void Init()
@@ -16,12 +29,7 @@ namespace Script.Debugging
             // Application.logMessageReceived += Log;
             Application.logMessageReceivedThreaded += Log;
         }
-     
-        void OnDisable()
-        {
-            Application.logMessageReceivedThreaded -= Log;
-        }
-     
+
         public void Log(string logString, string stackTrace, LogType type)
         {
             Monitor.Enter(this);
@@ -30,22 +38,11 @@ namespace Script.Debugging
                 output = logString;
                 stack = stackTrace;
                 myLog = myLog + "\n" + output;
-                if (myLog.Length > 5000)
-                {
-                    myLog = myLog.Substring(0, 4000);
-                }
+                if (myLog.Length > 5000) myLog = myLog.Substring(0, 4000);
             }
             finally
             {
                 Monitor.Exit(this);
-            }
-        }
-     
-        void OnGUI()
-        {
-            //if (!Application.isEditor) //Do not display in editor ( or you can use the UNITY_EDITOR macro to also disable the rest)
-            {
-                myLog = GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height - 10), myLog);
             }
         }
         //#endif

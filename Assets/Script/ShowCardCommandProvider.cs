@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Script.Networking;
@@ -9,9 +8,13 @@ namespace Script
 {
     public class ShowCardCommandProvider : CommandProviderBehaviour
     {
-        private UnityGame _unityGame;
-        private CardPickerDisplay _cardPicker;
         public CardRenderer cardRendererPrefab;
+        private CardPickerDisplay _cardPicker;
+        private UnityGame _unityGame;
+
+        private bool _wasCachee;
+
+        private CardRenderer virtualCard;
 
         private void Start()
         {
@@ -20,13 +23,9 @@ namespace Script
             _cardPicker = FindObjectOfType<CardPickerDisplay>();
         }
 
-        private bool _wasCachee = false;
-
-        private CardRenderer virtualCard = null;
-
         protected override void DoAction()
         {
-            var card = ((ShowCardFalseData)InfoStruct).Card;
+            var card = ((ShowCardFalseData) InfoStruct).Card;
             CardRenderer cardRenderer;
             if (!_unityGame.CardRenderers.ContainsKey(card))
             {
@@ -44,13 +43,10 @@ namespace Script
 
             Debug.Log("DisplayPicker");
             _wasCachee = cardRenderer.faceCachee;
-            if (cardRenderer.faceCachee)
-            {
-                cardRenderer.Flip();
-            }
+            if (cardRenderer.faceCachee) cardRenderer.Flip();
 
             _cardPicker.DisplayPicker(
-                new[] { cardRenderer }
+                new[] {cardRenderer}
                     .Select(_cardPicker.WithLocation)
                     .ToList()
                 ,
@@ -61,14 +57,11 @@ namespace Script
 
         private void OnPick(CardRenderer obj)
         {
-            if (_wasCachee)
-            {
-                obj.Flip();
-            }
+            if (_wasCachee) obj.Flip();
 
             if (virtualCard != null)
             {
-                StartCoroutine(CardChooseBetweenCommandProvider.DestroyLater(new List<CardRenderer>() { virtualCard }));
+                StartCoroutine(CardChooseBetweenCommandProvider.DestroyLater(new List<CardRenderer> {virtualCard}));
                 Destroy(virtualCard.gameObject);
                 virtualCard = null;
             }

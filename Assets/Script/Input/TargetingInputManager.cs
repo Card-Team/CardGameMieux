@@ -4,25 +4,18 @@ namespace Script.Input
 {
     public class TargetingInputManager : PointableCardInputManager, PlayerActions.ITargetingActions
     {
+        public float scrollSensitivity = 1;
         private CardPickerDisplay _cardPickerDisplay;
 
-        public float scrollSensitivity = 1;
-        
 
         private void Start()
         {
             _cardPickerDisplay = FindObjectOfType<CardPickerDisplay>();
         }
 
-        public override bool IsPointable(CardRenderer r)
-        {
-            return _cardPickerDisplay.Pickable.Contains(r);
-        }
-
         public void OnPickCard(InputAction.CallbackContext context)
         {
             if (context.performed)
-            {
                 if (HoveredCard != null)
                 {
                     HoveredCard.Hover = false;
@@ -30,10 +23,8 @@ namespace Script.Input
                     HoveredCard = null;
                     _cardPickerDisplay.OnSelected(card);
                 }
-            }
         }
 
-       
 
         public void OnScrollTargets(InputAction.CallbackContext context)
         {
@@ -42,6 +33,11 @@ namespace Script.Input
                 var axis = context.ReadValue<float>();
                 _cardPickerDisplay.Scroll(axis * scrollSensitivity);
             }
+        }
+
+        public override bool IsPointable(CardRenderer r)
+        {
+            return _cardPickerDisplay.Pickable.Contains(r);
         }
     }
 }

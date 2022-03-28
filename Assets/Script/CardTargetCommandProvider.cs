@@ -1,8 +1,6 @@
-using System;
 using System.Linq;
 using Script.Networking;
 using Script.Networking.Commands.Extern;
-using UnityEngine;
 
 namespace Script
 {
@@ -10,7 +8,7 @@ namespace Script
     {
         private CardPickerDisplay _cardPickerDisplay;
         private UnityGame _unityGame;
-        
+
 
         private void Start()
         {
@@ -31,7 +29,7 @@ namespace Script
 
         private void OnPick(CardRenderer cardRenderer)
         {
-            var chooseCardTargetCommand = new ChooseCardTargetCommand { CardId = cardRenderer.Card.Id };
+            var chooseCardTargetCommand = new ChooseCardTargetCommand {CardId = cardRenderer.Card.Id};
             NetworkedGame.DoLocalAction(chooseCardTargetCommand);
         }
     }

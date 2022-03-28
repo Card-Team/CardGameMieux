@@ -1,4 +1,3 @@
-using System;
 using Script.Input;
 using Script.Networking;
 using Script.Networking.Commands.Extern;
@@ -26,13 +25,13 @@ namespace Script
         {
             _inputManager.DisableAll();
             _inputManager.EnableThis(InputManager.InputType.UI);
-            var data = (GameEndedFalseData)this.InfoStruct;
+            var data = (GameEndedFalseData) InfoStruct;
             victoryText.text = data.Winner == UnityGame.LocalGamePlayer
                 ? "Bravo !\n" +
                   "Vous avez gagné la partie !"
                 : "Dommage...\n" +
                   "Vous avez perdu";
-            
+
             victorypanel.SetActive(true);
         }
 

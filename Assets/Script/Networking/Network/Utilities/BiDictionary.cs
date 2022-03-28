@@ -1,4 +1,5 @@
 ﻿#region Licence - LGPLv3
+
 // ***********************************************************************
 // Assembly         : Network
 // Author           : Thomas
@@ -27,24 +28,26 @@
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ***********************************************************************
+
 #endregion Licence - LGPLv3
+
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Network
 {
     /// <summary>
-    /// Same as a .net dictionary. But just working in both directions.
+    ///     Same as a .net dictionary. But just working in both directions.
     /// </summary>
     /// <typeparam name="T">The type of the first dictionary.</typeparam>
     /// <typeparam name="U">The type of the second dictionary.</typeparam>
     internal class BiDictionary<T, U>
     {
-        private ConcurrentDictionary<T, U> dictOne = new ConcurrentDictionary<T, U>();
-        private ConcurrentDictionary<U, T> dictTwo = new ConcurrentDictionary<U, T>();
+        private readonly ConcurrentDictionary<T, U> dictOne = new ConcurrentDictionary<T, U>();
+        private readonly ConcurrentDictionary<U, T> dictTwo = new ConcurrentDictionary<U, T>();
 
         /// <summary>
-        /// Gets or sets the <see cref="T"/> with the specified u.
+        ///     Gets or sets the <see cref="T" /> with the specified u.
         /// </summary>
         /// <param name="u">The u.</param>
         /// <returns>T.</returns>
@@ -52,10 +55,10 @@ namespace Network
         {
             get
             {
-                if(dictTwo.ContainsKey(u))
+                if (dictTwo.ContainsKey(u))
                     return dictTwo[u];
 
-                return default(T);
+                return default;
             }
             set
             {
@@ -70,7 +73,7 @@ namespace Network
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="U"/> with the specified t.
+        ///     Gets or sets the <see cref="U" /> with the specified t.
         /// </summary>
         /// <param name="t">The t.</param>
         /// <returns>U.</returns>
@@ -78,10 +81,10 @@ namespace Network
         {
             get
             {
-                if(dictOne.ContainsKey(t))
+                if (dictOne.ContainsKey(t))
                     return dictOne[t];
 
-                return default(U);
+                return default;
             }
             set
             {
@@ -96,21 +99,33 @@ namespace Network
         }
 
         /// <summary>
-        /// The keys held in the dictionary.
+        ///     The keys held in the dictionary.
         /// </summary>
         internal ICollection<T> Keys => dictOne.Keys;
 
         /// <summary>
-        /// The values held in the dictionary.
+        ///     The values held in the dictionary.
         /// </summary>
         internal ICollection<U> Values => dictOne.Values;
 
-        public bool ContainsKey(T t) => dictOne.ContainsKey(t);
+        public bool ContainsKey(T t)
+        {
+            return dictOne.ContainsKey(t);
+        }
 
-        public bool ContainsKey(U u) => dictTwo.ContainsKey(u);
+        public bool ContainsKey(U u)
+        {
+            return dictTwo.ContainsKey(u);
+        }
 
-        public bool ContainsValue(U u) => dictOne.Values.Contains(u);
+        public bool ContainsValue(U u)
+        {
+            return dictOne.Values.Contains(u);
+        }
 
-        public bool ContainsValue(T t) => dictTwo.Values.Contains(t);
+        public bool ContainsValue(T t)
+        {
+            return dictTwo.Values.Contains(t);
+        }
     }
 }

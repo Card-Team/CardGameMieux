@@ -1,49 +1,29 @@
-﻿using Network.Enums;
-using Network.Packets;
-using System;
-using System.IO;
+﻿using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Network.Enums;
+using Network.Packets;
 
 namespace Network
 {
     /// <summary>
-    /// Builds upon the <see cref="Connection"/> class, implementing TCP and allowing for messages to be conveniently
-    /// sent without a large serialisation header.
+    ///     Builds upon the <see cref="Connection" /> class, implementing TCP and allowing for messages to be conveniently
+    ///     sent without a large serialisation header.
     /// </summary>
     public class TcpConnection : Connection
     {
-        #region Variables
-
-        /// <summary>
-        /// The <see cref="TcpClient"/> for this <see cref="TcpConnection"/> instance.
-        /// </summary>
-        private readonly TcpClient client;
-
-        /// <summary>
-        /// The <see cref="NetworkStream"/> on which to send and receive data.
-        /// </summary>
-        private readonly NetworkStream stream;
-
-        /// <summary>
-        /// The <see cref="Socket"/> for this <see cref="TcpConnection"/> instance.
-        /// </summary>
-        private readonly Socket socket;
-
-        #endregion Variables
-
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TcpConnection"/> class.
+        ///     Initializes a new instance of the <see cref="TcpConnection" /> class.
         /// </summary>
         /// <param name="tcpClient">The TCP client to use.</param>
         /// <param name="skipInitializationProcess">
-        /// Whether to skip the initialisation process for the underlying <see cref="Connection"/>. If <c>true</c>
-        /// <see cref="Connection.Init()"/> will have to be manually called later.
+        ///     Whether to skip the initialisation process for the underlying <see cref="Connection" />. If <c>true</c>
+        ///     <see cref="Connection.Init()" /> will have to be manually called later.
         /// </param>
-        internal TcpConnection(TcpClient tcpClient, bool skipInitializationProcess = false) : base()
+        internal TcpConnection(TcpClient tcpClient, bool skipInitializationProcess = false)
         {
             client = tcpClient;
             socket = tcpClient.Client;
@@ -65,59 +45,90 @@ namespace Network
 
         #endregion Constructors
 
+        #region Variables
+
+        /// <summary>
+        ///     The <see cref="TcpClient" /> for this <see cref="TcpConnection" /> instance.
+        /// </summary>
+        private readonly TcpClient client;
+
+        /// <summary>
+        ///     The <see cref="NetworkStream" /> on which to send and receive data.
+        /// </summary>
+        private readonly NetworkStream stream;
+
+        /// <summary>
+        ///     The <see cref="Socket" /> for this <see cref="TcpConnection" /> instance.
+        /// </summary>
+        private readonly Socket socket;
+
+        #endregion Variables
+
         #region Properties
 
         /// <inheritdoc />
-        public override IPEndPoint IPLocalEndPoint => (IPEndPoint)client?.Client?.LocalEndPoint;
+        public override IPEndPoint IPLocalEndPoint => (IPEndPoint) client?.Client?.LocalEndPoint;
 
         /// <summary>
-        /// The local <see cref="EndPoint"/> for the <see cref="socket"/>.
+        ///     The local <see cref="EndPoint" /> for the <see cref="socket" />.
         /// </summary>
-        public EndPoint LocalEndPoint { get { return socket.LocalEndPoint; } }
+        public EndPoint LocalEndPoint => socket.LocalEndPoint;
 
         /// <inheritdoc />
         public override IPEndPoint IPRemoteEndPoint => (IPEndPoint) client?.Client?.RemoteEndPoint;
 
         /// <summary>
-        /// The remote <see cref="EndPoint"/> for the <see cref="socket"/>.
+        ///     The remote <see cref="EndPoint" /> for the <see cref="socket" />.
         /// </summary>
-        public EndPoint RemoteEndPoint { get { return socket.RemoteEndPoint; } }
+        public EndPoint RemoteEndPoint => socket.RemoteEndPoint;
 
         /// <inheritdoc />
-        public override bool DualMode { get { return socket.DualMode; } set { socket.DualMode = value; } }
+        public override bool DualMode
+        {
+            get => socket.DualMode;
+            set => socket.DualMode = value;
+        }
 
         /// <inheritdoc />
-        public override bool Fragment { get { return !socket.DontFragment; } set { socket.DontFragment = !value; } }
+        public override bool Fragment
+        {
+            get => !socket.DontFragment;
+            set => socket.DontFragment = !value;
+        }
 
         /// <inheritdoc />
         public override int HopLimit
         {
-            get { return (int)socket.GetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.HopLimit); }
-            set { socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.HopLimit, value); }
+            get => (int) socket.GetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.HopLimit);
+            set => socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.HopLimit, value);
         }
 
         /// <inheritdoc />
         public override bool IsRoutingEnabled
         {
-            get { return !(bool)socket.GetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.DontRoute); }
-            set { socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.DontRoute, !value); }
+            get => !(bool) socket.GetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.DontRoute);
+            set => socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.DontRoute, !value);
         }
 
         /// <inheritdoc />
         public override bool NoDelay
         {
-            get { return client.Client.NoDelay; }
-            set { client.Client.NoDelay = value; }
+            get => client.Client.NoDelay;
+            set => client.Client.NoDelay = value;
         }
 
         /// <inheritdoc />
-        public override short TTL { get { return socket.Ttl; } set { socket.Ttl = value; } }
+        public override short TTL
+        {
+            get => socket.Ttl;
+            set => socket.Ttl = value;
+        }
 
         /// <inheritdoc />
         public override bool UseLoopback
         {
-            get { return (bool)socket.GetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.UseLoopback); }
-            set { socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.UseLoopback, value); }
+            get => (bool) socket.GetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.UseLoopback);
+            set => socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.UseLoopback, value);
         }
 
         #endregion Properties
@@ -125,12 +136,12 @@ namespace Network
         #region Methods
 
         /// <summary>
-        /// Establishes a <see cref="UdpConnection"/> with the remote endpoint.
+        ///     Establishes a <see cref="UdpConnection" /> with the remote endpoint.
         /// </summary>
         /// <param name="connectionEstablished">The action to perform upon connection.</param>
         internal void EstablishUdpConnection(Action<IPEndPoint, IPEndPoint> connectionEstablished)
         {
-            IPEndPoint localEndpoint = new IPEndPoint(IPAddress.IPv6Any, GetFreePort());
+            var localEndpoint = new IPEndPoint(IPAddress.IPv6Any, GetFreePort());
 
             RegisterPacketHandler<EstablishUdpResponse>((packet, connection) =>
             {
@@ -146,16 +157,16 @@ namespace Network
         protected override byte[] ReadBytes(int amount)
         {
             if (amount == 0) return new byte[0];
-            byte[] requestedBytes = new byte[amount];
-            int receivedIndex = 0;
+            var requestedBytes = new byte[amount];
+            var receivedIndex = 0;
 
             while (receivedIndex < amount)
             {
                 while (client.Available == 0)
                     Thread.Sleep(IntPerformance);
 
-                int clientAvailable = client.Available;
-                int readAmount = (amount - receivedIndex >= clientAvailable) ? clientAvailable : amount - receivedIndex;
+                var clientAvailable = client.Available;
+                var readAmount = amount - receivedIndex >= clientAvailable ? clientAvailable : amount - receivedIndex;
                 stream.Read(requestedBytes, receivedIndex, readAmount);
                 receivedIndex += readAmount;
             }
@@ -172,9 +183,9 @@ namespace Network
 
         /// <inheritdoc />
         /// <remarks>
-        /// Since TCP ensures the ordering of packets, we will always receive the <see cref="AddPacketTypeRequest"/> before
-        /// a <see cref="Packet"/> of the unknown type. Thus, it is theoretically impossible that this method is called for
-        /// a <see cref="TcpConnection"/> instance. Still gotta handle it though :),
+        ///     Since TCP ensures the ordering of packets, we will always receive the <see cref="AddPacketTypeRequest" /> before
+        ///     a <see cref="Packet" /> of the unknown type. Thus, it is theoretically impossible that this method is called for
+        ///     a <see cref="TcpConnection" /> instance. Still gotta handle it though :),
         /// </remarks>
         protected override void HandleUnknownPacket()
         {
@@ -183,7 +194,10 @@ namespace Network
         }
 
         /// <inheritdoc />
-        protected override void CloseHandler(CloseReason closeReason) => Close(closeReason, true);
+        protected override void CloseHandler(CloseReason closeReason)
+        {
+            Close(closeReason, true);
+        }
 
         /// <inheritdoc />
         protected override void CloseSocket()

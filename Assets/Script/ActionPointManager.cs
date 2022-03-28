@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using CardGameEngine.EventSystem;
 using CardGameEngine.EventSystem.Events;
 using CardGameEngine.GameSystems;
 using Script.Networking;
@@ -12,33 +8,32 @@ public class ActionPointManager : MonoBehaviour, IEventSubscriber
 {
     public bool forLocal;
 
-    private Player _player;
-
     private int _curPoints;
     private int _maxPoints;
+
+    private Player _player;
     private TextMeshPro _texte;
 
     private void Awake()
     {
         _texte = GetComponent<TextMeshPro>();
     }
-    
-
-    private void RefreshText()
-    {
-        _texte.text = $"PA : {_curPoints}/{_maxPoints}";
-    }
 
     public void Subscribe(SyncEventWrapper eventManager)
     {
-        
         eventManager.SubscribeToEvent<ActionPointsEditEvent>(OnPAChange, false, true);
         eventManager.SubscribeToEvent<MaxActionPointsEditEvent>(OnMaxPaChange, false, true);
-        
+
         _player = forLocal ? UnityGame.LocalGamePlayer : UnityGame.LocalGamePlayer.OtherPlayer;
         _curPoints = _player.ActionPoints.Value;
         _maxPoints = _player.MaxActionPoints.Value;
         RefreshText();
+    }
+
+
+    private void RefreshText()
+    {
+        _texte.text = $"PA : {_curPoints}/{_maxPoints}";
     }
 
     public void OnPAChange(ActionPointsEditEvent editEvent)

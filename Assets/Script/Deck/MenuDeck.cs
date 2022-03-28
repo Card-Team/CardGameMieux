@@ -1,10 +1,9 @@
-using System;
 using System.Collections;
 using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Button = UnityEngine.UI.Button;
+using UnityEngine.UI;
 
 public class MenuDeck : MonoBehaviour
 {
@@ -18,16 +17,16 @@ public class MenuDeck : MonoBehaviour
     public GameObject PanelSurppressionDeck;
     public TMP_Text TextCard;
 
-    void Start()
+    private void Start()
     {
         //lire tout les fichier deck 
-        DirectoryInfo di = new DirectoryInfo(Application.persistentDataPath);
-        FileInfo[] files = di.GetFiles("*.txt");
+        var di = new DirectoryInfo(Application.persistentDataPath);
+        var files = di.GetFiles("*.txt");
         //si aucun fichier
         if (files.Length == 0)
         {
-            CreerDeck.transform.localPosition = new Vector3(0f,0f,0f);
-            CreerDeck.GetComponentInChildren<TMP_Text>().fontSize=35;
+            CreerDeck.transform.localPosition = new Vector3(0f, 0f, 0f);
+            CreerDeck.GetComponentInChildren<TMP_Text>().fontSize = 35;
             List.gameObject.SetActive(false);
             ModifierDeck.gameObject.SetActive(false);
         }
@@ -35,15 +34,15 @@ public class MenuDeck : MonoBehaviour
         {
             foreach (var file in files)
             {
-                Button button = Instantiate(buttonTemplate, ParentDeck, false); //creer et un copie un bouton
-                String file2 = file.Name.Replace(".txt", "");
+                var button = Instantiate(buttonTemplate, ParentDeck, false); //creer et un copie un bouton
+                var file2 = file.Name.Replace(".txt", "");
                 button.name = file2; //donne aux champs texte le nom du bouton
 
                 var removeDeck = button.GetComponentInChildren<RemoveDeck>();
                 removeDeck.InterfaceSuppresionDeck = PanelSurppressionDeck;
                 removeDeck.Text = TextCard;
                 removeDeck.CardAppuye = file2;
-                
+
                 button.gameObject.SetActive(true);
                 button.GetComponentInChildren<TextMeshProUGUI>().SetText(file2);
             }
@@ -67,5 +66,4 @@ public class MenuDeck : MonoBehaviour
         yield return new WaitForEndOfFrame();
         CreationDeck.gameObject.SetActive(true);
     }
-
 }

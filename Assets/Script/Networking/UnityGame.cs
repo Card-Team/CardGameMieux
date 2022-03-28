@@ -1,42 +1,44 @@
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using CardGameEngine;
 using CardGameEngine.Cards;
 using CardGameEngine.Cards.CardPiles;
-using CardGameEngine.EventSystem.Events.CardEvents;
 using CardGameEngine.GameSystems;
-using Sentry;
+using UnityEngine;
 #if UNITY_EDITOR
 using ParrelSync;
 #endif
-using UnityEngine;
 
 namespace Script.Networking
 {
     public class UnityGame : MonoBehaviour
     {
+        public static readonly Vector3 CardScale = new Vector3(0.23f, 0.23f, 1);
         [SerializeField] private CardRenderer cardRenderer;
-        public Dictionary<Card, CardRenderer> CardRenderers;
-        public Dictionary<CardPile, PileRenderer> PileRenderers;
 
         public GameObject j1;
         public GameObject j2;
+        public NetworkedGame Network;
+        public GameObject interFaceObject;
+        public GameObject connectingObject;
+        public GameObject hostingObject;
+        private NetworkConfiguration _nc;
+        private List<string> _ownDeck;
+
+        private readonly Queue<Func<IEnumerator>> _player1AnimQueue = new Queue<Func<IEnumerator>>();
+        private readonly Queue<Func<IEnumerator>> _player2AnimQueue = new Queue<Func<IEnumerator>>();
+
+        private SyncEventsManager _syncEventsManager;
+        public Dictionary<Card, CardRenderer> CardRenderers;
+        public Dictionary<CardPile, PileRenderer> PileRenderers;
 
         public Game Game => Network.Game;
-        
+
         public static Owner LocalPlayer { get; private set; }
         public static Player LocalGamePlayer { get; private set; }
-
-        private Queue<Func<IEnumerator>> _player1AnimQueue = new Queue<Func<IEnumerator>>();
-        private Queue<Func<IEnumerator>> _player2AnimQueue = new Queue<Func<IEnumerator>>();
-        private NetworkConfiguration _nc;
-        public NetworkedGame Network;
-
 
 
         private void Awake()
@@ -45,18 +47,18 @@ namespace Script.Networking
             var elem = FindObjectOfType<GameSettingsContainer>();
             if (elem != null)
             {
-                _nc = new NetworkConfiguration()
+                _nc = new NetworkConfiguration
                 {
                     NetworkMode = elem.NetworkMode,
                     IPAddress = elem.IPAddress,
-                    Port = elem.port,
+                    Port = elem.port
                 };
                 _ownDeck = new List<string>(elem.playerDeck);
             }
             else
             {
-                _nc = new NetworkConfiguration()
-                {   
+                _nc = new NetworkConfiguration
+                {
                     NetworkMode =
 #if UNITY_EDITOR
                         ClonesManager.IsClone() ? NetworkMode.Client : NetworkMode.Server,
@@ -66,7 +68,11 @@ namespace Script.Networking
                     IPAddress = IPAddress.Loopback,
                     Port = 1246
                 };
-                _ownDeck = new List<string> {"pistolet","pistolet","sabotage","sabotage","carteblanche","carteblanche","echange","echange","augmentation","augmentation","pioche_Critique","pioche_Critique"};
+                _ownDeck = new List<string>
+                {
+                    "pistolet", "pistolet", "sabotage", "sabotage", "carteblanche", "carteblanche", "echange",
+                    "echange", "augmentation", "augmentation", "pioche_Critique", "pioche_Critique"
+                };
             }
 
             if (_nc.NetworkMode == NetworkMode.Client)
@@ -84,7 +90,7 @@ namespace Script.Networking
         }
 
         // Start is called before the first frame update
-        void OnEnable()
+        private void OnEnable()
         {
             Network = FindObjectOfType<NetworkedGame>();
 
@@ -108,34 +114,20 @@ namespace Script.Networking
                 CardRenderers.Add(card, cardObjet);
             }
 
-            foreach (var pileRenderer in FindObjectsOfType<PileRenderer>())
-            {
-                pileRenderer.GrabPile(game);
-            }
+            foreach (var pileRenderer in FindObjectsOfType<PileRenderer>()) pileRenderer.GrabPile(game);
 
             var evtMan = FindObjectOfType<SyncEventsManager>();
             evtMan.EventManager = game.EventManager;
 
             foreach (var eventSubscriber in FindObjectsOfType<MonoBehaviour>())
-            {
                 if (eventSubscriber is IEventSubscriber evt)
-                {
                     evt.Subscribe(evtMan.SyncEventWrapper);
-                }
-            }
 
             interFaceObject.SetActive(true);
             connectingObject.SetActive(false);
             hostingObject.SetActive(false);
             // game.EventManager.SubscribeToEvent<CardPlayEvent>(e => Debug.Log($"Card played : {e.Card.Name}"));
         }
-
-        private SyncEventsManager _syncEventsManager;
-        private List<string> _ownDeck;
-        public GameObject interFaceObject;
-        public GameObject connectingObject;
-        public GameObject hostingObject;
-        public static readonly Vector3 CardScale = new Vector3(0.23f, 0.23f, 1);
 
 
         public T RunOnGameThread<T>(Func<Game, T> func)
@@ -154,10 +146,7 @@ namespace Script.Networking
             };
 
             queue.Enqueue(action);
-            if (queue.Count == 1)
-            {
-                StartCoroutine(EmptyQueue(queue));
-            }
+            if (queue.Count == 1) StartCoroutine(EmptyQueue(queue));
         }
 
         private IEnumerator EmptyQueue(Queue<Func<IEnumerator>> queue)
