@@ -151,6 +151,9 @@ namespace Script
             niveau.gameObject.SetActive(!faceCachee);
             cout.transform.parent.gameObject.SetActive(!faceCachee);
             illustration.gameObject.SetActive(!faceCachee);
+            ameliorationImage.gameObject.SetActive(!faceCachee);
+            jouableCalque.gameObject.SetActive(!faceCachee);
+            chainage.gameObject.SetActive(!faceCachee);
             fond.sprite = faceCachee ? fondDos : fondNormal;
             RefreshPrecondition();
         }
