@@ -25,6 +25,7 @@ function precondition()
 end
 
 function do_effect()
+	local a = EventStack.truc
 	print("EventStack count : " .. EventStack.Count)
 	for i = 3, EventStack.Count - 1 do
 		print("Doing " .. EventStack.Count - i)

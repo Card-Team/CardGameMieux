@@ -20,6 +20,7 @@ using Script.Debugging;
 using Script.Input;
 using Script.Networking.Commands;
 using Script.Networking.Commands.Extern;
+using Sentry;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -57,6 +58,7 @@ namespace Script.Networking
 
         private void Awake()
         {
+            _unityGame = FindObjectOfType<UnityGame>();
             errorUtils = FindObjectOfType<ErrorUtils>();
             _inputManager = FindObjectOfType<InputManager>();
             FindObjectOfType<DebugConsole>().Init();
@@ -183,6 +185,7 @@ namespace Script.Networking
             {
                 Debug.LogError("Exception dans EventRegistration/GameInit");
                 Debug.LogException(e);
+                SentrySdk.AddBreadcrumb($"Appel de EventRegistration/GameInit");
                 if (e is LuaException le)
                 {
                     errorUtils.toPrint.Enqueue(le);
@@ -237,9 +240,17 @@ namespace Script.Networking
                     action();
                     task.SetResult(true);
                 }
+                catch (ScriptRuntimeException e)
+                {
+                    Debug.LogError("Erreure lors d'une action sur le thread de jeu");
+                    errorUtils.toPrint.Enqueue(e);
+                    Debug.LogError(e);
+                    task.SetException(e);
+                }
                 catch (Exception e)
                 {
                     Debug.LogError("Erreure lors d'une action sur le thread de jeu");
+                    SentrySdk.CaptureException(e);
                     Debug.LogError(e);
                     task.SetException(e);
                 }
@@ -267,7 +278,18 @@ namespace Script.Networking
                 return;
             }
 
-
+            SentrySdk.StartSession();
+            SentrySdk.ConfigureScope(s =>
+            {
+                s.Contexts["Game"] = new GameScope()
+                {
+                    J1Deck = j1Deck,
+                    J2Deck = j2Deck,
+                    CurrentSide = _networkManager.IsClient ? NetworkMode.Client.ToString() : NetworkMode.Server.ToString(),
+                    CurrentPlayer = (int)(UnityGame.LocalPlayer) + 1,
+                    RandomSeed = _randomSeed,
+                };
+            });
             try
             {
                 Game = new Game(Application.streamingAssetsPath + "/EffectsScripts/",
@@ -278,19 +300,30 @@ namespace Script.Networking
                 Debug.LogError($"Invalid effect exception : {exception.Message}");
                 if (exception.InnerException != null)
                     Debug.LogException(exception.InnerException);
-                if (Application.isEditor)
-                    Debug.Break();
-                else
-                {
-                    Application.Quit();
-                }
+                // if (Application.isEditor)
+                //     Debug.Break();
+                // else
+                // {
+                //     Application.Quit();
+                // }
+                SentrySdk.CaptureException(exception);
             }
             catch (Exception e)
             {
                 Debug.LogError(e);
                 ErrorMessage("Une erreure est survenue lors de la création de la partie", "");
                 this.NetworkGameState = NetworkGameState.NOT_CONNECTED;
+                SentrySdk.CaptureException(e);
             }
+        }
+
+        private class GameScope
+        {
+            public List<string> J1Deck { get; set; }
+            public List<string> J2Deck { get; set; }
+            public string CurrentSide { get; set; }
+            public int CurrentPlayer { get; set; }
+            public int RandomSeed { get; set; }
         }
 
         private bool DeckIsInvalid(IReadOnlyCollection<string> deckToCheck, string playerName)
@@ -396,6 +429,7 @@ namespace Script.Networking
             }
 
             AddCommandToQueue(packet);
+            SentrySdk.AddBreadcrumb($"Action Distante : {packet.GetType()}","actions",packet.GetType().Name,packet.ToDict(_unityGame));
         }
 
         private void AddCommandToQueue(GameCommand command)
@@ -434,11 +468,12 @@ namespace Script.Networking
             if ((AcceptFrom == NetworkMode.Client && _networkManager.IsServer) ||
                 AcceptFrom == NetworkMode.Server && _networkManager.IsClient)
             {
-                Debug.LogError("On a pas l'air d'etre synchronisé, on attendait un paquet distant");
+                Debug.LogWarning("On a pas l'air d'etre synchronisé, on attendait un paquet distant");
                 return;
             }
             else
             {
+                SentrySdk.AddBreadcrumb($"Action Locale : {command.GetType()}","actions",command.GetType().Name,command.ToDict(_unityGame));
                 AddCommandToQueue(command);
                 _networkManager.Send(command);
             }
@@ -447,6 +482,7 @@ namespace Script.Networking
         private volatile bool _interrupted;
         public ErrorUtils errorUtils;
         private Dictionary<Type, ExternalCommand> _tooSoonExternalCommands = new Dictionary<Type, ExternalCommand>();
+         private UnityGame _unityGame;
 
         public T WaitForTaskWithPolling<T>(TaskCompletionSource<T> completionSource, bool onGameThread)
         {

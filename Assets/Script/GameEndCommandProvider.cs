@@ -2,6 +2,7 @@ using System;
 using Script.Input;
 using Script.Networking;
 using Script.Networking.Commands.Extern;
+using Sentry;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -37,6 +38,7 @@ namespace Script
 
         public void OnQuit()
         {
+            SentrySdk.EndSession();
             SceneManager.LoadScene("Scenes/Menu Principal");
         }
     }

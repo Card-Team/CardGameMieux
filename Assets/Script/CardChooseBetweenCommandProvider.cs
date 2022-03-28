@@ -22,7 +22,6 @@ namespace Script
 
         protected override void DoAction()
         {
-            Debug.Log("Choose between");
             var data = (ChooseBetweenCardData)this.InfoStruct;
 
             foreach (var card in data.CardList)

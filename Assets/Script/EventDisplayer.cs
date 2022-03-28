@@ -7,9 +7,11 @@ using CardGameEngine.EventSystem.Events.CardEvents.PropertyChange;
 using CardGameEngine.EventSystem.Events.GameStateEvents;
 using CardGameEngine.GameSystems;
 using Script.Networking;
+using Sentry;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Event = UnityEngine.Event;
 
 namespace Script
 {
@@ -70,19 +72,19 @@ namespace Script
         
         private void OnChainStart(ChainingEvent evt)
         {
-            WriteEvent(
+            WriteEvent<ChainingEvent>(
                 $"{evt.Chainer} chaine ! (niveau de chaine : {_networkedGame.Game.ChainCounter})");
         }
 
         private void OnChainEnd(ChainingEvent evt)
         {
-            WriteEvent(
+            WriteEvent<ChainingEvent>(
                 $"{evt.Chainer} termine sa chaine ! (niveau de chaine : {_networkedGame.Game.ChainCounter})");
         }
 
         private void OnMaxActionPointsEdit(MaxActionPointsEditEvent evt)
         {
-            WriteEvent(
+            WriteEvent<MaxActionPointsEditEvent>(
                 $"la limite de <color=\"green\">points d'action</color> de {GetPlayerName(evt.Player)} est maintenant de <b>{evt.NewMaxPointCount}</b>");
         }
 
@@ -93,23 +95,23 @@ namespace Script
 
         private void OnActionPointsEdit(ActionPointsEditEvent evt)
         {
-            WriteEvent(
+            WriteEvent<ActionPointsEditEvent>(
                 $"{GetPlayerName(evt.Player)} a désormais <b>{evt.NewPointCount}</b> <color=\"green\">points d'action (sur {evt.Player.MaxActionPoints.Value})</color>");
         }
 
         private void OnCardMarkedUpgrade(CardMarkUpgradeEvent evt)
         {
-            WriteEvent($"<i>{evt.Card.Name}</i> est prête à se faire améliorer");
+            WriteEvent<CardMarkUpgradeEvent>($"<i>{evt.Card.Name}</i> est prête à se faire améliorer");
         }
 
         private void OnCardRemovedMarkedUpgrade(CardUnMarkUpgradeEvent evt)
         {
-            WriteEvent($"<i>{evt.Card.Name}</i> <b>ne sera pas améliorée</b>");
+            WriteEvent<CardUnMarkUpgradeEvent>($"<i>{evt.Card.Name}</i> <b>ne sera pas améliorée</b>");
         }
 
         private void OnDeckLoop(DeckLoopEvent evt)
         {
-            WriteEvent(
+            WriteEvent<DeckLoopEvent>(
                 $"Le deck de <b>{GetPlayerName(evt.Player)}</b> a bouclé et contient maintenant <b>{evt.Player.Deck.Count}</b> cartes");
         }
 
@@ -125,7 +127,7 @@ namespace Script
             {
                 // Main → Défausse = Défausser/Améliorer
                 if (evt.SourcePile == player.Hand && evt.DestPile == player.Discard)
-                    WriteEvent(
+                    WriteEvent<CardMovePileEvent>(
                         $"La carte <i>{evt.Card.Name}</i> de <b>{GetPlayerName(player)}</b> se dirige vers <color=\"red\">la défausse</color>");
 
                 // Deck → Main = Pioche
@@ -133,24 +135,24 @@ namespace Script
 
                     if (Equals(player, UnityGame.LocalGamePlayer))
                         // Tu pioches
-                        WriteEvent($"Vous venez de piocher <i>{evt.Card.Name}</i>");
+                        WriteEvent<CardMovePileEvent>($"Vous venez de piocher <i>{evt.Card.Name}</i>");
                     else
                         // L'adversaire pioche
-                        WriteEvent($"<b>{GetPlayerName(player)}</b> vient de piocher une carte");
+                        WriteEvent<CardMovePileEvent>($"<b>{GetPlayerName(player)}</b> vient de piocher une carte");
             }
         }
 
         private void OnCardPlay(CardPlayEvent evt)
         {
             var virtualString = evt.Card.IsVirtual ? " <color=\"blue\">Virtuelle</color>" : "";
-            WriteEvent(
+            WriteEvent<CardPlayEvent>(
                 $"<i>{evt.Card.Name}</i>{virtualString} vient d'être jouée par <b>{GetPlayerName(evt.WhoPlayed)}</b>");
         }
 
         private void OnCardEffectPlay(CardEffectPlayEvent evt)
         {
             var virtualString = evt.Card.IsVirtual ? " <color=\"blue\">Virtuelle</color>" : "";
-            WriteEvent(
+            WriteEvent<CardEffectPlayEvent>(
                 $"L'effet de <i>{evt.Card.Name}</i>{virtualString} vient d'être activé par <b>{GetPlayerName(evt.WhoPlayed)}</b>");
         }
 
@@ -158,15 +160,16 @@ namespace Script
         {
             var virtualString = evt.Card.IsVirtual ? " <color=\"blue\">Virtuelle</color>" : "";
             if (evt.Cancelled)
-                WriteEvent($"L'effet de <i>{evt.Card.Name}</i>{virtualString} <color=\"red\"> a été annulé</color>");
+                WriteEvent<CardEffectPlayEvent>($"L'effet de <i>{evt.Card.Name}</i>{virtualString} <color=\"red\"> a été annulé</color>");
 
-            WriteEvent($"L'effet de <i>{evt.Card.Name}</i>{virtualString} a terminé son execution");
+            WriteEvent<CardEffectPlayEvent>($"L'effet de <i>{evt.Card.Name}</i>{virtualString} a terminé son execution");
         }
 
-        private void WriteEvent(string evt)
+        private void WriteEvent<T>(string evt) where T: CardGameEngine.EventSystem.Events.Event
         {
             Events.Add(evt);
             eventPanel.text += evt + "\n";
+            SentrySdk.AddBreadcrumb(evt,"evenements",typeof(T).Name);
         }
 
         public string DumpEvents()
@@ -181,20 +184,20 @@ namespace Script
 
         private void OnPostCardPlay(CardPlayEvent evt)
         {
-            WriteEvent($"La carte <i>{evt.Card.Name}</i> a fini d'être jouée");
+            WriteEvent<CardPlayEvent>($"La carte <i>{evt.Card.Name}</i> a fini d'être jouée");
         }
 
         private void OnCardLevelChange(CardLevelChangeEvent evt)
         {
             // Niveau monte
             if (evt.NewValue > evt.OldValue)
-                WriteEvent(evt.Card.IsMaxLevel
+                WriteEvent<CardLevelChangeEvent>(evt.Card.IsMaxLevel
                     ? $"<i>{evt.Card.Name}</i> est maintenant au <color=\"blue\">niveau max ({evt.Card.CurrentLevel})</color>"
                     : $"<i>{evt.Card.Name}</i> est maintenant au <color=\"blue\">niveau {evt.Card.CurrentLevel}/{evt.Card.MaxLevel}</color>");
 
             // Niveau baisse
             else
-                WriteEvent($"<i>{evt.Card.Name}</i> est redescendu au <color=\"blue\">niveau {evt.NewValue}</color>");
+                WriteEvent<CardLevelChangeEvent>($"<i>{evt.Card.Name}</i> est redescendu au <color=\"blue\">niveau {evt.NewValue}</color>");
         }
     }
 }

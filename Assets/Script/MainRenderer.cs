@@ -82,7 +82,7 @@ namespace Script
 
         public void UpdatePlayable()
         {
-            Debug.Log("Updated hand");
+            // Debug.Log("Updated hand");
             foreach (var cr in cards)
             {
                 cr.RefreshPrecondition();

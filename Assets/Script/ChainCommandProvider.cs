@@ -60,13 +60,13 @@ namespace Script
         {
             Debug.Log("On peut pas chainer");
             chainWaitText.gameObject.SetActive(false);
-            NetworkedGame.DoLocalAction(new ChainTurnCommand() { CardID = -1 });
+            NetworkedGame.DoLocalAction(new ChainTurnCommand() { CardId = -1 });
         }
 
         private void OnPick(CardRenderer obj)
         {
             chainWaitText.gameObject.SetActive(false);
-            NetworkedGame.DoLocalAction(new ChainTurnCommand() { CardID = obj.Card.Id });
+            NetworkedGame.DoLocalAction(new ChainTurnCommand() { CardId = obj.Card.Id });
         }
 
         public void Subscribe(SyncEventWrapper eventManager)

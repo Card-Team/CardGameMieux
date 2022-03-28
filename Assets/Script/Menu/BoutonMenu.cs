@@ -10,7 +10,11 @@ using UnityEngine.UI;
 
 public class BoutonMenu : MonoBehaviour
 {
-    
+    private void Start()
+    {
+        
+    }
+
     public void OuvrirCanvas(Canvas nouvelfenetre)
     {
         var actuel = GameObject.FindObjectOfType<Canvas>(); //recupere la fenetre active

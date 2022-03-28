@@ -54,6 +54,10 @@ public class CardPickerDisplay : MonoBehaviour
         _onCancelCallback = onCancel;
         cancelButton.SetActive(_onCancelCallback != null);
         _inputManager.DisableAll();
+        if (cardRenderers.Count == 0)
+        {
+            throw new InvalidOperationException("DisplayPicker appelé avec une liste vide !");
+        }
 
         _targetText.text = text;
         
@@ -62,8 +66,7 @@ public class CardPickerDisplay : MonoBehaviour
         float margin = 0.4f;
         float toalWidth = (cardWidth + margin) * cardRenderers.Count;
         float inverseScale = 1 / targetPicker.transform.localScale.x;
-        var positionZ = targetPicker.transform.position.z + 2;  
-        Debug.Log("counting pickable");
+        var positionZ = targetPicker.transform.position.z + 2;
         for (var index = 0; index < cardRenderers.Count; index++)
         {
             var (cardRenderer, location) = cardRenderers[index];
@@ -80,16 +83,13 @@ public class CardPickerDisplay : MonoBehaviour
             Pickable.Add(cardRenderer);
             TextMeshPro locPref = Instantiate(locationPrefab, cardContainer.transform);
             locPref.transform.parent = cardRenderer.transform.GetChild(0);
-            Debug.Log($"CardHeight : {cardRenderer.Height}");
             locPref.transform.localPosition =
                 new Vector3(0, -(cardRenderer.Height + 1.3f) );
             locPref.text = location;
             texts.Add(locPref);
-            Debug.Log("pickable found");
         }
 
         targetPicker.SetActive(true);
-        Debug.Log("picker active");
     }
 
     public void OnSelected(CardRenderer cardRenderer)
@@ -107,7 +107,6 @@ public class CardPickerDisplay : MonoBehaviour
         {
             card.transform.parent = _parents[card];
             card.HoverHeight = true; // si autre part que la main ,pas selectionnable donc on s'en fiche
-            Debug.Log($"Setting hoverHeight to true for {card}");
             StartCoroutine(
                 PileRenderer.MoveCardInTime(card, pos, 0.2f, c =>
                 {

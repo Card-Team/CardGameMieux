@@ -11,6 +11,7 @@ using CardGameEngine.EventSystem.Events.CardEvents.PropertyChange;
 using CardGameEngine.GameSystems;
 using MoonSharp.Interpreter;
 using Script.Networking;
+using Sentry;
 using TMPro;
 using UnityEngine;
 using Event = CardGameEngine.EventSystem.Events.Event;
@@ -179,6 +180,7 @@ namespace Script
                         catch (ScriptRuntimeException e)
                         {
                             Debug.LogError($"Erreur lors du CanBePlayed de {Card}");
+                            SentrySdk.AddBreadcrumb($"Appel de CanBePlayed pour {Card}/{Card.Id}");
                             _game.Network.errorUtils.toPrint.Enqueue(e);
                             return false;
                         }

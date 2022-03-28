@@ -29,12 +29,12 @@ namespace Script.Networking
         public Card ExternCardAskForTarget(Player effectOwner, string targetName, List<Card> cardList)
         {
             Debug.Log($"AskForTarget for player {effectOwner.Id}");
-            Debug.Log("Network Ask Target");
+            // Debug.Log("Network Ask Target");
             var oldAcceptFrom = _networkedGame.AcceptFrom;
             _networkedGame.AcceptFrom = UnityGame.GetSide(effectOwner);
             if (UnityGame.IsLocalPlayer(effectOwner))
             {
-                Debug.Log("Want local");
+                // Debug.Log("Want local");
                 _networkedGame.WantLocal<ChooseCardTargetCommand>(new ChooseCardTargetData()
                     { TargetName = targetName, CardList = cardList });
             }
@@ -129,26 +129,26 @@ namespace Script.Networking
             // si la carte a un indice négatif on a rien fait
 
             //inversion
-            Debug.Log($"On accepte {_networkedGame.AcceptFrom}");
+            // Debug.Log($"On accepte {_networkedGame.AcceptFrom}");
             
             
             var oldAcceptFrom = _networkedGame.AcceptFrom;
             _networkedGame.AcceptFrom = UnityGame.GetSide(player);
-            Debug.Log($"On change vers {_networkedGame.AcceptFrom}");
+            // Debug.Log($"On change vers {_networkedGame.AcceptFrom}");
 
 
             _networkedGame.WantLocal<ChainTurnCommand>(new ChainInfo { isLocalChaining = UnityGame.IsLocalPlayer(player) });
 
             var command = _networkedGame.WaitForExternalCommand<ChainTurnCommand>();
 
-            if (command.CardID < 0)
+            if (command.CardId < 0)
             {
                 //inversion
                 _networkedGame.AcceptFrom = oldAcceptFrom;
                 return false;
             }
 
-            Card played = _networkedGame.ResolveCard(command.CardID);
+            Card played = _networkedGame.ResolveCard(command.CardId);
 
             // la il faut déclencher l'effet de la carte
 

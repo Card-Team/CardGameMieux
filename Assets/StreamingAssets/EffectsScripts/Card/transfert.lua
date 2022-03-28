@@ -1,7 +1,7 @@
 ﻿---@type number
 max_level = 6
 ---@type number
-image_id = 628
+image_id = 7
 
 ---@type string
 name = "Transfert"

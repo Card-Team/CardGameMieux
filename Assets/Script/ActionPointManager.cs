@@ -20,7 +20,6 @@ public class ActionPointManager : MonoBehaviour, IEventSubscriber
 
     private void Awake()
     {
-        Debug.Log("oui");
         _texte = GetComponent<TextMeshPro>();
     }
     

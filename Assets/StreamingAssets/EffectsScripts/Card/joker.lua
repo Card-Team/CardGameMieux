@@ -17,17 +17,26 @@ description = base_description
 local function card_filter()
     local listeSansVictoire = {}
     for card in --[[---@type fun:Card]]EffectOwner.Hand do
-        if card.EffectId ~= "_victoire" and card ~= This and card.CanBePlayed(EffectOwner) then
+        if card.EffectId ~= "_victoire"
+                and card.EffectId ~= "joker" -- sinon boucle
+                and card.EffectId ~= "amelioration_temporaire" -- sinon boucle
+                and card ~= This and card.CanBePlayed(EffectOwner) then
             listeSansVictoire[#listeSansVictoire + 1] = card
         end
     end
     for card in --[[---@type fun:Card]]EffectOwner.Deck do
-        if card.EffectId ~= "_victoire" and card ~= This and card.CanBePlayed(EffectOwner) then
+        if card.EffectId ~= "_victoire"
+                and card.EffectId ~= "joker" -- sinon boucle
+                and card.EffectId ~= "amelioration_temporaire" -- sinon boucle
+                and card ~= This and card.CanBePlayed(EffectOwner) then
             listeSansVictoire[#listeSansVictoire + 1] = card
         end
     end
     for card in --[[---@type fun:Card]]EffectOwner.Discard do
-        if card.EffectId ~= "_victoire" and card ~= This and card.CanBePlayed(EffectOwner) then
+        if card.EffectId ~= "_victoire"
+                and card.EffectId ~= "joker" -- sinon boucle
+                and card.EffectId ~= "amelioration_temporaire" -- sinon boucle
+                and card ~= This and card.CanBePlayed(EffectOwner) then
             listeSansVictoire[#listeSansVictoire + 1] = card
         end
     end
@@ -51,7 +60,10 @@ function precondition()
     ---@type Card
     local old
     for card in --[[---@type fun:Card]]EffectOwner.Cards do
-        if card.EffectId ~= "_victoire" and card ~= This and card.CanBePlayed(EffectOwner) then
+        if card.EffectId ~= "_victoire"
+                and card.EffectId ~= "joker" -- sinon boucle
+                and card.EffectId ~= "amelioration_temporaire" -- sinon boucle
+                and card ~= This and card.CanBePlayed(EffectOwner) then
             if (This.CurrentLevel.Value == 1) then
                 return true
             else
@@ -60,7 +72,10 @@ function precondition()
         end
     end
     for card in --[[---@type fun:Card]]EffectOwner.Cards do
-        if card.EffectId ~= "_victoire" and card ~= This and card.CanBePlayed(EffectOwner) and card ~= old then
+        if card.EffectId ~= "_victoire"
+                and card.EffectId ~= "joker" -- sinon boucle
+                and card.EffectId ~= "amelioration_temporaire" -- sinon boucle
+                and card ~= This and card.CanBePlayed(EffectOwner) and card ~= old then
             return true
         end
     end

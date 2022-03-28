@@ -10,6 +10,7 @@ using CardGameEngine.Cards;
 using CardGameEngine.Cards.CardPiles;
 using CardGameEngine.EventSystem.Events.CardEvents;
 using CardGameEngine.GameSystems;
+using Sentry;
 #if UNITY_EDITOR
 using ParrelSync;
 #endif
@@ -62,10 +63,10 @@ namespace Script.Networking
 #else
                     NetworkMode.Client,
 #endif
-                    IPAddress = IPAddress.IPv6Loopback,
+                    IPAddress = IPAddress.Loopback,
                     Port = 1246
                 };
-                _ownDeck = new List<string> { "debugamelioration","pistolet","pistolet","pistolet","pistolet","pistolet","pistolet","pistolet","pistolet","sabotage","anullation","pioche_Critique"};
+                _ownDeck = new List<string> {"pistolet","pistolet","sabotage","sabotage","carteblanche","carteblanche","echange","echange","augmentation","augmentation","pioche_Critique","pioche_Critique"};
             }
 
             if (_nc.NetworkMode == NetworkMode.Client)
@@ -134,7 +135,7 @@ namespace Script.Networking
         public GameObject interFaceObject;
         public GameObject connectingObject;
         public GameObject hostingObject;
-        public static readonly Vector3 CardScale = new Vector3(0.30f, 0.30f, 1);
+        public static readonly Vector3 CardScale = new Vector3(0.23f, 0.23f, 1);
 
 
         public T RunOnGameThread<T>(Func<Game, T> func)

@@ -20,6 +20,8 @@ local function card_filter(aCard)
 	-- carte choisis aleatoirement depuis ton deck
 	local premPart = EffectOwner.Hand.Contains(aCard)
 			and This ~= aCard and not aCard.IsMaxLevel
+			and aCard.EffectId ~= "joker" -- sinon boucle
+			and aCard.EffectId ~= "amelioration_temporaire" -- sinon boucle
 	print("premier : " .. tostring(premPart))
 	if not premPart then
 		return false

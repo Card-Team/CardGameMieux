@@ -3,11 +3,13 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using CardGameEngine;
 using CardGameEngine.GameSystems.Effects;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using MoonSharp.Interpreter.Debugging;
+using Sentry;
 using TMPro;
 using UnityEngine;
 
@@ -35,32 +37,38 @@ namespace Script
 
             while (toPrint.TryDequeue(out var res))
             {
-                switch (res)
+                var content = res switch
                 {
-                    case LuaException lex:
-                        PrintError(lex);
-                        break;
-                    case InterpreterException iex:
-                        PrintError(iex);
-                        break;
-                }
+                    LuaException lex => PrintError(lex),
+                    InterpreterException iex => PrintError(iex),
+                    _ => null
+                };
+                
+                SentrySdk.CaptureException(res, s =>
+                {
+                    s.AddBreadcrumb(message:content ?? string.Empty,category:"lua_error");
+                    s.AddBreadcrumb(res.GetType().Name,"exception_type");
+                });
+                textZone.text = content;
                 textZone.gameObject.SetActive(true);
             }
         }
 
         private const string ScriptError = "<color=\"red\">[Erreur de script]</color> : ";
 
-        public void PrintError(InterpreterException exc, [CanBeNull] string sourceContent = null)
+        public string PrintError(InterpreterException exc, [CanBeNull] string sourceContent = null)
         {
-            PrintError(exc, exc.CallStack?.ToList() ?? new List<WatchItem>(),sourceContent);
+            return PrintError(exc, exc.CallStack?.ToList() ?? new List<WatchItem>(), sourceContent);
         }
 
-        public void PrintError(InterpreterException exception, List<WatchItem> callstack,[CanBeNull] string source = null)
+        public string PrintError(InterpreterException exception, List<WatchItem> callstack,
+            [CanBeNull] string source = null)
         {
+            var errorText = new StringBuilder();
             var splitted = exception.DecoratedMessage.Split(':').ToList();
             var scriptName = string.Join(":", splitted.GetRange(0, splitted.Count - 2));
             var msg = exception.Message;
-            textZone.text += $"[Erreur de script] : <color=\"blue\">{scriptName}</color> -> <u>{msg}</u>\n" + "\n";
+            errorText.Append($"[Erreur de script] : <color=\"blue\">{scriptName}</color> -> <u>{msg}</u>\n" + "\n");
             for (var index = 0; index < callstack.Count; index++)
             {
                 var watchItem = callstack[index];
@@ -69,13 +77,16 @@ namespace Script
                 if (watchItem.Location is { IsClrLocation: false } && (!watchItem.Name?.StartsWith("<") ?? true))
                 {
                     text += " : " + ColoredSource(scriptName, text.Length - ScriptError.Length - 2, watchItem.Location,
-                        index == 0, source ?? File.ReadAllText(Application.streamingAssetsPath + "/EffectsScripts/Card/" + scriptName + ".lua")) + "\n";
+                        index == 0,
+                        source ?? File.ReadAllText(Application.streamingAssetsPath + "/EffectsScripts/Card/" +
+                                                   scriptName + ".lua")) + "\n";
                 }
 
-                textZone.text += text + "\n";
+                errorText.Append(text + "\n");
             }
 
             DumpEvents();
+            return errorText.ToString();
         }
 
         public void DumpEvents()
@@ -90,9 +101,9 @@ namespace Script
             DumpEvents();
         }
 
-        private string ColoredSource(string scriptName, int padding, SourceRef watchItemLocation, bool isError,string scriptContent)
+        private string ColoredSource(string scriptName, int padding, SourceRef watchItemLocation, bool isError,
+            string scriptContent)
         {
-
             bool isMultiLine = watchItemLocation.FromLine != watchItemLocation.ToLine && watchItemLocation.ToChar != 0;
 
             var strings = scriptContent.Split('\n');
@@ -166,16 +177,16 @@ namespace Script
             return $"({location.FromLine},{location.FromChar})-({location.ToLine},{location.ToChar})";
         }
 
-        public void PrintError(LuaException exception)
+        public string PrintError(LuaException exception)
         {
-            PrintError(exception.RuntimeException, exception.CallStack);
+            return PrintError(exception.RuntimeException, exception.CallStack);
         }
 
         public void PrintError(InvalidEffectException exception)
         {
             textZone.text += $"<color=\"red\">[Effet invalide]: {exception.Message}</color>" + "\n";
             if (exception.InnerException != null)
-                PrintError(exception.InnerException,exception.EffectContent);
+                PrintError(exception.InnerException, exception.EffectContent);
             else
                 DumpEvents();
         }

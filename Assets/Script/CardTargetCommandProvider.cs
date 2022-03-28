@@ -21,7 +21,6 @@ namespace Script
 
         protected override void DoAction()
         {
-            Debug.Log("DoAction");
             var infoStruct = (ChooseCardTargetData) InfoStruct;
             _cardPickerDisplay.DisplayPicker(
                 infoStruct.CardList.Select(c => _cardPickerDisplay.WithLocation(_unityGame.CardRenderers[c])).ToList(),

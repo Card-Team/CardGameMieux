@@ -61,7 +61,7 @@ namespace Script.Input
                     }
                     else
                     {
-                        Debug.Log("on tente d'upgrade une carte max");
+                        // Debug.Log("on tente d'upgrade une carte max ou pas assez de PA");
                     }
                 }
             }
