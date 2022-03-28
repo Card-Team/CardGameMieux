@@ -23,6 +23,7 @@ public class LectureCartes : MonoBehaviour
     public TMP_Text nbCartes;
     public TMP_Text titre;
     public Image bar;
+    public Image contourBar;
     public TMP_Text charg;
     public Dictionary<String, CardRenderer> ListeCartes = new Dictionary<string, CardRenderer>();
     [NonSerialized] public String DeckAModifier=null;
@@ -85,11 +86,13 @@ public class LectureCartes : MonoBehaviour
             }
             titre.SetText("Chargement en cours ...");
             float progress = Mathf.Clamp01((float) tour / files.Count);
+            contourBar.gameObject.SetActive(true);
             bar.fillAmount = progress;
             charg.SetText("<i> Loading "+Mathf.RoundToInt(progress * 100) + " %</i>");
             yield return new WaitForEndOfFrame();
         }
         titre.gameObject.SetActive(false);
+        contourBar.gameObject.SetActive(false);
         bar.gameObject.SetActive(false);
         charg.gameObject.SetActive(false);
         ChargerDeck();
@@ -181,7 +184,7 @@ public class LectureCartes : MonoBehaviour
         //si les 2 cartes on ete selectionner
         if (listeCarteSelectionner.Count(c => c == first.scriptToDisplay) == 2)
         {
-            first.SetTransparence(0.5f);
+            first.SetTransparence(0.3f);
         }
     }
 

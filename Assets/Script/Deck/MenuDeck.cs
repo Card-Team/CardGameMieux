@@ -68,8 +68,4 @@ public class MenuDeck : MonoBehaviour
         CreationDeck.gameObject.SetActive(true);
     }
 
-    public void ModificationDeck()
-    {
-        
-    }
 }
