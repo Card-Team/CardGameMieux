@@ -1,7 +1,7 @@
 ﻿---@type number
 max_level = 2
 ---@type number
-image_id = 520
+image_id = 10
 
 ---@type string
 name = "Joker"

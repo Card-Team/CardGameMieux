@@ -9,7 +9,7 @@ public class Parametres : MonoBehaviour
 {
     public const string PPVolume = "PlayerPrefsVolume";
     public const string PPBordures = "PlayerPrefsBordures";
-    public AudioSource Audio;
+    private AudioSource Audio;
     public TMP_Text volume;
     public TMP_Dropdown ResolutionScreen;
     public GameObject panelReinitialisation;
@@ -40,8 +40,9 @@ public class Parametres : MonoBehaviour
         ResolutionScreen.value = currentResolutionIndex;
         ResolutionScreen.RefreshShownValue();
 
+        Audio = FindObjectOfType<AudioSource>();
         var volI = PlayerPrefs.GetInt(PPVolume, 50);
-        Audio.GetComponent<AudioSource>().volume = volI / 100f;
+        Audio.volume = volI / 100f;
         volume.text = volI + " %";
         slider.GetComponent<Slider>().value = volI;
         if (volI == 0)

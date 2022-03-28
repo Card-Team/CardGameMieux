@@ -2,7 +2,7 @@
 max_level = 1
 
 ---@type number
-image_id = 528
+image_id = 9
 
 ---@type string
 name = "Sacrifice"

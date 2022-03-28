@@ -8,14 +8,17 @@ public class Audio : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        if (FindObjectsOfType<Audio>().Length > 1)
+        if (FindObjectsOfType<Audio>().Length >1)
         {
-            //DestroyImmediate(this.gameObject);
+            DestroyImmediate(this.gameObject);
+            return;
         }
-        int vol = PlayerPrefs.GetInt(PPVolume,50);
-        //audioSource.GetComponent<AudioSource>().volume = vol/100f;
+        
+        int vol = PlayerPrefs.GetInt(PPVolume, 50);
+        audioSource.volume = vol / 100f;
         audioSource.Play();
         DontDestroyOnLoad(this.gameObject);
+
     }
 
     // Update is called once per frame

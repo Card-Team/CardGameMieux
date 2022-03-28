@@ -1,7 +1,7 @@
 ﻿---@type number
 max_level = 1
 ---@type number
-image_id = 613
+image_id = 8
 
 ---@type string
 name = "Extracteur"
