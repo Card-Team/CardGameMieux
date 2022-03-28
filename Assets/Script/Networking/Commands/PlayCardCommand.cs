@@ -11,9 +11,11 @@ namespace Script.Networking.Commands
             Upgrade = upgrade;
         }
 
-        public int PlayerId { get; }
-        public int CardId { get; }
-        public bool Upgrade { get; }
+        // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
+        public int PlayerId { get; private set; }
+        public int CardId { get; private set; }
+        public bool Upgrade { get; private set; }
+        // ReSharper restore AutoPropertyCanBeMadeGetOnly.Local
 
         public override IDictionary<string, string> ToDict(UnityGame unityGame)
         {
