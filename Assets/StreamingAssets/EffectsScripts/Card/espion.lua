@@ -1,7 +1,7 @@
 ﻿---@type number
 max_level = 1
 ---@type number
-image_id = 626
+image_id = 11
 
 ---@type string
 name = "Espion"

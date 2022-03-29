@@ -2,7 +2,7 @@
 max_level = 3
 
 ---@type number
-image_id = 564
+image_id = 12
 
 ---@type string
 name = "Pioche Critique"

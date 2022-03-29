@@ -48,20 +48,23 @@ public class EnregistrementDeck : MonoBehaviour
             panelNomDeckVide.gameObject.SetActive(true);
             StartCoroutine(OnCoroutine(panelNomDeckVide));
         }
-        //nom de fichier deja existant
-        else if (File.Exists(Application.persistentDataPath + @"\" + nomDeckText))
-        {
-            //interface de validation pour suppression du fichier deja existant
-            panelDeckExistant.SetActive(true);
-        }
         //si le nombre de carte == a 12
         else if (liste.Count == 12)
         {
-            // Ajouter du texte au fichier  
-            File.WriteAllLines(Application.persistentDataPath + "/" + nomDeckText, liste);
-            //Debug.Log("fichier"+nomDeckText+ " creer");
-            deckEnregistrer.gameObject.SetActive(true);
-            StartCoroutine(OnCoroutine(deckEnregistrer));
+            //nom de fichier deja existant
+            if (File.Exists(Application.persistentDataPath + @"\" + nomDeckText))
+            {
+                //interface de validation pour suppression du fichier deja existant
+                panelDeckExistant.SetActive(true);
+            }
+            else
+            {
+                // Ajouter du texte au fichier  
+                File.WriteAllLines(Application.persistentDataPath + "/" + nomDeckText, liste);
+                //Debug.Log("fichier"+nomDeckText+ " creer");
+                deckEnregistrer.gameObject.SetActive(true);
+                StartCoroutine(OnCoroutine(deckEnregistrer));
+            }
         }
         else
         {
