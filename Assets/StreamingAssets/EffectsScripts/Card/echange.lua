@@ -23,7 +23,7 @@ local function card_filter()
             listeSansVictoire[#listeSansVictoire + 1] = card
         end
     end
-    local random = GetRandomNumber(0, #listeSansVictoire)
+    local random = GetRandomNumber(1, #listeSansVictoire)
     return listeSansVictoire[random]
 end
 

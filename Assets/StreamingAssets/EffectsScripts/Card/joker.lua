@@ -41,7 +41,7 @@ local function card_filter()
         end
     end
     print("taille listSansVict : " .. tostring(#listeSansVictoire))
-    local random = GetRandomNumber(0, #listeSansVictoire)
+    local random = GetRandomNumber(1, #listeSansVictoire)
     print("random : " .. tostring(random))
     return listeSansVictoire[random]
 end

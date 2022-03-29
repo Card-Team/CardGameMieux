@@ -53,13 +53,14 @@ function do_effect()
 		This.ImageId.TryChangeValue(carte_copie.ImageId.Value)
 		return false    --pour pas carteblanche se fasse defaussé (A REVOIR !!)
 	else
-		Game.PlayCardEffect(EffectOwner, carte_copie)
+		local should_discard = Game.PlayCardEffect(EffectOwner, carte_copie)
 		This.Description.TryChangeValue(base_description)
 		This.Name.TryChangeValue(name)
 		This.Cost.TryChangeValue(pa_cost)
 		This.ImageId.TryChangeValue(image_id)
 		---@type Card
 		carte_copie = --[[---@type Card]] nil
+		--return should_discard
 	end
 end
 

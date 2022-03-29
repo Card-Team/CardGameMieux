@@ -62,8 +62,8 @@ namespace Script
             [CanBeNull] string source = null)
         {
             var errorText = new StringBuilder();
-            var splitted = exception.DecoratedMessage.Split(':').ToList();
-            var scriptName = string.Join(":", splitted.GetRange(0, splitted.Count - 2));
+            var splitted = exception.DecoratedMessage?.Split(':').ToList();
+            var scriptName = splitted == null ? "(aucun message)" : string.Join(":", splitted.GetRange(0, splitted.Count - 2));
             var msg = exception.Message;
             errorText.Append($"[Erreur de script] : <color=\"blue\">{scriptName}</color> -> <u>{msg}</u>\n" + "\n");
             for (var index = 0; index < callstack.Count; index++)
@@ -153,7 +153,7 @@ namespace Script
 
         public string PrintError(LuaException exception)
         {
-            return PrintError(exception.RuntimeException, exception.CallStack);
+            return PrintError(exception.RuntimeException, exception.CallStack ?? new List<WatchItem>());
         }
 
         public void PrintError(InvalidEffectException exception)
