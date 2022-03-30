@@ -73,13 +73,12 @@ public class LectureCartes : MonoBehaviour
             }
 
             //clique souris dans le rectangle des cartes du deck et liste inferieur a 12 alors ajout dans la liste  
-            if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count < 12 && mousePos.x > -9 && mousePos.y < 7.8 &&
-                mousePos.y > -9.5 && mousePos.x < 22)
+            if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count < 12 && mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5 && mousePos.x < 22)
             {
                 AjouterCarte(first);
             }
             //clique sur une carte alors qu'il a deja 12 cartes selectionner
-            else if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count == 12)
+            else if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count == 12 && mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5 && mousePos.x < 22)
             {
                 plusDe12Cartes.SetActive(true);
                 StartCoroutine(OnCoroutine(plusDe12Cartes));
