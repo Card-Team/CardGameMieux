@@ -1,7 +1,7 @@
 ﻿---@type number
 max_level = 2
 ---@type number
-image_id = 636
+image_id = 13
 
 ---@type string
 name = "Visionnaire"

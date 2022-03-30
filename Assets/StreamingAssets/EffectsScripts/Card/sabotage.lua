@@ -1,7 +1,7 @@
 ﻿---@type number
 max_level = 1
 ---@type number
-image_id = 529
+image_id = 14
 
 ---@type string
 name = "Sabotage"

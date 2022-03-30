@@ -71,12 +71,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f32a4375b0bec5a408655ed0a85d6e11, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 85a30a4307ee1184fa59f9c3fec81e5e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 10.8, y: 19.2}
+  m_Size: {x: 9.2, y: 12.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -670,8 +670,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0524, y: -4.2717}
-  m_SizeDelta: {x: 6.6643, y: 2.8016}
+  m_AnchoredPosition: {x: 0.01, y: -4.0987}
+  m_SizeDelta: {x: 6.3502, y: 2.9801}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &2530034159908504763
 MeshRenderer:
@@ -761,14 +761,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 7.9
+  m_fontSize: 8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 2
   m_fontSizeMax: 8
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -861,8 +861,8 @@ MonoBehaviour:
   chainage: {fileID: 4143640693639911142}
   lvlVert: {fileID: 21300000, guid: b9ca5f29b05516a4293f37d25617eaf9, type: 3}
   lvlRouge: {fileID: 21300000, guid: 5a068f228478cd0408c5faa528d509c8, type: 3}
-  fondNormal: {fileID: 21300000, guid: f32a4375b0bec5a408655ed0a85d6e11, type: 3}
-  fondDos: {fileID: 21300000, guid: 870a5fb8550494b4489603d89e8e4276, type: 3}
+  fondNormal: {fileID: 21300000, guid: 85a30a4307ee1184fa59f9c3fec81e5e, type: 3}
+  fondDos: {fileID: 21300000, guid: 2a89ec2da9df2974e8ce76aefc2dee38, type: 3}
   scriptToDisplay: 
   imagesCartes: {fileID: 11400000, guid: 0ffff537bac060c42947aea121bbe542, type: 2}
   couleurJouable: {r: 1, g: 1, b: 1, a: 1}
