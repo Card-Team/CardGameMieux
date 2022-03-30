@@ -20,15 +20,15 @@ namespace Script.Input
 
         private InputType? _lastInputType;
 
-        private PlayerActions.IMainActions _myTurnInputManager;
-        private PlayerActions.ITargetingActions _targetingActions;
+        private MyTurnInputManager _myTurnInputManager;
+        private TargetingInputManager _targetingActions;
 
         public PlayerActions PlayerActions;
 
         private void Awake()
         {
-            _myTurnInputManager = GetComponent<PlayerActions.IMainActions>();
-            _targetingActions = GetComponent<PlayerActions.ITargetingActions>();
+            _myTurnInputManager = GetComponent<MyTurnInputManager>();
+            _targetingActions = GetComponent<TargetingInputManager>();
             PlayerActions = new PlayerActions();
             PlayerActions.Main.SetCallbacks(_myTurnInputManager);
             PlayerActions.Targeting.SetCallbacks(_targetingActions);
@@ -73,6 +73,8 @@ namespace Script.Input
             Debug.Log($"Disabling all, current is {_currentInputType}");
             _lastInputType = _currentInputType;
             _currentInputType = null;
+            _myTurnInputManager.Disable();
+            _targetingActions.Disable();
             PlayerActions.Disable();
         }
 

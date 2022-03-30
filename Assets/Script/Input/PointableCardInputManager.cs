@@ -47,5 +47,13 @@ namespace Script.Input
         }
 
         public abstract bool IsPointable(CardRenderer r);
+
+        public void Disable()
+        {
+            if (HoveredCard != null)
+            {
+                HoveredCard.Hover = false;
+            }
+        }
     }
 }
