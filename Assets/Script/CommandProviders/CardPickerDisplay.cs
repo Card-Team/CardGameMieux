@@ -116,6 +116,7 @@ public class CardPickerDisplay : MonoBehaviour
     {
         _inputManager.DisableAll();
         cancelButton.SetActive(false);
+        cardContainer.transform.localPosition = new Vector3(0,0,-1f);
         foreach (var (card, pos) in _originalPositions.Select(x => (x.Key, x.Value)))
         {
             card.transform.parent = _parents[card];
