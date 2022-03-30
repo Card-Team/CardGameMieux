@@ -1,7 +1,7 @@
 ﻿---@type number
 max_level = 1
 ---@type number
-image_id = 518
+image_id = 18
 
 ---@type string
 name = "Echange inversé"
