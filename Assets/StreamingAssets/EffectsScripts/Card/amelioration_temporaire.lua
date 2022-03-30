@@ -1,7 +1,7 @@
 ﻿---@type number
 max_level = 2
 ---@type number
-image_id = 526
+image_id = 17
 
 ---@type ChainMode
 chain_mode = ChainMode.NoChain
