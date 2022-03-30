@@ -1,13 +1,13 @@
 ﻿---@type number
 max_level = 1
 ---@type number
-image_id = 709
+image_id = 15
 
 ---@type ChainMode
 chain_mode = ChainMode.NoChain
 
 ---@type string
-name = "chance"
+name = "Prédiction"
 ---@type number
 pa_cost = 2
 

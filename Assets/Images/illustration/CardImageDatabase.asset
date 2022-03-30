@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   images:
   - id: 1
-    sprite: {fileID: 21300000, guid: 57a87609c7cd0794e87fefbca702f58d, type: 3}
+    sprite: {fileID: 21300000, guid: a4b5367c43d3e7f47aba54883970ea82, type: 3}
   - id: 2
     sprite: {fileID: 21300000, guid: bab5cfe1068fdc14a83d7614261c95d6, type: 3}
   - id: 3
@@ -37,3 +37,11 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 07f1e51bde19e124bb02bcf37fe9dc10, type: 3}
   - id: 12
     sprite: {fileID: 21300000, guid: 6e37327e4c2e226478f161e01191f2f2, type: 3}
+  - id: 13
+    sprite: {fileID: 21300000, guid: be8f12e5f8212ea44b7b5f76c7289a58, type: 3}
+  - id: 14
+    sprite: {fileID: 21300000, guid: 06f0e7c9c240b0044b4ad308430de11c, type: 3}
+  - id: 15
+    sprite: {fileID: 21300000, guid: 8f4c7706fd37e41448ab4eeec59893fb, type: 3}
+  - id: 16
+    sprite: {fileID: 21300000, guid: b272936c9f4d0d342921923c738b8b85, type: 3}

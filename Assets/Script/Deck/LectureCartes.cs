@@ -27,17 +27,18 @@ public class LectureCartes : MonoBehaviour
     [NonSerialized] public string DeckAModifier = null;
     public Dictionary<string, CardRenderer> ListeCartes = new Dictionary<string, CardRenderer>();
     [NonSerialized] public List<string> listeCarteSelectionner = new List<string>();
-
+    public GameObject plusDe12Cartes;
     private CardRenderer selectionCarte;
     private float tailleListe;
     private TextMeshPro text;
+    private float timePressed = 0f;
 
     private void Update()
     {
         var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         //Connaitre la position de la souris par rapport a la camera
         //Debug.Log("x : " +mousePos.x + " et y: "+mousePos.y);
-        if (mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5)
+        if (mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5 && mousePos.x < 22)
         {
             //changer la postion du GameobjectCartes : faire desendre les cartes
             var pos = GameObjectCartes.transform.position;
@@ -63,9 +64,9 @@ public class LectureCartes : MonoBehaviour
             if (listeCarteSelectionner.Count(list => first.scriptToDisplay == list) == 2) return;
 
             //Debug.Log(first.name);
-            if (first != selectionCarte && selectionCarte != null) selectionCarte.Hover = false;
+            if (first != selectionCarte && selectionCarte != null && plusDe12Cartes.activeSelf==false) selectionCarte.Hover = false;
 
-            if (mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5)
+            if (mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5 && mousePos.x < 22 && plusDe12Cartes.activeSelf==false)
             {
                 first.Hover = true;
                 selectionCarte = first;
@@ -73,17 +74,38 @@ public class LectureCartes : MonoBehaviour
 
             //clique souris dans le rectangle des cartes du deck et liste inferieur a 12 alors ajout dans la liste  
             if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count < 12 && mousePos.x > -9 && mousePos.y < 7.8 &&
-                mousePos.y > -9.5)
+                mousePos.y > -9.5 && mousePos.x < 22)
+            {
                 AjouterCarte(first);
+            }
+            //clique sur une carte alors qu'il a deja 12 cartes selectionner
+            else if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count == 12 && mousePos.x > -9 &&
+                     mousePos.y < 7.8 && mousePos.y > -9.5 && mousePos.x < 22)
+            {
+                timePressed = Time.time;
+                plusDe12Cartes.SetActive(true);
+                StartCoroutine(OnCoroutine(plusDe12Cartes));
+            }
         }
         else
         {
-            if (selectionCarte != null)
+            if (selectionCarte != null && plusDe12Cartes.activeSelf==false)
             {
                 selectionCarte.Hover = false;
                 selectionCarte = null;
             }
         }
+
+        if ((Time.time - timePressed) > 5f && Input.GetMouseButtonDown(0))
+        {
+            plusDe12Cartes.SetActive(false);
+        }
+    }
+
+    private IEnumerator OnCoroutine(GameObject panel)
+    {
+        yield return new WaitForSeconds(4);
+        panel.SetActive(false);
     }
 
     public void ChargerDeck()
@@ -124,7 +146,7 @@ public class LectureCartes : MonoBehaviour
             cardRenderer.SetScript(fileSansPath2); //champs pour afficher ce script la
             cardRenderer.transform.localPosition = new Vector3(posX, posY, 0);
             tour += 1;
-            if (tour % 4 == 0)
+            if (tour % 4 == 0 )
             {
                 posX = -0.5f;
                 tailleListe += cardRenderer.Height * 1 / GameObjectCartes.transform.localScale.y + 1.5f;
@@ -149,6 +171,7 @@ public class LectureCartes : MonoBehaviour
         contourBar.gameObject.SetActive(false);
         bar.gameObject.SetActive(false);
         charg.gameObject.SetActive(false);
+        
         ChargerDeck();
     }
 
