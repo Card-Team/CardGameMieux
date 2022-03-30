@@ -57,7 +57,7 @@ namespace Script
             var theCard = _unityGame.Game.ChainStack.Peek();
             var latest = Instantiate(_unityGame.CardRenderers[theCard]);
             latest.Card = theCard;
-            latest.faceCachee = true;
+            latest.faceCachee = true;   
             latest.Flip();
             latest.transform.parent = chainDisplayer;
             latest.transform.localPosition = Vector3.zero;
@@ -75,14 +75,14 @@ namespace Script
             Debug.Log("On peut pas chainer");
             chainWaitText.gameObject.SetActive(false);
             NetworkedGame.DoLocalAction(new ChainTurnCommand { CardId = -1 });
-            Destroy(copy);
+            DestroyImmediate(copy);
         }
 
         private void OnPick(CardRenderer obj)
         {
             chainWaitText.gameObject.SetActive(false);
             NetworkedGame.DoLocalAction(new ChainTurnCommand { CardId = obj.Card.Id });
-            Destroy(copy);
+            DestroyImmediate(copy);
         }
 
         private void OnChainEnd(ChainingEvent evt)

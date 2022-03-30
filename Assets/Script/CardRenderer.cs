@@ -135,7 +135,7 @@ namespace Script
                 new DumbCallbacks(),
                 new List<string> {scriptToDisplay},
                 new List<string>());
-            Card = game.Player1.Deck[0];
+            Card = game.Player1.Deck[1];
             Subscribe(game.EventManager);
             RefreshPrecondition(true);
             // game.StartGame();
