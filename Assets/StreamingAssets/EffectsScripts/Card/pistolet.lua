@@ -16,6 +16,11 @@ description = "lvl 1 -> Défausse la carte au plus faible coût de la main de l'
 
 local function cardFilter()
     local OtherHand = EffectOwner.OtherPlayer.Hand
+
+    if(OtherHand.Count < 1) then
+        return
+    end
+    
     if (This.CurrentLevel.Value == 1) then
         local minCardCost = OtherHand[0].Cost.Value
         local minCard = OtherHand[0]

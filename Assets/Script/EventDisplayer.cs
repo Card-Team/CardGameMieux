@@ -29,7 +29,10 @@ namespace Script
         private void Update()
         {
             if (UnityEngine.Input.GetKeyDown(KeyCode.RightControl))
+            {
                 eventPanel.gameObject.SetActive(!eventPanel.gameObject.activeSelf);
+                eventPanel.caretPosition = eventPanel.text.Length;
+            }
         }
 
         public void Subscribe(SyncEventWrapper eventManager)
@@ -63,6 +66,13 @@ namespace Script
 
             // Nombre max de points d'actions
             eventManager.SubscribeToEvent<MaxActionPointsEditEvent>(OnMaxActionPointsEdit, postEvent: true);
+            eventManager.SubscribeToEvent<StartTurnEvent>(OnStartTurn, postEvent: true);
+        }
+
+        private void OnStartTurn(StartTurnEvent evt)
+        {
+            WriteEvent<StartTurnEvent>(
+                $"----------------C'est au tour de {GetPlayerName(evt.Player)} !----------------");
         }
 
         private void OnChainStart(ChainingEvent evt)
