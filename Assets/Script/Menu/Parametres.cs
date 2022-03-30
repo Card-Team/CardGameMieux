@@ -4,7 +4,7 @@ using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Slider = UnityEngine.UIElements.Slider;
+
 
 public class Parametres : MonoBehaviour
 {
@@ -14,7 +14,7 @@ public class Parametres : MonoBehaviour
     public TMP_Text volume;
     public TMP_Dropdown ResolutionScreen;
     public GameObject panelReinitialisation;
-    public GameObject slider;
+    public Slider slider;
     public GameObject mute;
     private Resolution[] resolutions;
 
@@ -45,7 +45,7 @@ public class Parametres : MonoBehaviour
         var volI = PlayerPrefs.GetInt(PPVolume, 50);
         Audio.volume = volI / 100f;
         volume.text = volI + " %";
-        slider.GetComponent<Slider>().value = volI;
+        slider.value = volI;
         if (volI == 0)
         {
             volume.text = " ";
