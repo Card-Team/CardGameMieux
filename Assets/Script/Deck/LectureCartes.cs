@@ -38,7 +38,7 @@ public class LectureCartes : MonoBehaviour
         var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         //Connaitre la position de la souris par rapport a la camera
         //Debug.Log("x : " +mousePos.x + " et y: "+mousePos.y);
-        if (mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5 && mousePos.x < 22)
+        if (mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5 && mousePos.x < 22 && plusDe12Cartes.activeSelf==false)
         {
             //changer la postion du GameobjectCartes : faire desendre les cartes
             var pos = GameObjectCartes.transform.position;
@@ -64,9 +64,9 @@ public class LectureCartes : MonoBehaviour
             if (listeCarteSelectionner.Count(list => first.scriptToDisplay == list) == 2) return;
 
             //Debug.Log(first.name);
-            if (first != selectionCarte && selectionCarte != null && plusDe12Cartes.activeSelf==false) selectionCarte.Hover = false;
+            if (first != selectionCarte && selectionCarte != null) selectionCarte.Hover = false;
 
-            if (mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5 && mousePos.x < 22 && plusDe12Cartes.activeSelf==false)
+            if (mousePos.x > -9 && mousePos.y < 7.8 && mousePos.y > -9.5 && mousePos.x < 22)
             {
                 first.Hover = true;
                 selectionCarte = first;
@@ -79,26 +79,19 @@ public class LectureCartes : MonoBehaviour
                 AjouterCarte(first);
             }
             //clique sur une carte alors qu'il a deja 12 cartes selectionner
-            else if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count == 12 && mousePos.x > -9 &&
-                     mousePos.y < 7.8 && mousePos.y > -9.5 && mousePos.x < 22)
+            else if (Input.GetMouseButtonUp(0) && listeCarteSelectionner.Count == 12)
             {
-                timePressed = Time.time;
                 plusDe12Cartes.SetActive(true);
                 StartCoroutine(OnCoroutine(plusDe12Cartes));
             }
         }
         else
         {
-            if (selectionCarte != null && plusDe12Cartes.activeSelf==false)
+            if (selectionCarte != null)
             {
                 selectionCarte.Hover = false;
                 selectionCarte = null;
             }
-        }
-
-        if ((Time.time - timePressed) > 5f && Input.GetMouseButtonDown(0))
-        {
-            plusDe12Cartes.SetActive(false);
         }
     }
 
@@ -112,7 +105,9 @@ public class LectureCartes : MonoBehaviour
     {
         if (DeckAModifier == null) return;
         foreach (var cardCharger in File.ReadAllLines(Application.persistentDataPath + @"\" + DeckAModifier + ".txt"))
+        {
             AjouterCarte(ListeCartes[cardCharger]);
+        }
         NomDeck.text = DeckAModifier;
     }
 
