@@ -35,7 +35,7 @@ namespace Script
         protected override void DoAction()
         {
             if(_copy != null)
-                Destroy(_copy);
+                Destroy(_copy.gameObject);
             _localMainRenderer.UpdatePlayable();
             var info = (ChainInfo)InfoStruct;
             chainWaitText.gameObject.SetActive(!info.isLocalChaining);
@@ -78,14 +78,14 @@ namespace Script
             Debug.Log("On peut pas chainer");
             chainWaitText.gameObject.SetActive(false);
             NetworkedGame.DoLocalAction(new ChainTurnCommand { CardId = -1 });
-            DestroyImmediate(_copy);
+            Destroy(_copy.gameObject);
         }
 
         private void OnPick(CardRenderer obj)
         {
             chainWaitText.gameObject.SetActive(false);
             NetworkedGame.DoLocalAction(new ChainTurnCommand { CardId = obj.Card.Id });
-            DestroyImmediate(_copy);
+            Destroy(_copy.gameObject);
         }
 
         private void OnChainEnd(ChainingEvent evt)
