@@ -40,8 +40,12 @@ end
 
 function do_effect()
     local theCard = --[[---@type Card]] AskForTarget(1)
+    
+    local thePile = Game.GetPileOf(theCard)
     -- TODO échanger leur position aussi ( donc pas 0)
-    EffectOwner.OtherPlayer.Hand.MoveTo(EffectOwner.Hand, theCard, 0)
-    EffectOwner.Hand.MoveTo(EffectOwner.OtherPlayer.Hand, This, 0)
+    local indexFirst = thePile.IndexOf(theCard)
+    local indexMe = EffectOwner.Hand.IndexOf(This)
+    thePile.MoveTo(EffectOwner.Hand, theCard, indexMe)
+    EffectOwner.Hand.MoveTo(EffectOwner.OtherPlayer.Hand, This, indexFirst)
 end
 

@@ -11,7 +11,6 @@ pa_cost = 3
 ---@type ChainMode
 chain_mode = ChainMode.MiddleChain
 
---todo bouc emissaire (parce que j'ai modif conspiration en ca)
 -- (idée de carte : bouc émissaire -> pas jouable, chainable middle, si chainée alors elles intercepte le targeting event et se met dedans)
 ---@type string
 description = "Force la carte \"méchante\" jouée par votre adversaire à cibler cette carte-ci"
