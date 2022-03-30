@@ -257,9 +257,20 @@ namespace Script.Networking
         private void CreateGame()
         {
             //on va dire que le serveur est j1
-            var j1Deck = _networkManager.IsServer ? MyConfiguration!.deck : OtherPlayerConfiguration!.deck;
-            var j2Deck = _networkManager.IsClient ? OtherPlayerConfiguration!.deck : MyConfiguration!.deck;
+            List<string> j1Deck;
+            List<string> j2Deck;
 
+            if (_networkManager.IsServer)
+            {
+                j1Deck = MyConfiguration!.deck;
+                j2Deck = OtherPlayerConfiguration!.deck;
+            }
+            else
+            {
+                j1Deck = OtherPlayerConfiguration!.deck;
+                j2Deck = MyConfiguration!.deck;
+            }
+            
             //verification des decks
 
 
