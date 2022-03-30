@@ -70,7 +70,7 @@ namespace Script.Networking
                 };
                 _ownDeck = new List<string>
                 {
-                    "pistolet", "pistolet", "sabotage", "sabotage", "carteblanche", "carteblanche", "echange",
+                    "montgolfiere", "montgolfiere", "sabotage", "sabotage", "carteblanche", "carteblanche", "echange",
                     "echange", "augmentation", "augmentation", "pioche_Critique", "pioche_Critique"
                 };
             }

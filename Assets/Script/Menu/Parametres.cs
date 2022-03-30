@@ -4,6 +4,7 @@ using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Slider = UnityEngine.UIElements.Slider;
 
 public class Parametres : MonoBehaviour
 {

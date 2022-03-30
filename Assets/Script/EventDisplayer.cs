@@ -68,13 +68,13 @@ namespace Script
         private void OnChainStart(ChainingEvent evt)
         {
             WriteEvent<ChainingEvent>(
-                $"{evt.Chainer} chaine ! (niveau de chaine : {_networkedGame.Game.ChainCounter})");
+                $"{GetPlayerName(evt.Chainer)} chaine ! (niveau de chaine : {_networkedGame.Game.ChainCounter})");
         }
 
         private void OnChainEnd(ChainingEvent evt)
         {
             WriteEvent<ChainingEvent>(
-                $"{evt.Chainer} termine sa chaine ! (niveau de chaine : {_networkedGame.Game.ChainCounter})");
+                $"{GetPlayerName(evt.Chainer)} termine sa chaine ! (niveau de chaine : {_networkedGame.Game.ChainCounter})");
         }
 
         private void OnMaxActionPointsEdit(MaxActionPointsEditEvent evt)

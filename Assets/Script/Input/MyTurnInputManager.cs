@@ -59,7 +59,12 @@ namespace Script.Input
 
         public void OnEndTurn(InputAction.CallbackContext callbackContext)
         {
-            if (callbackContext.performed) _game.DoLocalAction(new EndTurnCommand());
+            if (callbackContext.performed) OnEndTurn();
+        }
+        
+        public void OnEndTurn()
+        {
+            _game.DoLocalAction(new EndTurnCommand());
         }
 
         public override bool IsPointable(CardRenderer r)

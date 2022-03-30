@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using UnityEngine;
 
@@ -13,6 +14,9 @@ namespace Script.Networking
 
         private void Awake()
         {
+            
+            var oldContainer = FindObjectsOfType<GameSettingsContainer>().FirstOrDefault(o => o != this);
+            if(oldContainer != null) Destroy(oldContainer);
             DontDestroyOnLoad(this);
         }
     }

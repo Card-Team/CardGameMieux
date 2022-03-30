@@ -1,35 +1,42 @@
 using CardGameEngine.EventSystem.Events.GameStateEvents;
 using Script.Networking;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TourArrow : MonoBehaviour, IEventSubscriber
 {
-    private SpriteRenderer _spriteRenderer;
+    private Animation _animation;
+    public Button endButton;
 
     // Start is called before the first frame update
     private void Start()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        _spriteRenderer.enabled = false;
+        _animation = GetComponent<Animation>();
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-    }
 
     public void Subscribe(SyncEventWrapper eventManager)
     {
         eventManager.SubscribeToEvent<StartTurnEvent>(OnStartTurn, false, true);
-        _spriteRenderer.enabled = true;
-        if (UnityGame.LocalPlayer == Owner.Player2) transform.localRotation = Quaternion.Euler(0, 0, 90);
+        eventManager.SubscribeToEvent<EndTurnEvent>(OnEndTurn, false, true);
+    }
+
+    private void OnEndTurn(EndTurnEvent evt)
+    {
+        if (Equals(evt.Player, UnityGame.LocalGamePlayer))
+        {
+            _animation.Stop();
+            endButton.gameObject.SetActive(false);
+        }
     }
 
     private void OnStartTurn(StartTurnEvent evt)
     {
-        var angle = 90;
-        if (Equals(evt.Player, UnityGame.LocalGamePlayer)) angle *= -1;
-
-        transform.localRotation = Quaternion.Euler(0, 0, angle);
+        if (Equals(evt.Player, UnityGame.LocalGamePlayer))
+        {
+            _animation.Play();
+            endButton.gameObject.SetActive(true);
+            
+        }
     }
 }

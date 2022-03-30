@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Linq;
 using CardGameEngine.Cards.CardPiles;
 using CardGameEngine.EventSystem.Events.CardEvents;
 using Script.Networking;
+using TMPro;
 using UnityEngine;
 
 namespace Script
@@ -10,12 +12,24 @@ namespace Script
     public class DiscardPileRenderer : PileRenderer
     {
         public Transform upgradeLocation;
+        public TextMeshPro upgradeCount;
 
         private DiscardPile DPile => (DiscardPile) CardPile;
 
-        protected override Vector2 GetNewCardDestination(CardRenderer cardRenderer)
+        protected override Vector3 GetNewCardDestination(CardRenderer cardRenderer)
         {
             return base.GetNewCardDestination(cardRenderer);
+        }
+
+        private void Start()
+        {
+            if (UnityGame.LocalPlayer != owner) upgradeCount.transform.localRotation = Quaternion.Euler(0, 0, 180);
+            upgradeCount.SetText(0.ToString());
+        }
+
+        protected override void UpdateCount()
+        {
+            this.countText.SetText(DPile.Count(c => !DPile.IsMarkedForUpgrade(c)).ToString());
         }
 
 
@@ -38,6 +52,8 @@ namespace Script
                 {
                     yield return new WaitForSeconds(0.2f);
                     yield return MoveCardInTime(cardRenderer, pos, 0.2f, c => { });
+                    upgradeCount.SetText(DPile.Count(c => DPile.IsMarkedForUpgrade(c)).ToString());
+                    UpdateCount();
                 }
 
                 UnityGame.AddToQueue(
@@ -57,6 +73,8 @@ namespace Script
                 {
                     yield return new WaitForSeconds(0.2f);
                     yield return MoveCardInTime(cardRenderer, pos, 0.2f, c => { });
+                    upgradeCount.SetText(DPile.Count(c => DPile.IsMarkedForUpgrade(c)).ToString());
+                    UpdateCount();
                 }
 
                 UnityGame.AddToQueue(

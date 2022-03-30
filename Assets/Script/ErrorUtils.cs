@@ -31,8 +31,8 @@ namespace Script
 
         private void Update()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.RightControl))
-                textZone.gameObject.SetActive(!textZone.gameObject.activeSelf);
+            // if (UnityEngine.Input.GetKeyDown(KeyCode.RightControl))
+            //     textZone.gameObject.SetActive(!textZone.gameObject.activeSelf);
 
             while (toPrint.TryDequeue(out var res))
             {

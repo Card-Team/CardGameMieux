@@ -66,21 +66,22 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
 
         var cardRenderer = UnityGame.CardRenderers[evt.Card];
         cards.Remove(cardRenderer);
-        UnityGame.PileRenderers[evt.DestPile].GrabCard(cardRenderer);
-        countText.text = cards.Count.ToString();
+        UnityGame.PileRenderers[evt.DestPile].GrabCard(cardRenderer,evt.DestIndex);
+        UpdateCount();
     }
 
-    private void GrabCard(CardRenderer cardRenderer)
+    private void GrabCard(CardRenderer cardRenderer, int destIndex)
     {
         var cardTransform = cardRenderer.transform;
         cardTransform.parent = transform;
         var destination = GetNewCardDestination(cardRenderer);
-        cards.Add(cardRenderer);
+        Debug.Log($"moving to z : {destination}");
+        cards.Insert(destIndex,cardRenderer);
 
         UnityGame.AddToQueue(() => MoveCardAnimation(cardRenderer, destination), owner);
     }
 
-    private IEnumerator MoveCardAnimation(CardRenderer cardRenderer, Vector2 destination)
+    private IEnumerator MoveCardAnimation(CardRenderer cardRenderer, Vector3 destination)
     {
         yield return MoveCardInTime(cardRenderer, destination, 0.2f, OnCardArrived);
 
@@ -91,7 +92,7 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
         , Action<CardRenderer> onFinish)
     {
         cardRenderer.Hover = false;
-        var start = (Vector2) cardRenderer.transform.localPosition;
+        var start = cardRenderer.transform.localPosition;
 
         float tempsParcouru = 0;
 
@@ -103,21 +104,25 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
         }
 
         cardRenderer.transform.localPosition = destination;
+        Debug.Log($"finishmove : {cardRenderer.transform.position}");
         onFinish(cardRenderer);
     }
 
-    protected virtual Vector2 GetNewCardDestination(CardRenderer cardRenderer)
+    protected virtual Vector3 GetNewCardDestination(CardRenderer cardRenderer)
     {
-        return Vector2.zero;
+        return new Vector3(0,0,-(CardPile.Count + 1));
     }
 
     protected virtual void OnCardArrived(CardRenderer cardRenderer)
     {
         if (cartesCachées != cardRenderer.faceCachee) cardRenderer.Flip();
-        var oldPos = cardRenderer.transform.position;
-        oldPos.z = -cards.Count;
-        cardRenderer.transform.position = oldPos;
         cardRenderer.RefreshPrecondition(true);
+        UpdateCount();
+        cardRenderer.transform.SetSiblingIndex(CardPile.IndexOf(cardRenderer.Card));
+    }
+
+    protected virtual void UpdateCount()
+    {
         countText.text = cards.Count.ToString();
     }
 
@@ -128,13 +133,16 @@ public class PileRenderer : MonoBehaviour, IEventSubscriber
             var unityCard = UnityGame.CardRenderers[card];
             var unityCardTransform = unityCard.transform;
             unityCardTransform.parent = transform;
-            unityCardTransform.localPosition = Vector3.zero;
+            var localPosition = new Vector3(0,0,0);
+            Debug.Log($"initial z {localPosition}");
+            unityCardTransform.localPosition = localPosition;
             unityCard.gameObject.SetActive(true);
             if (cartesCachées != unityCard.faceCachee) unityCard.Flip();
+            unityCard.transform.SetSiblingIndex(CardPile.IndexOf(unityCard.Card));
             cards.Add(unityCard);
         }
 
-        countText.text = cards.Count.ToString();
+        UpdateCount();
     }
 }
 

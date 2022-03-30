@@ -1,6 +1,6 @@
 ﻿---@type number
 ---@type number
-max_level = 1
+max_level = 3
 ---@type number
 image_id = 6
 
@@ -13,7 +13,7 @@ name = "affaiblissement"
 pa_cost = 3
 
 ---@type string
-description = "Fait baisser le nombre de PA de l'adversaire du coût de la carte de la main ciblée"
+description = "Fait baisser le nombre de PA de l'adversaire du coût de la carte de la main ciblée (niveau 3 -> fin de chaine)"
 
 ---@type Card
 local function card_filter(aCard)
@@ -60,3 +60,13 @@ function do_effect()
     SubscribeTo(T_StartTurnEvent, baisserPointAction(player, coutCard), false,
             true)                      --s'abonne a l'evenement (debut de tour,la fonction execute une fois que l'evenement est la,es qu'on ecpute une evenement anulé,es que tu t'abone apres)
 end
+
+---@param _ number
+---@param new number
+function on_level_change(_, new)
+    if new == max_level then
+        This.ChainMode.Value = ChainMode.EndChain
+    else
+        This.ChainMode.Value = chain_mode
+    end
+end 

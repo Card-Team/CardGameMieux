@@ -97,7 +97,7 @@ public class CardPickerDisplay : MonoBehaviour
             var locPref = Instantiate(locationPrefab, cardContainer.transform);
             locPref.transform.parent = cardRenderer.transform.GetChild(0);
             locPref.transform.localPosition =
-                new Vector3(0, -(cardRenderer.Height + 1.3f));
+                new Vector3(0, -(cardRenderer.Height + 4f));
             locPref.text = location;
             texts.Add(locPref);
         }
@@ -120,6 +120,8 @@ public class CardPickerDisplay : MonoBehaviour
         {
             card.transform.parent = _parents[card];
             card.HoverHeight = true; // si autre part que la main ,pas selectionnable donc on s'en fiche
+            var curPos = card.transform.localPosition;
+            card.transform.localPosition = new Vector3(curPos.x, curPos.y, pos.z);
             StartCoroutine(
                 PileRenderer.MoveCardInTime(card, pos, 0.2f, c =>
                 {
@@ -191,7 +193,7 @@ public class CardPickerDisplay : MonoBehaviour
             PileType.Hand => "Main",
             _ => throw new ArgumentOutOfRangeException()
         };
-        texte += $"[{pile.cards.IndexOf(cardRenderer)}] (" + (UnityGame.LocalPlayer == pile.owner ? "Moi" : "Adv") +
+        texte += $"[{pile.cards.IndexOf(cardRenderer) + 1}] (" + (UnityGame.LocalPlayer == pile.owner ? "Moi" : "Adv") +
                  ")";
 
         return (cardRenderer, texte);

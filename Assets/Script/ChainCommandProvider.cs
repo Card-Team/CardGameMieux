@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using CardGameEngine.Cards;
 using CardGameEngine.EventSystem.Events.GameStateEvents;
@@ -14,6 +15,8 @@ namespace Script
         private CardPickerDisplay _cardPicker;
         private MainRenderer _localMainRenderer;
         private UnityGame _unityGame;
+        public Transform chainDisplayer;
+        private CardRenderer copy;
 
         private void Start()
         {
@@ -31,7 +34,7 @@ namespace Script
         protected override void DoAction()
         {
             _localMainRenderer.UpdatePlayable();
-            var info = (ChainInfo) InfoStruct;
+            var info = (ChainInfo)InfoStruct;
             chainWaitText.gameObject.SetActive(!info.isLocalChaining);
             if (!info.isLocalChaining) return;
 
@@ -39,6 +42,7 @@ namespace Script
                 .Where(c => c.ChainMode.Value == ChainMode.MiddleChain
                             || c.ChainMode.Value == ChainMode.StartOrMiddleChain
                             || c.ChainMode.Value == ChainMode.EndChain)
+                .Where(c => !_unityGame.Game.ChainStack.Contains(c))
                 .Select(c => _unityGame.CardRenderers[c])
                 .Where(cr => cr.AssezDePa && cr.PreconditionJouable)
                 .ToList();
@@ -50,6 +54,15 @@ namespace Script
                 return;
             }
 
+            var theCard = _unityGame.Game.ChainStack.Peek();
+            var latest = Instantiate(_unityGame.CardRenderers[theCard]);
+            latest.Card = theCard;
+            latest.faceCachee = true;
+            latest.Flip();
+            latest.transform.parent = chainDisplayer;
+            latest.transform.localPosition = Vector3.zero;
+            latest.transform.localRotation = Quaternion.identity;
+            copy = latest;
             _cardPicker
                 .DisplayPicker(available,
                     "Chainage",
@@ -61,13 +74,15 @@ namespace Script
         {
             Debug.Log("On peut pas chainer");
             chainWaitText.gameObject.SetActive(false);
-            NetworkedGame.DoLocalAction(new ChainTurnCommand {CardId = -1});
+            NetworkedGame.DoLocalAction(new ChainTurnCommand { CardId = -1 });
+            Destroy(copy);
         }
 
         private void OnPick(CardRenderer obj)
         {
             chainWaitText.gameObject.SetActive(false);
-            NetworkedGame.DoLocalAction(new ChainTurnCommand {CardId = obj.Card.Id});
+            NetworkedGame.DoLocalAction(new ChainTurnCommand { CardId = obj.Card.Id });
+            Destroy(copy);
         }
 
         private void OnChainEnd(ChainingEvent evt)

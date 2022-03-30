@@ -6,51 +6,51 @@
     <members>
         <member name="T:CardGameEngine.Cards.Artefact">
             <summary>
-                Classe représentant un artefact
+            Classe représentant un artefact
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Artefact.Name">
             <summary>
-                Nom de l'artefact
+            Nom de l'artefact
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Artefact.MaxCharge">
             <summary>
-                Charge maximale de l'artefact
+            Charge maximale de l'artefact
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Artefact.CurrentCharge">
             <summary>
-                Charge actuelle de l'artefact
+            Charge actuelle de l'artefact
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Artefact.Effect">
             <summary>
-                Effet de l'artefact
+            Effet de l'artefact
             </summary>
         </member>
         <member name="M:CardGameEngine.Cards.Artefact.DoEffect(CardGameEngine.Game)">
             <summary>
-                Exécute l'effet de l'artefact
+            Exécute l'effet de l'artefact
             </summary>
             <param name="game">La partie en cours</param>
             <returns>Un booléen en fonction de la réussite</returns>
         </member>
         <member name="M:CardGameEngine.Cards.Artefact.CanBeActivated(CardGameEngine.Game)">
             <summary>
-                Vérifie la validité de la précondition de l'artefact
+            Vérifie la validité de la précondition de l'artefact
             </summary>
             <param name="game">La partie en cours</param>
             <returns>Un booléen en fonction de la validité</returns>
         </member>
         <member name="T:CardGameEngine.Cards.Card">
             <summary>
-                Classe représentant une carte
+            Classe représentant une carte
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Card.Name">
             <summary>
-                Nom de la carte
+            Nom de la carte
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Card.EffectId">
@@ -65,174 +65,172 @@
         </member>
         <member name="P:CardGameEngine.Cards.Card.IsVirtual">
             <summary>
-                Est-ce que la carte est virtuelle ?
+            Est-ce que la carte est virtuelle ?
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Card.MaxLevel">
             <summary>
-                Niveau maximum de la carte
+            Niveau maximum de la carte
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Card.Cost">
             <summary>
-                Coût de la carte (ActionPoints du player)
+            Coût de la carte (ActionPoints du player)
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Card.CurrentLevel">
             <summary>
-                Niveau de la carte
+            Niveau de la carte
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Card.Description">
             <summary>
-                Description de la carte
+            Description de la carte
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Card.ImageId">
             <summary>
-                Id de l'image de la carte
+            Id de l'image de la carte
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Card.Effect">
             <summary>
-                Effet de la carte
+            Effet de la carte
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Card.Keywords">
             <summary>
-                Mots clé appliqués à la carte
+            Mots clé appliqués à la carte
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Card.Id">
             <summary>
-                Id de la carte dans la partie
+            Id de la carte dans la partie
             </summary>
         </member>
         <member name="M:CardGameEngine.Cards.Card.DoEffect(CardGameEngine.GameSystems.Player)">
             <summary>
-                Exécute l'effet de la carte
+            Exécute l'effet de la carte
             </summary>
             <param name="game">La partie en cours</param>
             <returns>Vrai si la carte doit etre défaussée, faux sinon</returns>
         </member>
         <member name="M:CardGameEngine.Cards.Card.CanBePlayed(CardGameEngine.GameSystems.Player)">
             <summary>
-                Vérifie la validité de la précondition de la carte
+            Vérifie la validité de la précondition de la carte
             </summary>
             <param name="game">La partie en cours</param>
             <returns>Un booléen en fonction de la validité</returns>
         </member>
         <member name="T:CardGameEngine.Cards.CardPiles.CardPile">
             <summary>
-                Classe représentant une pile de cartes comme la main, le deck ou la défausse
+            Classe représentant une pile de cartes comme la main, le deck ou la défausse
             </summary>
         </member>
         <member name="F:CardGameEngine.Cards.CardPiles.CardPile._cardList">
             <summary>
-                Liste des cartes dans la pile
+            Liste des cartes dans la pile
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.CardPiles.CardPile.EventManager">
             <summary>
-                EventManager de la partie
+            EventManager de la partie
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.CardPiles.CardPile.LimitSize">
             <summary>
-                Nombre de cartes maximal dans la pile
+            Nombre de cartes maximal dans la pile
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.CardPiles.CardPile.Count">
             <summary>
-                Propriété renvoyant le nombre de cartes
+            Propriété renvoyant le nombre de cartes
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.CardPiles.CardPile.Item(System.Int32)">
             <summary>
-                Accesseur de la liste
+            Accesseur de la liste
             </summary>
             <param name="i">Index de la carte</param>
         </member>
         <member name="M:CardGameEngine.Cards.CardPiles.CardPile.#ctor(CardGameEngine.Game,System.Nullable{System.Int32})">
             <summary>
-                Constructeur de la pile vide
+            Constructeur de la pile vide
             </summary>
             <param name="eventManager">EventManager de la partie</param>
             <param name="limitSize">Taille limite de la pile, null pour aucune limite</param>
         </member>
         <member name="M:CardGameEngine.Cards.CardPiles.CardPile.#ctor(CardGameEngine.Game,System.Collections.Generic.List{CardGameEngine.Cards.Card})">
             <summary>
-                Constructeur de la pile remplie
+            Constructeur de la pile remplie
             </summary>
             <param name="eventManager">EventManager de la partie</param>
             <param name="cards"></param>
         </member>
         <member name="M:CardGameEngine.Cards.CardPiles.CardPile.Contains(CardGameEngine.Cards.Card)">
             <summary>
-                Méthode indiquant si la pile contient une certaine carte
+            Méthode indiquant si la pile contient une certaine carte
             </summary>
             <param name="card">La carte à chercher</param>
             <returns>Un booléen en fonction de la présence de la carte</returns>
         </member>
         <member name="M:CardGameEngine.Cards.CardPiles.CardPile.IndexOf(CardGameEngine.Cards.Card)">
             <summary>
-                Méthode renvoyant la position d'une carte dans la pile
+            Méthode renvoyant la position d'une carte dans la pile
             </summary>
             <param name="card">La carte à chercher</param>
             <returns>Un entier selon la position</returns>
         </member>
         <member name="M:CardGameEngine.Cards.CardPiles.CardPile.Insert(System.Int32,CardGameEngine.Cards.Card)">
             <summary>
-                Insère une carte dans la liste en décalant les autres
+            Insère une carte dans la liste en décalant les autres
             </summary>
             <param name="newPosition">Nouvelle position</param>
             <param name="card">La carte à insérer</param>
         </member>
         <member name="M:CardGameEngine.Cards.CardPiles.CardPile.System#Collections#Generic#IEnumerable{CardGameEngine#Cards#Card}#GetEnumerator">
             <summary>
-                Renvoie un itérateur pour la liste
+            Renvoie un itérateur pour la liste
             </summary>
             <returns>L'itérateur créé</returns>
         </member>
         <member name="M:CardGameEngine.Cards.CardPiles.CardPile.GetEnumerator">
             <summary>
-                Renvoie un itérateur pour la liste
+            Renvoie un itérateur pour la liste
             </summary>
             <returns>L'itérateur créé</returns>
         </member>
         <member name="M:CardGameEngine.Cards.CardPiles.CardPile.MoveTo(CardGameEngine.Cards.CardPiles.CardPile,CardGameEngine.Cards.Card,System.Int32)">
             <summary>
-                Déplace une carte dans une autre pile à une position donnée
+            Déplace une carte dans une autre pile à une position donnée
             </summary>
             <param name="newCardPile">La nouvelle ciblée</param>
             <param name="card">La carte à bouger</param>
             <param name="newPosition">La position à prendre</param>
-            <exception cref="T:CardGameEngine.Cards.CardPiles.NotInPileException">Si la carte n'est pas dans la pile
-            </exception>
+            <exception cref="T:CardGameEngine.Cards.CardPiles.NotInPileException">Si la carte n'est pas dans la pile</exception>
         </member>
         <member name="M:CardGameEngine.Cards.CardPiles.CardPile.MoveInternal(CardGameEngine.Cards.Card,System.Int32)">
             <summary>
-                Déplace une carte dans sa pile à une position donnée
+            Déplace une carte dans sa pile à une position donnée
             </summary>
             <param name="card">La carte à bouger</param>
             <param name="newPosition">La position à prendre</param>
-            <exception cref="T:CardGameEngine.Cards.CardPiles.NotInPileException">Si la carte n'est pas dans la pile
-            </exception>
+            <exception cref="T:CardGameEngine.Cards.CardPiles.NotInPileException">Si la carte n'est pas dans la pile</exception>
         </member>
         <member name="T:CardGameEngine.Cards.CardPiles.DiscardPile">
             <summary>
-                Pile de cartes représentant une défausse
+            Pile de cartes représentant une défausse
             </summary>
             <seealso cref="T:CardGameEngine.Cards.CardPiles.CardPile"/>
         </member>
         <member name="P:CardGameEngine.Cards.CardPiles.DiscardPile.MarkedForUpgrade">
             <summary>
-                Set des cartes à améliorer au prochain roulement
+            Set des cartes à améliorer au prochain roulement
             </summary>
         </member>
         <member name="T:CardGameEngine.Cards.CardPiles.NotInPileException">
             <summary>
-                Exception lancée lorsque d'une carte essaye d'être sortie d'une pile à laquelle elle n'appartient pas
+            Exception lancée lorsque d'une carte essaye d'être sortie d'une pile à laquelle elle n'appartient pas
             </summary>
         </member>
         <member name="T:CardGameEngine.Cards.ChainMode">
@@ -267,17 +265,17 @@
         </member>
         <member name="T:CardGameEngine.Cards.Keyword">
             <summary>
-                Classe représentant un mot clé
+            Classe représentant un mot clé
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Keyword.Name">
             <summary>
-                Nom du mot clé
+            Nom du mot clé
             </summary>
         </member>
         <member name="P:CardGameEngine.Cards.Keyword.Effect">
             <summary>
-                Effet du mot clé
+            Effet du mot clé
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.EventManager">
@@ -290,7 +288,7 @@
                 Format d'une fonction d'écouteur
             </summary>
             <typeparam name="T">Event</typeparam>
-            <seealso cref="T:CardGameEngine.EventSystem.Events.Event"/>
+            <seealso cref="T:CardGameEngine.EventSystem.Events.Event" />
         </member>
         <member name="F:CardGameEngine.EventSystem.EventManager._eventHandlersDict">
             <summary>
@@ -303,10 +301,9 @@
             </summary>
             <param name="deleg">Le délégué qui veut écouter</param>
             <param name="evenIfCancelled">Écoute même si l'évènement est annulé (défaut = false)</param>
-            <param name="postEvent">Veut recevoir l'information <i>après</i> l'exécution (défaut = false)
-            </param>
+            <param name="postEvent">Veut recevoir l'information <i>après</i> l'exécution (défaut = false)</param>
             <typeparam name="T">Le type d'évènement à écouter</typeparam>
-            <seealso cref="T:CardGameEngine.EventSystem.Events.Event"/>
+            <seealso cref="T:CardGameEngine.EventSystem.Events.Event" />
         </member>
         <member name="M:CardGameEngine.EventSystem.EventManager.UnsubscribeFromEvent(CardGameEngine.EventSystem.EventManager.IEventHandler,System.Boolean)">
             <summary>
@@ -314,7 +311,7 @@
             </summary>
             <param name="deleg">Le délégué à désinscrire</param>
             <typeparam name="T">Le type d'évènement à retirer</typeparam>
-            <seealso cref="T:CardGameEngine.EventSystem.Events.Event"/>
+            <seealso cref="T:CardGameEngine.EventSystem.Events.Event" />
         </member>
         <member name="M:CardGameEngine.EventSystem.EventManager.SendEvent``1(``0)">
             <summary>
@@ -323,25 +320,15 @@
             <param name="evt">L'évènement à déclencher</param>
             <typeparam name="T">Le type d'évènement</typeparam>
             <returns></returns>
-            <seealso cref="T:CardGameEngine.EventSystem.Events.Event"/>
+            <seealso cref="T:CardGameEngine.EventSystem.Events.Event" />
         </member>
         <member name="M:CardGameEngine.EventSystem.EventManager.GetHandlerOfAssignableFrom``1">
             <summary>
-                Récupère la liste des
-                <see cref="T:CardGameEngine.EventSystem.EventManager.IEventHandler"/>
-                de la classe
-                <see cref="!:T"/>
-                ainsi que de ses classes parentes
+                Récupère la liste des <see cref="T:CardGameEngine.EventSystem.EventManager.IEventHandler" /> de la classe <see cref="!:T" /> ainsi que de ses classes parentes
             </summary>
             <typeparam name="T">Le type demandé</typeparam>
             <returns>
-                Un
-                <see cref="T:System.Collections.Generic.IEnumerable`1"/>
-                contenant les
-                <see cref="T:CardGameEngine.EventSystem.EventManager.IEventHandler"/>
-                de
-                <see cref="!:T"/>
-                et de ses
+                Un <see cref="T:System.Collections.Generic.IEnumerable`1" /> contenant les  <see cref="T:CardGameEngine.EventSystem.EventManager.IEventHandler" /> de <see cref="!:T" /> et de ses
                 classes parentes
             </returns>
         </member>
@@ -352,45 +339,38 @@
             <param name="evt">L'évènement à déclencher</param>
             <typeparam name="T">Le type d'évènement</typeparam>
             <returns></returns>
-            <seealso cref="T:CardGameEngine.EventSystem.Events.Event"/>
+            <seealso cref="T:CardGameEngine.EventSystem.Events.Event" />
         </member>
         <member name="T:CardGameEngine.EventSystem.EventManager.IEventHandler">
             <summary>
-                Interface qui permet d'empaqueter les délégués d'évènements avec comme paramètre générique<see
-                    cref="T:CardGameEngine.EventSystem.Events.Event"/>.
-                <br/>
-                <see cref="!:T"/>
-                est contravariant et il est donc
+                Interface qui permet d'empaqueter les délégués d'évènements avec comme paramètre générique <see cref="T:CardGameEngine.EventSystem.Events.Event" />.
+                <br />
+                <see cref="!:T" /> est contravariant et il est donc
                 possible de faire :
                 <code>
-                    IEventHandler&lt;Event&gt; handler = new EventHandlerBase&lt;CardNameChangeEvent&gt;();
-                </code>
+            IEventHandler&lt;Event&gt; handler = new EventHandlerBase&lt;CardNameChangeEvent&gt;();
+            </code>
             </summary>
-            <typeparam name="T">Le sous-type de
-                <see cref="T:CardGameEngine.EventSystem.Events.Event"/>
-                que le délégué demande
-            </typeparam>
+            <typeparam name="T">Le sous-type de <see cref="T:CardGameEngine.EventSystem.Events.Event" /> que le délégué demande</typeparam>
         </member>
         <member name="P:CardGameEngine.EventSystem.EventManager.IEventHandler.EvenIfCancelled">
             <value>
-                <see cref="M:CardGameEngine.EventSystem.EventManager.SubscribeToEvent``1(CardGameEngine.EventSystem.EventManager.OnEvent{``0},System.Boolean,System.Boolean)"/>
+                <see cref="M:CardGameEngine.EventSystem.EventManager.SubscribeToEvent``1(CardGameEngine.EventSystem.EventManager.OnEvent{``0},System.Boolean,System.Boolean)" />
             </value>
         </member>
         <member name="P:CardGameEngine.EventSystem.EventManager.IEventHandler.PostEvent">
             <value>
-                <see cref="M:CardGameEngine.EventSystem.EventManager.SubscribeToEvent``1(CardGameEngine.EventSystem.EventManager.OnEvent{``0},System.Boolean,System.Boolean)"/>
+                <see cref="M:CardGameEngine.EventSystem.EventManager.SubscribeToEvent``1(CardGameEngine.EventSystem.EventManager.OnEvent{``0},System.Boolean,System.Boolean)" />
             </value>
         </member>
         <member name="M:CardGameEngine.EventSystem.EventManager.IEventHandler.HandleEvent(CardGameEngine.EventSystem.Events.Event)">
             <summary>
-                Envoi l'évent
-                <paramref name="evt"/>
-                au délégué
+                Envoi l'évent <paramref name="evt" /> au délégué
             </summary>
             <param name="evt">L'event à envoyer au délégué</param>
         </member>
         <member name="T:CardGameEngine.EventSystem.EventManager.EventHandlerBase">
-            <inheritdoc cref="T:CardGameEngine.EventSystem.EventManager.IEventHandler"/>
+            <inheritdoc cref="T:CardGameEngine.EventSystem.EventManager.IEventHandler" />
         </member>
         <member name="T:CardGameEngine.EventSystem.EventManager.IPostEventSender`1">
             <summary>
@@ -401,7 +381,7 @@
             <value>L'event a renvoyer</value>
         </member>
         <member name="T:CardGameEngine.EventSystem.EventManager.PostEventSenderImpl`1">
-            <inheritdoc cref="T:CardGameEngine.EventSystem.EventManager.IPostEventSender`1"/>
+            <inheritdoc cref="T:CardGameEngine.EventSystem.EventManager.IPostEventSender`1" />
         </member>
         <member name="M:CardGameEngine.EventSystem.EventManager.PostEventSenderImpl`1.Dispose">
             <summary>
@@ -410,7 +390,7 @@
         </member>
         <member name="T:CardGameEngine.EventSystem.EventProperty`3">
             <summary>
-                Propriété devant déclencher un évènement à chaque modification
+            Propriété devant déclencher un évènement à chaque modification
             </summary>
             <typeparam name="S">Type de l'objet (Artefact/Card/Keyword)</typeparam>
             <typeparam name="T">Type de la valeur (int, string, ...)</typeparam>
@@ -419,17 +399,17 @@
         </member>
         <member name="F:CardGameEngine.EventSystem.EventProperty`3._sender">
             <summary>
-                Objet lié à l'évènement
+            Objet lié à l'évènement
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.EventProperty`3.Value">
             <summary>
-                Valeur de la propriété
+            Valeur de la propriété
             </summary>
         </member>
         <member name="M:CardGameEngine.EventSystem.EventProperty`3.#ctor(`0,CardGameEngine.EventSystem.EventManager,`1,System.Boolean)">
             <summary>
-                Constructeur de la classe
+            Constructeur de la classe
             </summary>
             <param name="sender">L'objet lié à l'évènement</param>
             <param name="evtManager"></param>
@@ -438,7 +418,7 @@
         </member>
         <member name="M:CardGameEngine.EventSystem.EventProperty`3.TryChangeValue(`1)">
             <summary>
-                Essaye de changer la valeur de la propriété par la nouvelle entrée
+            Essaye de changer la valeur de la propriété par la nouvelle entrée
             </summary>
             <param name="newVal">La nouvelle valeur</param>
         </member>
@@ -449,67 +429,67 @@
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.ActionPointsEditEvent">
             <summary>
-                Évènement annulable correspondant au changement du nombre de points d'action d'un joueur
+            Évènement annulable correspondant au changement du nombre de points d'action d'un joueur
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.ActionPointsEditEvent.Player">
             <summary>
-                Le joueur touché
+            Le joueur touché
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.ActionPointsEditEvent.OldPointCount">
             <summary>
-                Ancien nombre de points
+            Ancien nombre de points
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.ActionPointsEditEvent.NewPointCount">
             <summary>
-                Nouveau nombre de points
+            Nouveau nombre de points
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.ArtefactEvents.ArtefactActivateEvent">
             <summary>
-                Évènement annulable correspondant à l'activation d'un artefact
+            Évènement annulable correspondant à l'activation d'un artefact
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.ArtefactEvents.ArtefactChargeEditEvent">
             <summary>
-                Évènement annulable correspondant au changement du nombre de charges d'un artefact
+            Évènement annulable correspondant au changement du nombre de charges d'un artefact
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.ArtefactEvents.ArtefactChargeEditEvent.NewChargeCount">
             <summary>
-                Valeur de la nouvelle charge
+            Valeur de la nouvelle charge
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.ArtefactEvents.ArtefactChargeEditEvent.OldChargeCount">
             <summary>
-                Valeur de l'ancienne charge
+            Valeur de l'ancienne charge
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.ArtefactEvents.ArtefactEvent">
             <summary>
-                Classe abstraite pour les évènements liés à un artefact
+            Classe abstraite pour les évènements liés à un artefact 
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.ArtefactEvents.ArtefactEvent.Artefact">
             <summary>
-                L'artefact concerné
+            L'artefact concerné
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CancellableEvent">
             <summary>
-                Classe abstraite représentant les évènement pouvant être annulés
+            Classe abstraite représentant les évènement pouvant être annulés
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.CancellableEvent.Cancelled">
             <summary>
-                Booléen indiquant l'annulation de l'évènement
+            Booléen indiquant l'annulation de l'évènement
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.CardDeleteEvent">
             <summary>
-                Évènement annulable correspondant à la suppression d'une carte
+            Évènement annulable correspondant à la suppression d'une carte
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.CardEffectPlayEvent">
@@ -519,72 +499,72 @@
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.CardEvent">
             <summary>
-                Classe abstraite représentant les évènements liés à une carte
+            Classe abstraite représentant les évènements liés à une carte
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.CardEvents.CardEvent.Card">
             <summary>
-                La carte concernée
+            La carte concernée
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.CardMarkUpgradeEvent">
             <summary>
-                Évènement annulable correspondant à l'indication de la future amélioration d'une carte
+            Évènement annulable correspondant à l'indication de la future amélioration d'une carte
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.CardMovePileEvent">
             <summary>
-                Évènement annulable correspondant au changement de pile d'une carte
+            Évènement annulable correspondant au changement de pile d'une carte
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.CardEvents.CardMovePileEvent.SourcePile">
             <summary>
-                Pile d'origine
+            Pile d'origine
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.CardEvents.CardMovePileEvent.SourceIndex">
             <summary>
-                Position dans la pile d'origine
+            Position dans la pile d'origine
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.CardEvents.CardMovePileEvent.DestPile">
             <summary>
-                Pile de destination
+            Pile de destination
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.CardEvents.CardMovePileEvent.DestIndex">
             <summary>
-                Position dans la pile de destination
+            Position dans la pile de destination
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.CardPlayEvent">
             <summary>
-                Évènement annulable correspondant à l'activation d'une carte entiere (du cout en PA jusqu'a la défausse)
+            Évènement annulable correspondant à l'activation d'une carte entiere (du cout en PA jusqu'a la défausse)
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.CardUnMarkUpgradeEvent">
             <summary>
-                Évènement annulable correspondant à l'enlevage de l'amélioration future
+            Évènement annulable correspondant à l'enlevage de l'amélioration future
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.KeywordEvents.CardKeywordAddEvent">
             <summary>
-                Évènement annulable correspondant à l'ajout d'un mot-clé sur une carte
+            Évènement annulable correspondant à l'ajout d'un mot-clé sur une carte
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.KeywordEvents.CardKeywordEvent">
             <summary>
-                Évènement annulable en lien avec un mot-clé et une carte
+            Évènement annulable en lien avec un mot-clé et une carte
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.KeywordEvents.CardKeywordRemoveEvent">
             <summary>
-                Évènement annulable correspondant à l'enlèvement d'un mot-clé sur une carte
+            Évènement annulable correspondant à l'enlèvement d'un mot-clé sur une carte
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.KeywordEvents.CardKeywordTriggerEvent">
             <summary>
-                Évènement annulable correspondant à l'activation d'un mot-clé sur une carte
+            Évènement annulable correspondant à l'activation d'un mot-clé sur une carte
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.PropertyChange.CardChainModeChangeEvent">
@@ -594,53 +574,53 @@
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.PropertyChange.CardCostChangeEvent">
             <summary>
-                Évènement annulable correspondant au changement de coût d'une carte
+            Évènement annulable correspondant au changement de coût d'une carte
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.PropertyChange.CardLevelChangeEvent">
             <summary>
-                Évènement annulable correspondant au changement de niveau d'une carte
+            Évènement annulable correspondant au changement de niveau d'une carte
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.PropertyChange.CardNameChangeEvent">
             <summary>
-                Évènement annulable correspondant au changement de nom d'une carte
+            Évènement annulable correspondant au changement de nom d'une carte
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.PropertyChange.CardPropertyChangeEvent`1">
             <summary>
-                Classe représentant les évènements liés à la modification d'une propriété d'une carte
+            Classe représentant les évènements liés à la modification d'une propriété d'une carte
             </summary>
             <typeparam name="T">Le type de la valeur changée</typeparam>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.CardEvents.PropertyChange.CardPropertyChangeEvent`1.OldValue">
             <summary>
-                Ancienne valeur de la propriété
+            Ancienne valeur de la propriété
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.CardEvents.PropertyChange.CardPropertyChangeEvent`1.NewValue">
             <summary>
-                Nouvelle valeur de la propriété
+            Nouvelle valeur de la propriété
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.TransferrableCardEvent">
             <summary>
-                Classe abstraite représentant les évènements liés à une carte
+            Classe abstraite représentant les évènements liés à une carte
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.CardEvents.TransferrableCardEvent.Card">
             <summary>
-                La carte concernée
+            La carte concernée
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.CardEvents.TargetingEvent">
             <summary>
-                Évènement correspondant à un ciblage
+            Évènement correspondant à un ciblage
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.CardEvents.TargetingEvent.TargetData">
             <summary>
-                La cible enregistrée
+            La cible enregistrée
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.CardEvents.TargetingEvent.ResolvedTarget">
@@ -650,89 +630,89 @@
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.Event">
             <summary>
-                Classe abstraite vide représentant les évènements
+            Classe abstraite vide représentant les évènements
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.GameStateEvents.DeckLoopEvent">
             <summary>
-                Évènement correspondant au bouclage du deck d'un joueur
+            Évènement correspondant au bouclage du deck d'un joueur
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.GameStateEvents.DeckLoopEvent.Player">
             <summary>
-                Joueur en train de jouer
+            Joueur en train de jouer
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.GameStateEvents.EndTurnEvent">
             <summary>
-                Évènement correspondant à la fin du tour d'un joueur
+            Évènement correspondant à la fin du tour d'un joueur
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.GameStateEvents.EndTurnEvent.Player">
             <summary>
-                Joueur en train de jouer
+            Joueur en train de jouer
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.GameStateEvents.StartTurnEvent">
             <summary>
-                Évènement correspondant au début du tour d'un joueur
+            Évènement correspondant au début du tour d'un joueur
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.GameStateEvents.StartTurnEvent.Player">
             <summary>
-                Joueur en train de jouer
+            Joueur en train de jouer
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.IPropertyChangeEvent`2">
             <summary>
-                Interface représentant le changement de valeur d'une propriété
+            Interface représentant le changement de valeur d'une propriété
             </summary>
             <typeparam name="S">Type de l'objet qui subit le changement</typeparam>
             <typeparam name="T">Le type de la valeur changée</typeparam>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.IPropertyChangeEvent`2.Sender">
             <summary>
-                L'objet qui subit le changement
+            L'objet qui subit le changement
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.IPropertyChangeEvent`2.NewValue">
             <summary>
-                Nouvelle valeur de la propriété
+            Nouvelle valeur de la propriété
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.IPropertyChangeEvent`2.OldValue">
             <summary>
-                Ancienne valeur de la propriété
+            Ancienne valeur de la propriété
             </summary>
         </member>
         <member name="T:CardGameEngine.EventSystem.Events.MaxActionPointsEditEvent">
             <summary>
-                Évènement annulable correspondant au changement du nombre de points d'action d'un joueur
+            Évènement annulable correspondant au changement du nombre de points d'action d'un joueur
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.MaxActionPointsEditEvent.Player">
             <summary>
-                Le joueur touché
+            Le joueur touché
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.MaxActionPointsEditEvent.OldMaxPointCount">
             <summary>
-                Ancien nombre de points
+            Ancien nombre de points
             </summary>
         </member>
         <member name="P:CardGameEngine.EventSystem.Events.MaxActionPointsEditEvent.NewMaxPointCount">
             <summary>
-                Nouveau nombre de points
+            Nouveau nombre de points
             </summary>
         </member>
         <member name="T:CardGameEngine.Game">
             <summary>
-                Classe principale du projet représentant une partie
+            Classe principale du projet représentant une partie
             </summary>
         </member>
         <member name="P:CardGameEngine.Game.CurrentPlayer">
             <summary>
-                Le joueur en train de jouer (c'est son tour)
+            Le joueur en train de jouer (c'est son tour)
             </summary>
         </member>
         <member name="P:CardGameEngine.Game.AllowedToPlayPlayer">
@@ -745,24 +725,29 @@
                 Est ce que l'on est en train de chainer
             </summary>
         </member>
+        <member name="P:CardGameEngine.Game.ChainStack">
+            <summary>
+                La pile des cartes actuellement chainées
+            </summary>
+        </member>
         <member name="P:CardGameEngine.Game.Player1">
             <summary>
-                Le joueur 1
+            Le joueur 1
             </summary>
         </member>
         <member name="P:CardGameEngine.Game.Player2">
             <summary>
-                Le joueur 2
+            Le joueur 2
             </summary>
         </member>
         <member name="P:CardGameEngine.Game.EventManager">
             <summary>
-                Gestionnaire des évènements de la partie
+            Gestionnaire des évènements de la partie
             </summary>
         </member>
         <member name="P:CardGameEngine.Game.EffectsDatabase">
             <summary>
-                Base de données de tous les effets
+            Base de données de tous les effets
             </summary>
             <seealso cref="T:CardGameEngine.GameSystems.Effects.Effect"/>
         </member>
@@ -773,34 +758,34 @@
         </member>
         <member name="F:CardGameEngine.Game._externCallbacks">
             <summary>
-                Callbacks externes au moteurs, ce champ va être donné par l'application externe.
+            Callbacks externes au moteurs, ce champ va être donné par l'application externe.
             </summary>
         </member>
         <member name="M:CardGameEngine.Game.MakeWin(CardGameEngine.GameSystems.Player)">
             <summary>
-                Fait gagner la partie a un joueur apres la fin de ce tour
+            Fait gagner la partie a un joueur apres la fin de ce tour
             </summary>
             <param name="playerToWin">La joueur à faire gagner</param>
         </member>
         <member name="M:CardGameEngine.Game.StartPlayerTurn(CardGameEngine.GameSystems.Player)">
             <summary>
-                Lance le tour d'un joueur
+            Lance le tour d'un joueur
             </summary>
             <param name="player">Le joueur qui doit jouer</param>
         </member>
         <member name="M:CardGameEngine.Game.TryEndPlayerTurn">
             <summary>
-                Essaye de finir le tour du joueur actuel
+            Essaye de finir le tour du joueur actuel
             </summary>
         </member>
         <member name="M:CardGameEngine.Game.EndPlayerTurn">
             <summary>
-                Externe : Termine le tour du joueur
+            Externe : Termine le tour du joueur
             </summary>
         </member>
         <member name="M:CardGameEngine.Game.PlayCard(CardGameEngine.GameSystems.Player,CardGameEngine.Cards.Card,System.Boolean)">
             <summary>
-                Externe : Un joueur utilise une carte
+            Externe : Un joueur utilise une carte
             </summary>
             <param name="player">Le joueur</param>
             <param name="card">La carte jouée</param>
@@ -818,15 +803,14 @@
         </member>
         <member name="M:CardGameEngine.Game.RevealCard(CardGameEngine.GameSystems.Player,CardGameEngine.Cards.Card)">
             <summary>
-                Révèle une la carte card au joueur originalPlayer
-                <b>une seule fois</b>
+            Révèle une la carte card au joueur originalPlayer <b>une seule fois</b>
             </summary>
             <param name="player"></param>
             <param name="card"></param>
         </member>
         <member name="M:CardGameEngine.Game.ActivateArtifact(CardGameEngine.GameSystems.Player,CardGameEngine.Cards.Artefact)">
             <summary>
-                Un joueur active un artefact
+            Un joueur active un artefact
             </summary>
             <param name="player">Le joueur</param>
             <param name="artefact">L'artefact activé</param>
@@ -842,7 +826,7 @@
         </member>
         <member name="M:CardGameEngine.Game.ChooseBetween(CardGameEngine.GameSystems.Player,System.Collections.Generic.IEnumerable{CardGameEngine.Cards.Card})">
             <summary>
-                Demande au joueur originalPlayer de choisir une carte parmi la liste cards et renvoie son choix
+            Demande au joueur originalPlayer de choisir une carte parmi la liste cards et renvoie son choix
             </summary>
             <param name="player">Le joueur a qui demander</param>
             <param name="cards">La liste de cartes parmi lesquelles choisir</param>
@@ -850,7 +834,7 @@
         </member>
         <member name="M:CardGameEngine.Game.LuaAskForTarget(CardGameEngine.GameSystems.Effects.Effect,CardGameEngine.GameSystems.Player,System.Int32)">
             <summary>
-                Fonction lua qui résout une cible
+            Fonction lua qui résout une cible
             </summary>
             <param name="effect"></param>
             <param name="effectOwner"></param>
@@ -859,27 +843,27 @@
         </member>
         <member name="T:CardGameEngine.GameSystems.Effects.Effect">
             <summary>
-                Classe représentant un effet
+            Classe représentant un effet
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Effects.Effect.EffectType">
             <summary>
-                Type de l'effet
+            Type de l'effet
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Effects.Effect.EffectId">
             <summary>
-                Nom/référence de l'effet
+            Nom/référence de l'effet
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Effects.Effect.AllTargets">
             <summary>
-                Liste des cibles de l'effet
+            Liste des cibles de l'effet
             </summary>
         </member>
         <member name="M:CardGameEngine.GameSystems.Effects.Effect.#ctor(CardGameEngine.GameSystems.Effects.EffectType,System.String,System.Collections.Generic.List{CardGameEngine.GameSystems.Targeting.Target},MoonSharp.Interpreter.Script)">
             <summary>
-                Constructeur de la classe
+            Constructeur de la classe
             </summary>
             <param name="effectType">Type de l'effet</param>
             <param name="effectId">Nom/référence de l'effet</param>
@@ -887,13 +871,13 @@
         </member>
         <member name="T:CardGameEngine.GameSystems.Effects.EffectChecker">
             <summary>
-                Classe statique ayant pour but de vérifier la validité d'un script d'effet lua
+            Classe statique ayant pour but de vérifier la validité d'un script d'effet lua
             </summary>
             <seealso cref="T:CardGameEngine.GameSystems.Effects.Effect"/>
         </member>
         <member name="M:CardGameEngine.GameSystems.Effects.EffectChecker.CheckEffect(System.String,CardGameEngine.GameSystems.Effects.EffectType,System.Object@)">
             <summary>
-                Méthode principale de la classe, elle appelle la méthode correspondante au type d'effet donné.
+            Méthode principale de la classe, elle appelle la méthode correspondante au type d'effet donné.
             </summary>
             <param name="path">Nom complet du fichier de l'effet</param>
             <param name="effectType">Type d'effet</param>
@@ -904,14 +888,14 @@
         </member>
         <member name="M:CardGameEngine.GameSystems.Effects.EffectChecker.CheckCard(System.String,System.Object@)">
             <summary>
-                Méthode pour tester la validité de l'effet d'une carte
+            Méthode pour tester la validité de l'effet d'une carte
             </summary>
             <param name="path">Nom complet du fichier de la carte</param>
             <returns>Un booléen en fonction de la validité</returns>
         </member>
         <member name="M:CardGameEngine.GameSystems.Effects.EffectChecker.CheckKeyword(System.String)">
             <summary>
-                Méthode pour tester la validité de l'effet d'un mot clé
+            Méthode pour tester la validité de l'effet d'un mot clé
             </summary>
             <param name="path">Nom complet du fichier du mot clé</param>
             <returns>Un booléen en fonction de la validité</returns>
@@ -919,7 +903,7 @@
         </member>
         <member name="M:CardGameEngine.GameSystems.Effects.EffectChecker.CheckArtefact(System.String)">
             <summary>
-                Méthode pour tester la validité de l'effet d'un artefact
+            Méthode pour tester la validité de l'effet d'un artefact
             </summary>
             <param name="path">Nom complet du fichier de l'artefact</param>
             <returns>Un booléen en fonction de la validité</returns>
@@ -927,83 +911,79 @@
         </member>
         <member name="T:CardGameEngine.GameSystems.Effects.EffectsDatabase">
             <summary>
-                Classe lisant, vérifiant et stockant tous les effets valides
+            Classe lisant, vérifiant et stockant tous les effets valides
             </summary>
         </member>
         <member name="F:CardGameEngine.GameSystems.Effects.EffectsDatabase._effectDictionary">
             <summary>
-                Le dictionnaire stockant les effets valides avec leur nom comme clé
+            Le dictionnaire stockant les effets valides avec leur nom comme clé
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Effects.EffectsDatabase.Item(System.String)">
             <summary>
-                Accède au dictionnaire des effets de l'objet
+            Accède au dictionnaire des effets de l'objet
             </summary>
             <param name="s">Nom de l'effet</param>
         </member>
         <member name="M:CardGameEngine.GameSystems.Effects.EffectsDatabase.#ctor(System.String,System.Action{System.String,System.String,System.String})">
             <summary>
-                Méthode principale de la classe, elle permet de charger tous les effets
-                Redirige vers l'autre méthode LoadAllEffects en fonction du type des effets du sous-dossier
+            Méthode principale de la classe, elle permet de charger tous les effets
+            Redirige vers l'autre méthode LoadAllEffects en fonction du type des effets du sous-dossier
             </summary>
             <param name="path">Nom complet du dossier</param>
             <param name="luaDebugPrint"></param>
             <param name="debuggerToUse"></param>
-            <seealso
-                    cref="M:CardGameEngine.GameSystems.Effects.EffectsDatabase.LoadAllEffects(System.String,CardGameEngine.GameSystems.Effects.EffectType)"/>
+            <seealso cref="M:CardGameEngine.GameSystems.Effects.EffectsDatabase.LoadAllEffects(System.String,CardGameEngine.GameSystems.Effects.EffectType)"/>
         </member>
         <member name="M:CardGameEngine.GameSystems.Effects.EffectsDatabase.LoadAllEffects(System.String,CardGameEngine.GameSystems.Effects.EffectType)">
             <summary>
-                Méthode chargeant tous les effets contenus dans un dossier
+            Méthode chargeant tous les effets contenus dans un dossier
             </summary>
             <param name="path">Nom complet du dossier</param>
             <param name="effectType">Type de l'effet (correspond aussi au nom du dossier)</param>
-            <seealso
-                    cref="M:CardGameEngine.GameSystems.Effects.EffectsDatabase.LoadEffect(System.String,CardGameEngine.GameSystems.Effects.EffectType)"/>
+            <seealso cref="M:CardGameEngine.GameSystems.Effects.EffectsDatabase.LoadEffect(System.String,CardGameEngine.GameSystems.Effects.EffectType)"/>
         </member>
         <member name="M:CardGameEngine.GameSystems.Effects.EffectsDatabase.LoadEffect(System.String,CardGameEngine.GameSystems.Effects.EffectType)">
             <summary>
-                Méthode lisant et vérifiant la validité d'un script puis le stocke
+            Méthode lisant et vérifiant la validité d'un script puis le stocke
             </summary>
             <param name="path">Nom complet du fichier</param>
             <param name="effectType">Type de l'effet</param>
-            <exception cref="T:CardGameEngine.GameSystems.Effects.InvalidEffectException">Si l'effet est invalide
-            </exception>
+            <exception cref="T:CardGameEngine.GameSystems.Effects.InvalidEffectException">Si l'effet est invalide</exception>
             <seealso cref="T:CardGameEngine.GameSystems.Effects.EffectChecker"/>
         </member>
         <member name="M:CardGameEngine.GameSystems.Effects.EffectsDatabase.GetDefaultScript">
             <summary>
-                Méthode simple permettant de récupérer le script avec l'intégration du c# nécessaire
+            Méthode simple permettant de récupérer le script avec l'intégration du c# nécessaire
             </summary>
             <returns>L'objet script créé</returns>
         </member>
         <member name="M:CardGameEngine.GameSystems.Effects.EffectsDatabase.CreateTarget(System.String,CardGameEngine.GameSystems.Targeting.TargetTypes,System.Boolean,MoonSharp.Interpreter.Closure)">
             <summary>
-                Méthode de création d'un objet Target
+            Méthode de création d'un objet Target
             </summary>
             <returns>Un objet Target</returns>
-            <seealso
-                    cref="M:CardGameEngine.GameSystems.Targeting.Target.#ctor(System.String,CardGameEngine.GameSystems.Targeting.TargetTypes,System.Boolean,MoonSharp.Interpreter.Closure)"/>
+            <seealso cref="M:CardGameEngine.GameSystems.Targeting.Target.#ctor(System.String,CardGameEngine.GameSystems.Targeting.TargetTypes,System.Boolean,MoonSharp.Interpreter.Closure)"/>
         </member>
         <member name="T:CardGameEngine.GameSystems.Effects.EffectType">
             <summary>
-                Énumération correspondant aux différents types d'effets
+            Énumération correspondant aux différents types d'effets
             </summary>
             <seealso cref="T:CardGameEngine.GameSystems.Effects.Effect"/>
         </member>
         <member name="T:CardGameEngine.GameSystems.Effects.InvalidEffectException">
             <summary>
-                Exception lancée lorsqu'un script d'effet est invalide
+            Exception lancée lorsqu'un script d'effet est invalide
             </summary>
         </member>
         <member name="T:CardGameEngine.GameSystems.IExternCallbacks">
             <summary>
-                Interface que le moteur utilise pour interagir avec l'application externe
+            Interface que le moteur utilise pour interagir avec l'application externe
             </summary>
         </member>
         <member name="M:CardGameEngine.GameSystems.IExternCallbacks.ExternCardAskForTarget(CardGameEngine.GameSystems.Player,System.String,System.Collections.Generic.List{CardGameEngine.Cards.Card})">
             <summary>
-                Délégué appelé lorsque le moteur du jeu veut demander à l'application externe de cibler une carte
+            Délégué appelé lorsque le moteur du jeu veut demander à l'application externe de cibler une carte
             </summary>
             <param name="effectOwner"></param>
             <param name="targetName">Une description de la cible demandée</param>
@@ -1012,47 +992,44 @@
         </member>
         <member name="M:CardGameEngine.GameSystems.IExternCallbacks.ExternPlayerAskForTarget(CardGameEngine.GameSystems.Player,System.String)">
             <summary>
-                Délégué appelé lorsque le moteur du jeu veut demander a l'application externe de cibler un joueur
+            Délégué appelé lorsque le moteur du jeu veut demander a l'application externe de cibler un joueur
             </summary>
             <param name="effectOwner"></param>
             <param name="targetName">Une description de la cible demandée</param>
             <returns>Le joueur ciblé</returns>
         </member>
         <member name="M:CardGameEngine.GameSystems.IExternCallbacks.ExternShowCard(CardGameEngine.GameSystems.Player,CardGameEngine.Cards.Card)">
-            <summary>
-                Délégué appelé lorsque le moteur du jeu veut demander à l'application externe de montrer une carte a un
-                joueur
-            </summary>
+             <summary>
+             Délégué appelé lorsque le moteur du jeu veut demander à l'application externe de montrer une carte a un joueur
+             </summary>
             <param name="player">Le joueur auquel montrer la carte</param>
             <param name="card">La carte a montrer</param>
-            <returns>La cible demandée</returns>
+             <returns>La cible demandée</returns>
         </member>
         <member name="M:CardGameEngine.GameSystems.IExternCallbacks.ExternChooseBetween(CardGameEngine.GameSystems.Player,System.Collections.Generic.List{CardGameEngine.Cards.Card})">
-            <summary>
-                Délégué appelé lorsque le moteur du jeu veut demander à l'application externe de faire choisir une carte
-                parmis une liste a un joueur
-            </summary>
+             <summary>
+             Délégué appelé lorsque le moteur du jeu veut demander à l'application externe de faire choisir une carte parmis une liste a un joueur
+             </summary>
             <param name="player">Le joueur auquel demander</param>
             <param name="card">La liste parmis la quelle choisir</param>
-            <returns>Un choix</returns>
+             <returns>Un choix</returns>
         </member>
         <member name="M:CardGameEngine.GameSystems.IExternCallbacks.ExternGameEnded(CardGameEngine.GameSystems.Player)">
             <summary>
-                Délégué appelé lorsque le moteur du jeu veut signaler à l'application externe que la partie s'est
-                terminée
+            Délégué appelé lorsque le moteur du jeu veut signaler à l'application externe que la partie s'est terminée
             </summary>
             <param name="winner">Le joueur qui a gagné la partie</param>
         </member>
         <member name="M:CardGameEngine.GameSystems.IExternCallbacks.ExternChainOpportunity(CardGameEngine.GameSystems.Player)">
             <summary>
-                Délégué appelé lorsque le moteur du jeu veut proposer au joueur de chainer une carte
+            Délégué appelé lorsque le moteur du jeu veut proposer au joueur de chainer une carte
             </summary>
             <param name="player">Le joueur qui peut chainer</param>
             <returns>Vrai si une action a été réalisée, faux sinon</returns>
         </member>
         <member name="M:CardGameEngine.GameSystems.IExternCallbacks.DebugPrint(System.String,System.String,System.String)">
             <summary>
-                Délégué appelé lorsque un script affiche du texte avec print()
+            Délégué appelé lorsque un script affiche du texte avec print()
             </summary>
             <param name="source">Le script source</param>
             <param name="debugPrint">Le texte</param>
@@ -1060,100 +1037,100 @@
         <!-- Badly formed XML comment ignored for member "M:CardGameEngine.GameSystems.IExternCallbacks.GetExternalRandomNumber(System.Int32,System.Int32)" -->
         <member name="T:CardGameEngine.GameSystems.Player">
             <summary>
-                Classe représentant un joueur
+            Classe représentant un joueur
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Player.Deck">
             <summary>
-                Pioche du joueur
+            Pioche du joueur
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Player.Hand">
             <summary>
-                Main du joueur
+            Main du joueur
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Player.Discard">
             <summary>
-                Défausse du joueur
+            Défausse du joueur
             </summary>
         </member>
         <member name="F:CardGameEngine.GameSystems.Player._game">
             <summary>
-                Référence à la partie
+            Référence à la partie
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Player.Id">
             <summary>
-                Id du joueur dans la partie
+            Id du joueur dans la partie
             </summary>
         </member>
         <member name="F:CardGameEngine.GameSystems.Player._eventManager">
             <summary>
-                Event manager
+            Event manager
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Player.Artefacts">
             <summary>
-                Les 2 artefacts du joueurs
+            Les 2 artefacts du joueurs
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Player.ActionPoints">
             <summary>
-                Points d'action du joueur
+            Points d'action du joueur
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Player.MaxActionPoints">
             <summary>
-                Points d'action maximum du joueur
+            Points d'action maximum du joueur
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Player.OtherPlayer">
             <summary>
-                L'autre joueur
+            L'autre joueur
             </summary>
         </member>
         <member name="M:CardGameEngine.GameSystems.Player.DrawCard">
             <summary>
-                Piocher une carte
+            Piocher une carte
             </summary>
             <param name="card">La carte à piocher</param>
         </member>
         <member name="M:CardGameEngine.GameSystems.Player.LoopDeck">
             <summary>
-                Transfère toutes les cartes de la défausse dans la pioche
+            Transfère toutes les cartes de la défausse dans la pioche
             </summary>
             <seealso cref="T:CardGameEngine.Cards.CardPiles.DiscardPile"/>
             <seealso cref="T:CardGameEngine.Cards.CardPiles.CardPile"/>
         </member>
         <member name="T:CardGameEngine.GameSystems.Targeting.Target">
             <summary>
-                Classe représentant une cible
+            Classe représentant une cible
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Targeting.Target.TargetType">
             <summary>
-                Type de la cible
+            Type de la cible
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Targeting.Target.IsAutomatic">
             <summary>
-                Choix de la cible manuel ou non
+            Choix de la cible manuel ou non
             </summary>
         </member>
         <member name="P:CardGameEngine.GameSystems.Targeting.Target.Name">
             <summary>
-                Nom de la cible
+            Nom de la cible
             </summary>
         </member>
         <member name="F:CardGameEngine.GameSystems.Targeting.Target._cardFilter">
             <summary>
-                Prédicat indiquant si une carte peut être ciblée
+            Prédicat indiquant si une carte peut être ciblée
             </summary>
         </member>
         <member name="M:CardGameEngine.GameSystems.Targeting.Target.#ctor(System.String,CardGameEngine.GameSystems.Targeting.TargetTypes,System.Boolean,MoonSharp.Interpreter.Closure)">
             <summary>
-                Constructeur de la classe
+            Constructeur de la classe
             </summary>
             <param name="name">Nom de la cible</param>
             <param name="targetType">Type de la cible</param>
@@ -1162,14 +1139,14 @@
         </member>
         <member name="M:CardGameEngine.GameSystems.Targeting.Target.IsValidTarget(CardGameEngine.Cards.Card)">
             <summary>
-                Méthode indiquant si la carte donnée est conforme au filtre
+            Méthode indiquant si la carte donnée est conforme au filtre
             </summary>
             <param name="card">La carte à tester</param>
             <returns>Une booléen en fonction de la validité</returns>
         </member>
         <member name="T:CardGameEngine.GameSystems.Targeting.TargetTypes">
             <summary>
-                Énumération correspondant aux différents types de cibles
+            Énumération correspondant aux différents types de cibles
             </summary>
             <seealso cref="T:CardGameEngine.GameSystems.Targeting.Target"/>
         </member>

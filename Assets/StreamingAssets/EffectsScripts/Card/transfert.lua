@@ -27,13 +27,13 @@ targets = {
 }
 
 function precondition()
-    return TargetsExists({1})
+    return TargetsExists({1}) and This.CurrentLevel.Value > 1
 end
 
 function do_effect()
 
     local card = --[[---@type Card]] AskForTarget(1)--la carte
-    local NiveauTransfert = This.CurrentLevel.Value
+    local NiveauTransfert = This.CurrentLevel.Value - 1
 
     card.CurrentLevel.TryChangeValue(math.min(card.MaxLevel, card.CurrentLevel.Value + NiveauTransfert))
     This.CurrentLevel.TryChangeValue(1)

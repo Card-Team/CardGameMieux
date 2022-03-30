@@ -16,7 +16,7 @@ namespace Script
             cartesCachées = owner != UnityGame.LocalPlayer;
         }
 
-        protected override Vector2 GetNewCardDestination(CardRenderer cardRenderer)
+        protected override Vector3 GetNewCardDestination(CardRenderer cardRenderer)
         {
             var x = (cardRenderer.Width + Margin) * cards.Count - (cardRenderer.Width + Margin) * cards.Count / 2;
 
