@@ -12,7 +12,7 @@ pa_cost = 3
 ---@type ChainMode
 chain_mode = ChainMode.StartChain
 
-local base_description = "Cette carte vous permet de voir (précisément) les 2(->3) premieres cartes de votre deck"
+local base_description = "Au niveau 1, cette carte permet de voir les 2 premières cartes de votre deck.\nAu niveau 2, cette carte permet de voir les 3 premières cartes de votre deck."
 description = base_description
 
 local function cardFilter1()

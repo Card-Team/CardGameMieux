@@ -12,7 +12,7 @@ pa_cost = 2
 chain_mode = ChainMode.StartChain
 
 ---@type string
-description = "Echange cette carte avec une carte aléatoire de la main de votre adversaire."
+description = "Échange cette carte avec une carte aléatoire de la main de votre adversaire."
 
 local function card_filter()
     -- Verifier quand pas de carte

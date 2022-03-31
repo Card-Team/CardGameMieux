@@ -11,7 +11,7 @@ name = "Amélioration temporaire"
 ---@type number
 pa_cost = 2
 
-local base_description ="La carte à améliorer temporairement"
+local base_description ="Au niveau 1, joue une carte avec un niveau supplémentaire\nAu niveau 2, joue deux cartes un niveau supplémentaire."
 ---@type string
 description = base_description
 

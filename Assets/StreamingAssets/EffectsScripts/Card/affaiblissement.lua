@@ -13,7 +13,7 @@ name = "affaiblissement"
 pa_cost = 3
 
 ---@type string
-description = "Fait baisser le nombre de PA de l'adversaire du coût de la carte de la main ciblée (niveau 3 -> fin de chaine)"
+description = "Fait baisser le nombre de PA de l'adversaire du coût de la carte de la main ciblée (niveau 3 -> fin de chaîne)"
 
 ---@type Card
 local function card_filter(aCard)

@@ -4,7 +4,7 @@ max_level = 1
 image_id = 18
 
 ---@type string
-name = "Echange inversé"
+name = "Échange inversé"
 ---@type number
 pa_cost = 2
 
@@ -12,7 +12,7 @@ pa_cost = 2
 chain_mode = ChainMode.StartChain
 
 ---@type string
-description = "Echange cette carte avec une carte aléatoire dans votre défausse."
+description = "Échange cette carte avec une carte aléatoire dans votre défausse."
 
 local function card_filter()
 	-- Verifier quand pas de carte dans la défausse

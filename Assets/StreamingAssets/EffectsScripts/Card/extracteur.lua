@@ -13,7 +13,7 @@ pa_cost = 1
 chain_mode = ChainMode.StartOrMiddleChain
 
 ---@type string
-description = "Gagner les points d'action d'une carte de ta main"
+description = "Gagner les PA d'une carte de ta main et la défausse."
 
 --fonction qui recupere toute les cartes de sa main sauf celle ci est lui demande d'en selectionné une
 local function cardFilter(aCard)
@@ -23,7 +23,7 @@ end
 
 ---@type Target[]
 targets = {
-	CreateTarget("gagner ses points d'action", TargetTypes.Card, false, cardFilter),
+	CreateTarget("Choisis une carte dont tu souhaite récupérer les PA", TargetTypes.Card, false, cardFilter),
 }
 
 --Extracteur  : Carte qui permet au joueur de choisir parmi une de ses cartes en main et d'en gagner le cout en points d'action.

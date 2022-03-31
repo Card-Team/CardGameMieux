@@ -13,7 +13,7 @@ pa_cost = 2
 ---@type ChainMode
 chain_mode = ChainMode.StartOrMiddleChain
 
-local base_description = "Remonte une carte de 1(->2->3+pioche si en haut) place dans le deck."
+local base_description = "Remonte une carte de d\'un montant correspondant au niveau de celle-ci, au niveau 3, si la carte remonte au-dessus du deck, elle est piochée."
 description = base_description
 
 local function card_filter(a_card)

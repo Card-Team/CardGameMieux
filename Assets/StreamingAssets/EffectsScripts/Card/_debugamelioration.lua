@@ -13,7 +13,7 @@ name = "Amélioration Débug"
 pa_cost = 0
 
 ---@type string
-description = "Augment le niveau d'une carte de 5"
+description = "Augmente le niveau d'une carte de 5"
 
 ---@param a_card Card
 local function card_filter(a_card)

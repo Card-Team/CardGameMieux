@@ -12,7 +12,7 @@ pa_cost = 2
 chain_mode = ChainMode.StartOrMiddleChain
 
 ---@type string
-description = "lvl 1 -> Défausse la carte au plus faible coût de la main de l'adversaire, lvl2 -> défausse celle au plus haut coût"
+description = "Au niveau 1, défausse la carte au plus faible coût de la main de l'adversaire,.\nAu niveau 2, défausse celle au plus haut coût"
 
 local function cardFilter()
     local OtherHand = EffectOwner.OtherPlayer.Hand

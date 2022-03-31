@@ -11,7 +11,7 @@ pa_cost = 3
 ---@type ChainMode
 chain_mode = ChainMode.MiddleChain
 
-local base_description = "Annule la dernière carte jouée (ne peut être que chainée)"
+local base_description = "Annule la dernière carte jouée (ne peut être que chaînée)"
 ---@type string
 description = base_description
 

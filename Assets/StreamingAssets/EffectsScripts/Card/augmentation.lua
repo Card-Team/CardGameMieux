@@ -11,7 +11,7 @@ name = "Augmentation"
 ---@type number
 pa_cost = 2
 
-local base_description = "(bloqué avant level 4) Augmentation du nombre de PA max de 2 pendant 2 tours (niveau réinitialisé à l'utilisation)"
+local base_description = "(bloqué avant niveau 4)\nAugmentation du nombre de PA max de 2 pendant 2 tours. Le niveau de la carte est réinitialisé à l'utilisation."
 ---@type string
 description = base_description
 

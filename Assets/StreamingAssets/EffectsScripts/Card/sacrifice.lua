@@ -12,7 +12,7 @@ pa_cost = 2
 ---@type ChainMode
 chain_mode = ChainMode.StartChain
 
-local base_description = "Enlever le marquage d'évolution d'une de vos cartes et réduisez le coût d'une carte de votre main"
+local base_description = "Enlever le marquage d'évolution d'une de vos cartes et réduisez le coût d'une carte de votre main jusqu'à ce qu'elle soit jouée."
 description = base_description
 
 local function card_filter(aCard)

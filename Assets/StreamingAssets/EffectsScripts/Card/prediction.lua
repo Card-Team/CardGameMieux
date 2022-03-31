@@ -12,7 +12,7 @@ name = "Prédiction"
 pa_cost = 2
 
 ---@type string
-description = "Devine une carte de la main du joueur (parmis toutes ses cartes) si c'est la bonne elle va dans sa défausse"
+description = "Devine une carte de la main du joueur, si elle correspond à la carte choisi parmi tout le deck de l'adversaire, elle va dans sa défausse"
 
 
 local function cardFilter()

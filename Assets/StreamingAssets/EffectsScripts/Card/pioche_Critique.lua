@@ -12,7 +12,7 @@ pa_cost = 2
 ---@type ChainMode
 chain_mode = ChainMode.StartOrMiddleChain
 
-local base_description = "Cette carte te permet d'en piocher une de ton deck avec un coût augmenté de 2"
+local base_description = "Cette carte permet de piocher une carte en augmentant son coût de 2 au niveau 1, et diminue son coût de 1 au niveau 2.\nLe coût de la carte est réinitialisé après utilisation."
 description = base_description
 
 local function card_filter()

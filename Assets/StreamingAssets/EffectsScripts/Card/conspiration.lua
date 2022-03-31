@@ -12,7 +12,7 @@ name = "Conspiration"
 pa_cost = 3
 
 ---@type string
-description = "Annule l'amélioration de la dernière carte adverse "
+description = "Annule l'amélioration de la dernière carte adverse marquée"
 
 local function cardFilter()
 	for card in --[[---@type fun:Card]]EffectOwner.OtherPlayer.Discard do
@@ -24,7 +24,7 @@ end
 
 ---@type Target[]
 targets = {
-	CreateTarget("la carte pour laquelle il faut annuler l'amélioration",TargetTypes.Card,true,cardFilter)
+	CreateTarget("La carte pour laquelle il faut annuler l'amélioration",TargetTypes.Card,true,cardFilter)
 }
 
 --- fonction qui renvoie un booléen si la carte peut être jouée ou non

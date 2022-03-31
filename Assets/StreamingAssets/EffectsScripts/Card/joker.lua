@@ -11,7 +11,7 @@ pa_cost = 2
 ---@type ChainMode
 chain_mode = ChainMode.NoChain
 
-local base_description = "Cette carte peut copier l'effet d'une de vos cartes"
+local base_description = "Cette carte joue l'effet d'une de vos cartes aléatoirement dans votre deck de départ"
 description = base_description
 
 local function card_filter()
