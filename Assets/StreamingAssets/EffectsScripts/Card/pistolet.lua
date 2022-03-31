@@ -33,8 +33,8 @@ local function cardFilter()
         end
         return minCard
     else
-        local maxCardCost = OtherHand[1].Cost.Value
-        local maxCard = OtherHand[1]
+        local maxCardCost = OtherHand[0].Cost.Value
+        local maxCard = OtherHand[0]
         
         ---@param card Card
         for card in OtherHand do

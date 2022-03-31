@@ -65,8 +65,8 @@ end
 ---@param new number
 function on_level_change(_, new)
     if new == max_level then
-        This.ChainMode.Value = ChainMode.EndChain
+        This.ChainMode.TryChangeValue(ChainMode.EndChain)
     else
-        This.ChainMode.Value = chain_mode
+        This.ChainMode.TryChangeValue(chain_mode)
     end
 end 
